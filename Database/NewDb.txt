@@ -162,7 +162,8 @@ GO
 
 CREATE TABLE [RefreshToken] (
 	[RefreshTokenId] INT NOT NULL IDENTITY UNIQUE,
-	[Token] VARBINARY(Max),
+	[Token] NVARCHAR(Max),
+	[JwtId] NVARCHAR(Max),
 	[CreateDate] DATETIME,
 	[ExpiryDate] DATETIME,
 	Used BIT,
