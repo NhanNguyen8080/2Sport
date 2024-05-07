@@ -1,0 +1,317 @@
+use master
+Create database TwoSportDB
+go
+use TwoSportDB
+
+CREATE TABLE [Orders] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[OrderCode] NVARCHAR(255),
+	[OrderDetailId] INT,
+	[Status] BIT,
+	[TotalPrice] DECIMAL,
+	[TransportFee] DECIMAL,
+	[IntoMoney] DECIMAL,
+	[PaymentMethodId] INT,
+	[ShipmentDetailId] INT,
+	[ReceivedDate] DATETIME,
+	[TransportUnitId] INT,
+	[UserId] INT, /* add foreign key userId */
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Brands] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[BrandName] NVARCHAR(255),
+	[Quantity] INT,
+	[Status] BIT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Categories] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[CategoryName] NVARCHAR(255),
+	[Quantity] INT,
+	[Status] BIT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Products] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[ProductName] NVARCHAR(255),
+	[ListedPrice] DECIMAL,
+	[Price] DECIMAL,
+	[Size] DECIMAL NOT NULL,
+	[Description] NVARCHAR(Max),
+	[Status] BIT,
+	[Color] NVARCHAR(255) NOT NULL,
+	[Offers] NVARCHAR(Max) NOT NULL,
+	[ReviewId] INT,
+	[CategoryId] INT,
+	[BrandId] INT,
+	[ProductCode] NVARCHAR(255),
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [CartItems] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[ProductId] INT,
+	[Quantity] INT,
+	[TotalPrice] DECIMAL,
+	[CartId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Carts] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[UserId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Reviews] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Star] NUMERIC,
+	[Review] NVARCHAR(255),
+	[Status] BIT,
+	[UserId] INT,
+	[ProductId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Likes] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[UserId] INT,
+	[ProductId] INT,
+	[BlogId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [ShipmentDetails] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[FullName] NVARCHAR(255),
+	[Address] NVARCHAR(255),
+	[PhoneNumber] NVARCHAR(255),
+	[UserId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [ImagesVideos] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Image] VARBINARY(Max) NOT NULL,
+	[Video] VARBINARY(Max) NOT NULL,
+	[BlogId] INT NOT NULL,
+	[ProductId] INT NOT NULL,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Blogs] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[BlogName] NVARCHAR(255),
+	[Content] NVARCHAR(Max),
+	[CreateAt] DATETIME,
+	[UserId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Roles] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[RoleName] NVARCHAR(255),
+	[CreatedOn] DATETIME,
+	[UpdatedOn] DATETIME,
+	PRIMARY KEY([Id])
+);
+GO
+ INSERT INTO Roles (RoleName, CreatedOn, UpdatedOn)
+VALUES 
+    ('Admin', GETDATE(), GETDATE()), -- Vai trò quản trị viên
+    ('Manager', GETDATE(), GETDATE()), -- Vai trò quản lý
+    ('Employee', GETDATE(), GETDATE()), -- Vai trò nhân viên
+    ('Customer', GETDATE(), GETDATE()); -- Vai trò khách hàng
+
+CREATE TABLE [Users] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[UserName] NVARCHAR(255),
+	[Password] NVARCHAR(255),
+	[Email] NVARCHAR(255),
+	[FullName] NVARCHAR(255),
+	[Gender] NVARCHAR(20),
+	[Phone] NVARCHAR(20),
+	[Salary] NVARCHAR(20),
+	[BirthDate] DATETIME,
+	[CreatedDate] DATETIME NOT NULL,
+	[LastUpdate] DATETIME,
+	[IsActive] BIT,
+	[RoleId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+ALTER TABLE [Users]
+ADD FOREIGN KEY([RoleId]) REFERENCES [Roles]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+
+CREATE TABLE [RefreshToken] (
+	[RefreshTokenId] INT NOT NULL IDENTITY UNIQUE,
+	[Token] VARBINARY(Max),
+	[CreateDate] DATETIME,
+	[ExpiryDate] DATETIME,
+	Used BIT,
+	UserId INT,
+	PRIMARY KEY([RefreshTokenId])
+);
+GO
+ALTER TABLE [RefreshToken]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+
+CREATE TABLE [OrderDetails] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[ProductId] INT,
+	[Quantity] INT,
+	[OrderId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [PaymentMethod] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[PaymentMethodName] NVARCHAR(255),
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Warehouses] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[ProductId] INT,
+	[Quantity] INT,
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [ImportHistories] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[ProductId] INT,
+	[ImportDate] DATETIME,
+	[Quantity] INT,
+	[SupplierId] INT,
+	[LotCode] NVARCHAR(255),
+	[ImportCode] NVARCHAR(255),
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [Suppliers] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[SupplierName] NVARCHAR(255),
+	[Location] NVARCHAR(255),
+	PRIMARY KEY([Id])
+);
+GO
+
+CREATE TABLE [TransportUnits] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[TransportUnitName] NVARCHAR(255),
+	PRIMARY KEY([Id])
+);
+GO
+
+
+ALTER TABLE [ImagesVideos]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [ImagesVideos]
+ADD FOREIGN KEY([BlogId]) REFERENCES [Blogs]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Carts]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id]) /* add foreign key */
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [CartItems]
+ADD FOREIGN KEY([CartId]) REFERENCES [Carts]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [ShipmentDetails]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Products]
+ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Products]
+ADD FOREIGN KEY([BrandId]) REFERENCES [Brands]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Likes]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Likes]
+ADD FOREIGN KEY([BlogId]) REFERENCES [Blogs]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Likes]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id]) /* add foreign key */
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Reviews]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Reviews]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [CartItems]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Orders]
+ADD FOREIGN KEY([ShipmentDetailId]) REFERENCES [ShipmentDetails]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Orders]
+ADD FOREIGN KEY([PaymentMethodId]) REFERENCES [PaymentMethod]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Orders]
+ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])  /* add foreign key */
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [OrderDetails]
+ADD FOREIGN KEY([OrderId]) REFERENCES [Orders]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [OrderDetails]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Warehouses]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [ImportHistories]
+ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [ImportHistories]
+ADD FOREIGN KEY([SupplierId]) REFERENCES [Suppliers]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+ALTER TABLE [Orders]
+ADD FOREIGN KEY([TransportUnitId]) REFERENCES [TransportUnits]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
