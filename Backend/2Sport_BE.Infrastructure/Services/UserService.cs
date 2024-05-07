@@ -2,13 +2,13 @@
 using _2Sport_BE.Repository.Models;
 using System.Linq.Expressions;
 
-namespace _2Sport_BE.Service.Services
+namespace _2Sport_BE.Infrastructure.Services
 {
     public interface IUserService
     {
         User GetUserById(int id);
         IEnumerable<User> GetAll();
-        IEnumerable<User> Get(Expression<Func<User, bool>> where, string includes);
+        IEnumerable<User> Get(Expression<Func<User, bool>> where, string? includes = "");
         void Add(User user);
         void AddRange(IEnumerable<User> users);
         void Update(User user);
@@ -16,7 +16,7 @@ namespace _2Sport_BE.Service.Services
         bool CheckExist(int Id);
 
     }
-    internal class UserService : IUserService
+    public class UserService : IUserService
     {
         private IUnitOfWork unitOfWork;
         public UserService(IUnitOfWork unitOfWork)
@@ -44,7 +44,7 @@ namespace _2Sport_BE.Service.Services
             return false;
         }
 
-        public IEnumerable<User> Get(Expression<Func<User, bool>> where, string includes)
+        public IEnumerable<User> Get(Expression<Func<User, bool>> where, string? includes = "")
         {
             IEnumerable<User> users = unitOfWork.UserRepository.Get(where, null, includes);
             return users;

@@ -1,11 +1,14 @@
 ﻿using _2Sport_BE.Repository.Models;
-using _2Sport_BE.Service.Services;
+using _2Sport_BE.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace _2Sport_BE.Controllers
 {
-    [Route("api/user")]
+    
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -24,6 +27,7 @@ namespace _2Sport_BE.Controllers
             }
             return users;
         }
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> Get(int id)
         {
@@ -75,6 +79,39 @@ namespace _2Sport_BE.Controllers
             }
             _userService.Remove(id);
             return await Task.FromResult(user);
+        }
+
+        [Route("getCurrentUser")]
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetCurrentUser()
+        {
+            var UserId = GetUserIdFromToken();
+            var result = _userService.Get(_ => _.Id == UserId);
+            return Ok(result);
+        }
+        protected int GetUserIdFromToken()
+        {
+            int UserId = 0;
+            try
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var identity = HttpContext.User.Identity as ClaimsIdentity;
+                    if (identity != null)
+                    {
+                        IEnumerable<Claim> claims = identity.Claims;
+                        string strUserId = identity.FindFirst("UserId").Value;
+                        int.TryParse(strUserId, out UserId);
+
+                    }
+                }
+                return UserId;
+            }
+            catch
+            {
+                return UserId;
+            }
         }
     }
 }

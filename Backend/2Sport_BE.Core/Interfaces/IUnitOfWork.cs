@@ -23,6 +23,7 @@ namespace _2Sport_BE.Repository.Interfaces
         IGenericRepository<TransportUnit> TransportUnitRepository { get; }
         IGenericRepository<User> UserRepository { get; }
         IGenericRepository<Warehouse> WarehouseRepository { get; }
+        IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
         void Save();
     }
 }

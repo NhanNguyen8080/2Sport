@@ -10,8 +10,8 @@ namespace _2Sport_BE.Repository.Models
             Carts = new HashSet<Cart>();
             Likes = new HashSet<Like>();
             Orders = new HashSet<Order>();
+            RefreshTokens = new HashSet<RefreshToken>();
             Reviews = new HashSet<Review>();
-            Roles = new HashSet<Role>();
             ShipmentDetails = new HashSet<ShipmentDetail>();
         }
 
@@ -25,17 +25,16 @@ namespace _2Sport_BE.Repository.Models
         public string Salary { get; set; }
         public DateTime? BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }
-        public byte[] RefreshToken { get; set; }
-        public DateTime? DateExpiredDate { get; set; }
         public DateTime? LastUpdate { get; set; }
         public bool? IsActive { get; set; }
         public int? RoleId { get; set; }
 
+        public virtual Role Role { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
-        public virtual ICollection<Role> Roles { get; set; }
         public virtual ICollection<ShipmentDetail> ShipmentDetails { get; set; }
     }
 }

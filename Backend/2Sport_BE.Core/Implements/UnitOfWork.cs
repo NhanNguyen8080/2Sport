@@ -29,6 +29,8 @@ namespace _2Sport_BE.Repository.Implements
         private IGenericRepository<TransportUnit> _transportUnitRepository;
         private IGenericRepository<User> _userRepository;
         private IGenericRepository<Warehouse> _warehouseRepository;
+        private IGenericRepository<RefreshToken> _refreshTokenRepository;
+
         public IGenericRepository<Blog> BlogRepository
         {
             get
@@ -251,6 +253,18 @@ namespace _2Sport_BE.Repository.Implements
                     _warehouseRepository = new GenericRepository<Warehouse>(_dbContext);
                 }
                 return _warehouseRepository;
+            }
+        }
+
+        public IGenericRepository<RefreshToken> RefreshTokenRepository
+        {
+            get
+            {
+                if (_refreshTokenRepository == null)
+                {
+                    _refreshTokenRepository = new GenericRepository<RefreshToken>(_dbContext);
+                }
+                return _refreshTokenRepository;
             }
         }
 
