@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using _2Sport_BE.DataContent;
 
 namespace _2Sport_BE.Controllers
 {
@@ -18,20 +19,28 @@ namespace _2Sport_BE.Controllers
             _userService = userService;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> Get()
+        public async Task<IActionResult> Get()
         {
-            var users = await Task.FromResult(_userService.GetAll().ToList());
+            ResponseModel<User> response = new ResponseModel<User>();
+            var users = await _userService.GetAllAsync();
             if(users == null)
             {
                 return NotFound();
             }
-            return users;
+            response.IsSuccess = true;
+            response.Message = "Query Successfully";
+
+            foreach (var user in users)
+            {
+                
+            }
+            return Ok();
         }
         
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> Get(int id)
         {
-            var employees = await Task.FromResult(_userService.GetUserById(id));
+            var employees = await _userService.GetUserByIdAsync(id);
             if (employees == null)
             {
                 return NotFound();
@@ -41,7 +50,7 @@ namespace _2Sport_BE.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> AddUser(User user)
         {
-            _userService.Add(user);
+            await _userService.AddAsync(user);
             return await Task.FromResult(user);
         }
         [HttpPut("{id}")]
@@ -53,11 +62,11 @@ namespace _2Sport_BE.Controllers
             }
             try
             {
-                _userService.Update(user);
+               await _userService.UpdateAsync(user);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_userService.CheckExist(id))
+                if (! await _userService.CheckExistAsync(id))
                 {
                     return NotFound();
                 }
@@ -72,22 +81,22 @@ namespace _2Sport_BE.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserByIdAsync(id);
             if(user == null)
             {
                 return NotFound();
             }
-            _userService.Remove(id);
+            await _userService.RemoveAsync(id);
             return await Task.FromResult(user);
         }
 
         [Route("getCurrentUser")]
         [HttpGet]
         [Authorize]
-        public IActionResult GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser()
         {
             var UserId = GetUserIdFromToken();
-            var result = _userService.Get(_ => _.Id == UserId);
+            var result = await _userService.GetAsync(_ => _.Id == UserId);
             return Ok(result);
         }
         protected int GetUserIdFromToken()

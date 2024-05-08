@@ -8,7 +8,7 @@ namespace _2Sport_BE.Service.Services
 {
     public interface IAuthService
     {
-        
+
     }
     internal class AuthService
     {

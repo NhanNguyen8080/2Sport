@@ -14,7 +14,7 @@ namespace _2Sport_BE.Repository.Implements
             this._dbContext = context;
             this._dbSet = _dbContext.Set<T>();
         }
-        public int Count(Expression<Func<T, bool>> filter = null)
+        public Task<int> CountAsync(Expression<Func<T, bool>> filter = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -22,15 +22,28 @@ namespace _2Sport_BE.Repository.Implements
             {
                 query = query.Where(filter);
             }
-            return query.Count();
-        }
-        public void Delete(object id)
-        {
-            T entityToDelete = _dbSet.Find(id);
-            Delete(entityToDelete);
+            return query.CountAsync();
         }
 
         public void Delete(T entityToDelete)
+        {
+            if (_dbContext.Entry(entityToDelete).State == EntityState.Detached)
+            {
+                _dbSet.Attach(entityToDelete);
+            }
+            _dbSet.Remove(entityToDelete);
+        }
+
+        public async Task DeleteAsync(object id)
+        {
+            T entityToDelete = await _dbSet.FindAsync(id);
+            if (entityToDelete != null)
+            {
+                await DeleteAsync(entityToDelete);
+            }
+        }
+
+        public async Task DeleteAsync(T entityToDelete)
         {
             if (_dbContext.Entry(entityToDelete).State == EntityState.Detached)
             {
@@ -75,30 +88,66 @@ namespace _2Sport_BE.Repository.Implements
             IQueryable<T> result = this._dbSet;
             return result;
         }
-        public IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes)
+
+        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> result = this._dbSet;
-            foreach (var expression in includes)
+            IQueryable<T> query = _dbSet;
+
+            foreach (var include in includes)
             {
-                result = result.Include(expression);
+                query = query.Include(include);
             }
-            return result;
+
+            return await query.ToListAsync();
         }
 
-        public T GetByID(object id)
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", int? pageIndex = null, int? pageSize = null)
         {
-            return _dbSet.Find(id);
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            if (pageIndex.HasValue && pageSize.HasValue)
+            {
+                int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value - 1 : 0;
+                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10;
+
+                query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public void Insert(T entity)
+        public async Task<T> GetByIDAsync(object id)
         {
-            _dbSet.Add(entity);
+            return await _dbSet.FindAsync(id);
         }
 
-        public void Update(T entityToUpdate)
+        public async Task InsertAsync(T entity)
+        {
+          await  _dbSet.AddAsync(entity);
+        }
+
+        public async Task UpdateAsync(T entityToUpdate)
         {
             _dbSet.Attach(entityToUpdate);
             _dbContext.Entry(entityToUpdate).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -2,8 +2,6 @@
 using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.ViewModels;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -43,7 +41,7 @@ namespace _2Sport_BE.API.Services
             ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
             try
             {
-                var loginUser = _userService.Get(_ => _.UserName == login.UserName && _.Password == login.Password).FirstOrDefault();
+                var loginUser = await _userService.GetAsync(_ => _.UserName == login.UserName && _.Password == login.Password);
 
                 if (loginUser == null)
                 {
@@ -52,7 +50,7 @@ namespace _2Sport_BE.API.Services
                     return response;
                 }
 
-                AuthenticationResult authenticationResult = await AuthenticateAsync(loginUser);
+                AuthenticationResult authenticationResult = await AuthenticateAsync(loginUser.FirstOrDefault());
                 if (authenticationResult != null && authenticationResult.Success)
                 {
                     response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
