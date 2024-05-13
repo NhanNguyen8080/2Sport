@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using _2Sport_BE.DataContent;
+using _2Sport_BE.ViewModels;
+using AutoMapper;
+using _2Sport_BE.Service.Services;
 
 namespace _2Sport_BE.Controllers
 {
@@ -14,9 +17,17 @@ namespace _2Sport_BE.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IMapper _mapper;
+        private readonly IRefreshTokenService _refreshTokenService;
+        public UserController(
+            IUserService userService,
+            IMapper mapper,
+            IRefreshTokenService refreshTokenService
+            )
         {
             _userService = userService;
+            _mapper = mapper;
+            _refreshTokenService = refreshTokenService;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -37,25 +48,80 @@ namespace _2Sport_BE.Controllers
             return Ok();
         }
         
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserDetail(int userId)
         {
-            var employees = await _userService.GetUserByIdAsync(id);
-            if (employees == null)
+            try
             {
-                return NotFound();
+                var user = await _userService.GetUserByIdAsync(userId);
+                var tokenUser = await _refreshTokenService.GetTokenDetail(userId);
+
+                return Ok(new { User = user, Token = tokenUser });
             }
-            return employees;
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
-        [HttpPost]
-        public async Task<ActionResult<User>> AddUser(User user)
+        [HttpPost("CreateUser")]
+        public async Task<IActionResult> CreateUser([FromBody] User staff)
         {
-            await _userService.AddAsync(user);
-            return await Task.FromResult(user);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                await _userService.AddAsync(staff);
+                _userService.Save();
+                return StatusCode(201, new { processStatus = "Success", user = staff }); ;
+            }
+            catch (Exception ex)
+            {
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
+                }
+                return BadRequest(ex);
+            }
+
+        }
+        [HttpPost("CreateMember")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var user = _mapper.Map<UserCM, User>(userCM);
+                user.CreatedDate = DateTime.Now;
+                user.RoleId = 1;
+                user.IsActive = true;
+                await _userService.AddAsync(user);
+                _userService.Save();
+                return StatusCode(201, new { processStatus = "Success", user = user }); ;
+            }
+            catch(Exception ex)
+            {
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
+                }
+                return BadRequest(ex);
+            }
+            
         }
         [HttpPut("{id}")]
         public async Task<ActionResult<User>> UpdateUser(int id, User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (id != user.Id)
             {
                 return BadRequest();

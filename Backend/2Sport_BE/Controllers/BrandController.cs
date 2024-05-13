@@ -3,6 +3,8 @@ using _2Sport_BE.Repository.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using _2Sport_BE.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace _2Sport_BE.Controllers
 {
     [Route("api/[controller]")]
@@ -15,10 +17,18 @@ namespace _2Sport_BE.Controllers
             _brandService = brandService;
         }
         [HttpGet]
-        public IActionResult ListAll()
+        [Route("list-all")]
+        public async Task<IActionResult> ListAllAsync()
         {
-            ResponseModel<Brand> responseModel = new ResponseModel<Brand>();
-            return Ok();
+            try
+            {
+               var result = await _brandService.ListAllAsync();
+                return Ok(new { total = result.Count(), data = result });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

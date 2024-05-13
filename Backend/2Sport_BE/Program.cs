@@ -1,6 +1,8 @@
 using _2Sport_BE.DataContent;
 using _2Sport_BE.Extensions;
+using _2Sport_BE.Helpers;
 using _2Sport_BE.Repository.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Register();
 // Add services to the container.
 builder.Services.AddControllers();
-//
+//JWT services
 var appsettingSection = builder.Configuration.GetSection("ServiceConfiguration");
 builder.Services.Configure<ServiceConfiguration>(appsettingSection);
 var serviceConfiguration = appsettingSection.Get<ServiceConfiguration>();
@@ -41,6 +43,13 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
          );
 });
+//Mapping services
+var mappingConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new Mapping());
+});
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

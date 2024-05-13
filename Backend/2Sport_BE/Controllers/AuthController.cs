@@ -1,6 +1,8 @@
 ﻿using _2Sport_BE.API.Services;
 using _2Sport_BE.DataContent;
 using _2Sport_BE.Infrastructure.Services;
+using _2Sport_BE.Repository.Interfaces;
+using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,18 @@ namespace _2Sport_BE.Controllers
     {
         public readonly IUserService _userService;
         private readonly IIdentityService _identityService;
-        public AuthController(IUserService userService, IIdentityService identityService)
+        private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IUnitOfWork _unitOfWork;
+        public AuthController(
+            IUserService userService,
+            IIdentityService identityService,
+            IRefreshTokenService refreshTokenService,
+            IUnitOfWork unitOfWork)
         {
             _userService = userService;
             _identityService = identityService;
+            _refreshTokenService = refreshTokenService;
+            _unitOfWork = unitOfWork;
         }
 
         [Route("login")]
@@ -36,19 +46,20 @@ namespace _2Sport_BE.Controllers
             return Ok(result);
         }
 
-        /*[Authorize]
+        [Authorize]
         [HttpGet("logout")]
         public async Task<IActionResult> LogOut()
         {
             var currentUserId = GetUserIdFromToken();
-            var user = await _userService.GetAsync(_ => _.Id ==  currentUserId);
-            user.RefreshToken = null;
-            user.DateExpireRefreshToken = DateTime.MinValue;
+            //var user = await _userService.GetAsync(_ => _.Id == currentUserId);
+            var token = await _refreshTokenService.GetTokenDetail(currentUserId);
+            token.Token = null;
+            token.ExpiryDate = DateTime.MinValue;
 
-            _userService.Update(user);
-            await _userService.SaveChangeAsync();
+            await _refreshTokenService.UpdateToken(token);
+            _unitOfWork.Save();
             return Ok();
-        }*/
+        }
         protected int GetUserIdFromToken()
         {
             int UserId = 0;

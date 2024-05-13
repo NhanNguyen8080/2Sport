@@ -41,13 +41,16 @@ namespace _2Sport_BE.API.Services
             ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
             try
             {
-                var loginUser = await _userService.GetAsync(_ => _.UserName == login.UserName && _.Password == login.Password);
+                var loginUser = await _userService.GetAsync(_ => _.Email == login.UserName && _.Password == login.Password);
 
                 if (loginUser == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "Invalid Username And Password";
-                    return response;
+                { 
+                    if(loginUser == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Invalid Username And Password";
+                        return response;
+                    }
                 }
 
                 AuthenticationResult authenticationResult = await AuthenticateAsync(loginUser.FirstOrDefault());
@@ -92,7 +95,7 @@ namespace _2Sport_BE.API.Services
             try
             {
                 var symmetricKey = Encoding.UTF8.GetBytes(serect);
-                    //Convert.FromBase64String(serect);
+
 
                 ClaimsIdentity Subject = new ClaimsIdentity(new Claim[]
                     {
