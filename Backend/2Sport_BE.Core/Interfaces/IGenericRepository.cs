@@ -15,11 +15,10 @@ namespace _2Sport_BE.Repository.Interfaces
 
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
 
-        Task<T> GetByIDAsync(object id);
 
         Task InsertAsync(T entity);
 
-        Task DeleteAsync(object id);
+        Task DeleteAsync(int id);
 
         Task DeleteAsync(T entityToDelete);
 

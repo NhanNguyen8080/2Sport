@@ -44,7 +44,7 @@ namespace _2Sport_BE.Repository.Models
         {
             modelBuilder.Entity<Blog>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Blogs__3214EC067D01AB55")
+                entity.HasIndex(e => e.Id, "UQ__Blogs__3214EC06BC9B9BB4")
                     .IsUnique();
 
                 entity.Property(e => e.BlogName).HasMaxLength(255);
@@ -59,7 +59,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Brand>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Brands__3214EC0683C3559A")
+                entity.HasIndex(e => e.Id, "UQ__Brands__3214EC060F28BD2C")
                     .IsUnique();
 
                 entity.Property(e => e.BrandName).HasMaxLength(255);
@@ -72,7 +72,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Carts__3214EC062D9B3E6F")
+                entity.HasIndex(e => e.Id, "UQ__Carts__3214EC064EFAA4A9")
                     .IsUnique();
 
                 entity.HasOne(d => d.User)
@@ -83,7 +83,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__CartItem__3214EC065AB1FAF4")
+                entity.HasIndex(e => e.Id, "UQ__CartItem__3214EC067919D4E7")
                     .IsUnique();
 
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
@@ -101,7 +101,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Categori__3214EC06AD4E4B7E")
+                entity.HasIndex(e => e.Id, "UQ__Categori__3214EC0675E81109")
                     .IsUnique();
 
                 entity.Property(e => e.CategoryName).HasMaxLength(255);
@@ -114,7 +114,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<ImagesVideo>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__ImagesVi__3214EC062D9B192C")
+                entity.HasIndex(e => e.Id, "UQ__ImagesVi__3214EC0697C11902")
                     .IsUnique();
 
                 entity.Property(e => e.Image).IsRequired();
@@ -136,7 +136,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<ImportHistory>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__ImportHi__3214EC060AA37703")
+                entity.HasIndex(e => e.Id, "UQ__ImportHi__3214EC069698290E")
                     .IsUnique();
 
                 entity.Property(e => e.ImportCode).HasMaxLength(255);
@@ -158,7 +158,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Like>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Likes__3214EC06E1FEC2AA")
+                entity.HasIndex(e => e.Id, "UQ__Likes__3214EC06BF9C90B2")
                     .IsUnique();
 
                 entity.HasOne(d => d.Blog)
@@ -179,7 +179,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Orders__3214EC0607648FD6")
+                entity.HasIndex(e => e.Id, "UQ__Orders__3214EC06F6CBE8F4")
                     .IsUnique();
 
                 entity.Property(e => e.IntoMoney).HasColumnType("decimal(18, 0)");
@@ -215,7 +215,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__OrderDet__3214EC06A3E14A12")
+                entity.HasIndex(e => e.Id, "UQ__OrderDet__3214EC06D06A055B")
                     .IsUnique();
 
                 entity.HasOne(d => d.Order)
@@ -233,7 +233,7 @@ namespace _2Sport_BE.Repository.Models
             {
                 entity.ToTable("PaymentMethod");
 
-                entity.HasIndex(e => e.Id, "UQ__PaymentM__3214EC06CECDF531")
+                entity.HasIndex(e => e.Id, "UQ__PaymentM__3214EC06D8AA4B5A")
                     .IsUnique();
 
                 entity.Property(e => e.PaymentMethodName).HasMaxLength(255);
@@ -241,7 +241,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Products__3214EC0654722359")
+                entity.HasIndex(e => e.Id, "UQ__Products__3214EC069115A3B3")
                     .IsUnique();
 
                 entity.Property(e => e.Color)
@@ -280,7 +280,7 @@ namespace _2Sport_BE.Repository.Models
             {
                 entity.ToTable("RefreshToken");
 
-                entity.HasIndex(e => e.RefreshTokenId, "UQ__RefreshT__F5845E38A02F052E")
+                entity.HasIndex(e => e.RefreshTokenId, "UQ__RefreshT__F5845E388FDF7624")
                     .IsUnique();
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -295,7 +295,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Review>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Reviews__3214EC06F7AFC0F6")
+                entity.HasIndex(e => e.Id, "UQ__Reviews__3214EC06788ECCB8")
                     .IsUnique();
 
                 entity.Property(e => e.Review1)
@@ -317,7 +317,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Role>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Roles__3214EC060C8A4764")
+                entity.HasIndex(e => e.Id, "UQ__Roles__3214EC06E9AF772A")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -329,7 +329,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<ShipmentDetail>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Shipment__3214EC068B064DE4")
+                entity.HasIndex(e => e.Id, "UQ__Shipment__3214EC0615281B11")
                     .IsUnique();
 
                 entity.Property(e => e.Address).HasMaxLength(255);
@@ -346,13 +346,13 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Sport>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Sports__3214EC06AF24A1C9")
+                entity.HasIndex(e => e.Id, "UQ__Sports__3214EC06ED779D7A")
                     .IsUnique();
             });
 
             modelBuilder.Entity<Supplier>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Supplier__3214EC062EFF7ECC")
+                entity.HasIndex(e => e.Id, "UQ__Supplier__3214EC06F5A6E8F0")
                     .IsUnique();
 
                 entity.Property(e => e.Location).HasMaxLength(255);
@@ -362,7 +362,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<TransportUnit>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Transpor__3214EC0652BA4620")
+                entity.HasIndex(e => e.Id, "UQ__Transpor__3214EC062F185045")
                     .IsUnique();
 
                 entity.Property(e => e.TransportUnitName).HasMaxLength(255);
@@ -370,7 +370,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Users__3214EC0680E67A25")
+                entity.HasIndex(e => e.Id, "UQ__Users__3214EC06B694ACE9")
                     .IsUnique();
 
                 entity.Property(e => e.BirthDate).HasColumnType("datetime");
@@ -401,7 +401,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Warehouse>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Warehous__3214EC069ADA7E98")
+                entity.HasIndex(e => e.Id, "UQ__Warehous__3214EC060757329F")
                     .IsUnique();
 
                 entity.HasOne(d => d.Product)

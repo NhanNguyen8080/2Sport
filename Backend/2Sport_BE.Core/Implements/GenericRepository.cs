@@ -25,16 +25,7 @@ namespace _2Sport_BE.Repository.Implements
             return query.CountAsync();
         }
 
-        public void Delete(T entityToDelete)
-        {
-            if (_dbContext.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                _dbSet.Attach(entityToDelete);
-            }
-            _dbSet.Remove(entityToDelete);
-        }
-
-        public async Task DeleteAsync(object id)
+        public async Task DeleteAsync(int id)
         {
             T entityToDelete = await _dbSet.FindAsync(id);
             if (entityToDelete != null)
@@ -139,7 +130,7 @@ namespace _2Sport_BE.Repository.Implements
 
         public async Task InsertAsync(T entity)
         {
-          await  _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity);
         }
 
         public async Task UpdateAsync(T entityToUpdate)

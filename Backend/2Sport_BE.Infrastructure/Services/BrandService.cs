@@ -1,5 +1,6 @@
 ﻿using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,14 @@ namespace _2Sport_BE.Infrastructure.Services
         Task UpdateBrandAsync(Brand brand);
         Task DeleteBrandAsync(int id);
     }
-    internal class BrandService : IBrandService
+    public class BrandService : IBrandService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BrandService(IUnitOfWork unitOfWork)
+        private readonly TwoSportDBContext _dBContext;
+        public BrandService(IUnitOfWork unitOfWork, TwoSportDBContext dBContext)
         {
             _unitOfWork = unitOfWork;
+            _dBContext = dBContext;
         }
 
         public async Task CreateANewBrandAsync(Brand brand)
@@ -34,7 +37,7 @@ namespace _2Sport_BE.Infrastructure.Services
 
         public async Task DeleteBrandAsync(int id)
         {
-            var toDeleteObject = await _unitOfWork.BrandRepository.GetByIDAsync(id);
+            var toDeleteObject = await _dBContext.Brands.FirstOrDefaultAsync(_ => _.Id == id);
             if (toDeleteObject != null)
             {
                await _unitOfWork.BrandRepository.DeleteAsync(toDeleteObject);

@@ -1,12 +1,13 @@
 ﻿using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace _2Sport_BE.Infrastructure.Services
 {
     public interface IUserService
     {
-        Task<User> GetUserByIdAsync(int id);
+        Task<User> FindAsync(int id);
         Task<IEnumerable<User>> GetAllAsync();
         Task<IEnumerable<User>> GetAsync(Expression<Func<User, bool>> where, string? includes = "");
         Task AddAsync(User user);
@@ -14,14 +15,19 @@ namespace _2Sport_BE.Infrastructure.Services
         Task UpdateAsync(User user);
         Task RemoveAsync(int id);
         Task<bool> CheckExistAsync(int id);
+        void Save();
 
     }
     public class UserService : IUserService
     {
         private IUnitOfWork unitOfWork;
-        public UserService(IUnitOfWork unitOfWork)
+        private TwoSportDBContext _context;
+        public UserService(
+            IUnitOfWork unitOfWork,
+            TwoSportDBContext dBContext)
         {
             this.unitOfWork = unitOfWork;
+            _context = dBContext;
         }
 
 
@@ -45,6 +51,12 @@ namespace _2Sport_BE.Infrastructure.Services
             return false;
         }
 
+        public async Task<User> FindAsync(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
+            return user;
+        }
+
         public async Task<IEnumerable<User>> GetAllAsync()
         {
             IEnumerable<User> users = await unitOfWork.UserRepository.GetAllAsync();
@@ -57,15 +69,14 @@ namespace _2Sport_BE.Infrastructure.Services
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
-        {
-            var user = await unitOfWork.UserRepository.GetByIDAsync(id);
-            return user;
-        }
-
         public async Task RemoveAsync(int id)
         {
            await unitOfWork.UserRepository.DeleteAsync(id);
+        }
+
+        public void Save()
+        {
+            unitOfWork.Save();
         }
 
         public async Task UpdateAsync(User user)
