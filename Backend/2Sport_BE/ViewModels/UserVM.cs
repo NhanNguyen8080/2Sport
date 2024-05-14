@@ -4,7 +4,7 @@ namespace _2Sport_BE.ViewModels
 {
     public class UserDTO
     {
-        public string? Email { get; set; }
+        public string? Username { get; set; }
         public string? Password { get; set; }
         public string? FullName { get; set; }
     }
@@ -23,6 +23,7 @@ namespace _2Sport_BE.ViewModels
         public int Id { get; set; }
         public string? Gender { get; set; }
         public string? Salary { get; set; }
+        public string? Gmail { get; set; }
         public string? Phone { get; set; }
         public DateTime? BirthDate { get; set; }
 

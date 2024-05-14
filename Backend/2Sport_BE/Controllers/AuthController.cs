@@ -38,7 +38,7 @@ namespace _2Sport_BE.Controllers
             return Ok(result);
         }
 
-        [Route("refresh")]
+        [Route("refresh-token")]
         [HttpPost]
         public async Task<IActionResult> Refresh([FromBody] TokenModel request)
         {

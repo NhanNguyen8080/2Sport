@@ -8,6 +8,8 @@ using _2Sport_BE.DataContent;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using _2Sport_BE.Service.Services;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace _2Sport_BE.Controllers
 {
@@ -53,9 +55,8 @@ namespace _2Sport_BE.Controllers
         {
             try
             {
-                var user = await _userService.GetUserByIdAsync(userId);
+                var user = await _userService.FindAsync(userId);
                 var tokenUser = await _refreshTokenService.GetTokenDetail(userId);
-
                 return Ok(new { User = user, Token = tokenUser });
             }
             catch (Exception e)
@@ -63,7 +64,7 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(e);
             }
         }
-        [HttpPost("CreateUser")]
+        [HttpPost("create-user")]
         public async Task<IActionResult> CreateUser([FromBody] User staff)
         {
             if (!ModelState.IsValid)
@@ -87,7 +88,7 @@ namespace _2Sport_BE.Controllers
             }
 
         }
-        [HttpPost("CreateMember")]
+        [HttpPost("sign-up")]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
         {
             if (!ModelState.IsValid)
@@ -97,6 +98,7 @@ namespace _2Sport_BE.Controllers
             try
             {
                 var user = _mapper.Map<UserCM, User>(userCM);
+                user.Password = HashPassword(userCM.Password);
                 user.CreatedDate = DateTime.Now;
                 user.RoleId = 1;
                 user.IsActive = true;
@@ -147,7 +149,7 @@ namespace _2Sport_BE.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
         {
-            var user = await _userService.GetUserByIdAsync(id);
+            var user = await _userService.FindAsync(id);
             if(user == null)
             {
                 return NotFound();
@@ -155,7 +157,26 @@ namespace _2Sport_BE.Controllers
             await _userService.RemoveAsync(id);
             return await Task.FromResult(user);
         }
-
+        [HttpPut("change-status/{id}")]
+        public async Task<IActionResult> ChangeStatusUser(int id)
+        {
+            try
+            {
+                var user = await _userService.FindAsync(id);
+                if (user == null)
+                {
+                    return BadRequest(new { processStatus = "Not Existed" });
+                }
+                user.IsActive = !user.IsActive;
+                await _userService.UpdateAsync(user);
+                _userService.Save();
+                return Ok(new { processStatus = "Success", data = id });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
         [Route("getCurrentUser")]
         [HttpGet]
         [Authorize]
@@ -186,6 +207,21 @@ namespace _2Sport_BE.Controllers
             catch
             {
                 return UserId;
+            }
+        }
+        [NonAction]
+        public string HashPassword(string password)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
             }
         }
     }
