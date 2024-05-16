@@ -51,7 +51,7 @@ namespace _2Sport_BE.Controllers
         }
 
         [Authorize]
-        [HttpGet("logout")]
+        [HttpPost("logout")]
         public async Task<IActionResult> LogOut([FromBody] TokenModel request)
         {
             var token = await _unitOfWork.RefreshTokenRepository.GetObjectAsync(_ => _.Token == request.Token);
@@ -84,10 +84,16 @@ namespace _2Sport_BE.Controllers
             var name = response.Principal.FindFirstValue(ClaimTypes.Name);
             var givenName = response.Principal.FindFirstValue(ClaimTypes.GivenName);
             var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-            
-            //Do something with the claims
-            // var user = await UserService.FindOrCreate(new { name, givenName, email});
 
+
+            //Do something with the claims
+            //Neu chua co thi tao tai khoan, roi login luon
+            //Co roi thi login thoi
+            var exist = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
+            if (exist != null)
+            {
+
+            }
             return Ok();
         }
         /*protected int GetUserIdFromToken()
