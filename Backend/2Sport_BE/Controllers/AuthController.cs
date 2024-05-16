@@ -4,9 +4,13 @@ using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Linq;
 
 namespace _2Sport_BE.Controllers
 {
@@ -48,19 +52,45 @@ namespace _2Sport_BE.Controllers
 
         [Authorize]
         [HttpGet("logout")]
-        public async Task<IActionResult> LogOut()
+        public async Task<IActionResult> LogOut([FromBody] TokenModel request)
         {
-            var currentUserId = GetUserIdFromToken();
-            //var user = await _userService.GetAsync(_ => _.Id == currentUserId);
-            var token = await _refreshTokenService.GetTokenDetail(currentUserId);
-            token.Token = null;
-            token.ExpiryDate = DateTime.MinValue;
+            var token = await _unitOfWork.RefreshTokenRepository.GetObjectAsync(_ => _.Token == request.Token);
+            if (token == null)
+            {
+                return BadRequest();
+            }
+            else
+            {
+                token.Token = null;
+                token.ExpiryDate = DateTime.MinValue;
 
-            await _refreshTokenService.UpdateToken(token);
-            _unitOfWork.Save();
+                await _refreshTokenService.UpdateToken(token);
+                _unitOfWork.Save();
+                return Ok();
+            }
+        }
+        [HttpGet("oauth-login")]
+        public IActionResult ExternalLogin1()
+        {
+            var props = new AuthenticationProperties { RedirectUri = "Auth/signin-google" };
+            return Challenge(props, GoogleDefaults.AuthenticationScheme);
+        }
+        [HttpGet("signin-google")]
+        public async Task<IActionResult> GoogleLogin()
+        {
+            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (response.Principal == null) return BadRequest();
+
+            var name = response.Principal.FindFirstValue(ClaimTypes.Name);
+            var givenName = response.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var email = response.Principal.FindFirstValue(ClaimTypes.Email);
+            
+            //Do something with the claims
+            // var user = await UserService.FindOrCreate(new { name, givenName, email});
+
             return Ok();
         }
-        protected int GetUserIdFromToken()
+        /*protected int GetUserIdFromToken()
         {
             int UserId = 0;
             try
@@ -82,6 +112,6 @@ namespace _2Sport_BE.Controllers
             {
                 return UserId;
             }
-        }
+        }*/
     }
 }

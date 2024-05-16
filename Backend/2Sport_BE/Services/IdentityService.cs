@@ -62,7 +62,7 @@ namespace _2Sport_BE.API.Services
                 AuthenticationResult authenticationResult = await AuthenticateAsync(loginUser);
                 if (authenticationResult != null && authenticationResult.Success)
                 {
-                    response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
+                    response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken, user = loginUser };
                 }
                 else
                 {

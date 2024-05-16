@@ -4,6 +4,7 @@ using _2Sport_BE.Helpers;
 using _2Sport_BE.Repository.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -29,12 +30,23 @@ var tokenValidationParameters = new TokenValidationParameters
     ValidateLifetime = true
 };
 builder.Services.AddSingleton(tokenValidationParameters);
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthentication(options =>
+    {
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
     options.RequireHttpsMetadata = false;
     options.SaveToken = true;
     options.TokenValidationParameters = tokenValidationParameters;
-});
+    })
+   .AddCookie()
+   .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+   {
+       options.ClientId = "61548630527-onao7e04b2qphfuuiqoemt5iia96feml.apps.googleusercontent.com";
+       options.ClientSecret = "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";
+   });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
