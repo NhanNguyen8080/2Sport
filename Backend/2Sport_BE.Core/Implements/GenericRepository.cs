@@ -128,6 +128,12 @@ namespace _2Sport_BE.Repository.Implements
             return await _dbSet.FindAsync(id);
         }
 
+        public async Task<T> GetObjectAsync(Expression<Func<T, bool>> filter = null)
+        {
+            IQueryable<T> query = _dbSet;
+            return await query.Where(filter).FirstOrDefaultAsync();
+        }
+
         public async Task InsertAsync(T entity)
         {
             await _dbSet.AddAsync(entity);

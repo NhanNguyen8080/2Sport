@@ -10,7 +10,7 @@ namespace _2Sport_BE.Repository.Interfaces
             string includeProperties = "",
             int? pageIndex = null,
             int? pageSize = null);
-
+        Task<T> GetObjectAsync(Expression<Func<T, bool>> filter = null);
         Task<int> CountAsync(Expression<Func<T, bool>> filter = null);
 
         Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
