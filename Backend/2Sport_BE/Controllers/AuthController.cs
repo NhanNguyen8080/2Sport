@@ -48,6 +48,8 @@ namespace _2Sport_BE.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] UserLogin loginModel)
         {
+            var password = HashPassword(loginModel.Password);
+            loginModel.Password = password;
             var result = await _identityService.LoginAsync(loginModel);
             return Ok(result);
         }
@@ -60,14 +62,13 @@ namespace _2Sport_BE.Controllers
             return Ok(result);
         }
 
-        [Authorize]
         [HttpPost("sign-out")]
         public async Task<IActionResult> LogOutAsync([FromBody] TokenModel request)
         {
-            var token = await _unitOfWork.RefreshTokenRepository.GetObjectAsync(_ => _.Token == request.Token);
+            var token = await _unitOfWork.RefreshTokenRepository.GetObjectAsync(_ => _.Token == request.RefreshToken);
             if (token == null)
             {
-                return BadRequest();
+                return BadRequest("Not found token!");
             }
             else
             {
