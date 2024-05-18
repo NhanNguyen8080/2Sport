@@ -73,11 +73,11 @@ namespace _2Sport_BE.Controllers
             else
             {
                 token.Token = null;
-                token.ExpiryDate = DateTime.MinValue;
-
+                token.ExpiryDate = DateTime.Now;
+                token.Used = true;
                 await _refreshTokenService.UpdateToken(token);
                 _unitOfWork.Save();
-                return Ok();
+                return Ok("Query Successfully");
             }
         }
 
