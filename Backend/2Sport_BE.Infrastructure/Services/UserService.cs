@@ -8,12 +8,13 @@ namespace _2Sport_BE.Infrastructure.Services
     public interface IUserService
     {
         Task<User> FindAsync(int id);
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<IQueryable<User>> GetAllAsync();
         Task<IEnumerable<User>> GetAsync(Expression<Func<User, bool>> where, string? includes = "");
         Task AddAsync(User user);
         Task AddRangeAsync(IEnumerable<User> users);
         Task UpdateAsync(User user);
         Task RemoveAsync(int id);
+        Task<User> FindOrInsert(Expression<Func<User, bool>> where);
         Task<bool> CheckExistAsync(int id);
         void Save();
 
@@ -56,11 +57,25 @@ namespace _2Sport_BE.Infrastructure.Services
             var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
             return user;
         }
+        //HAM NAY NUA
+        public async Task<User> FindOrInsert(Expression<Func<User, bool>> where)
+        {
+            var user = await _context.Users.Where(where).FirstOrDefaultAsync();
+            if(user != null)
+            {
+                
+            }
+            else
+            {
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+            }
+            throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<User>> GetAllAsync()
         {
             IEnumerable<User> users = await unitOfWork.UserRepository.GetAllAsync();
-            return users;
+            return users.AsQueryable();
         }
 
         public async Task<IEnumerable<User>> GetAsync(Expression<Func<User, bool>> where, string? includes = "")

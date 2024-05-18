@@ -35,8 +35,9 @@ var tokenValidationParameters = new TokenValidationParameters
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddAuthentication(options =>
     {
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
     {
@@ -44,11 +45,15 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.TokenValidationParameters = tokenValidationParameters;
     })
-   .AddCookie()
+   .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
    .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
    {
-       options.ClientId = "61548630527-onao7e04b2qphfuuiqoemt5iia96feml.apps.googleusercontent.com";
-       options.ClientSecret = "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";
+       options.ClientId = builder.Configuration["Auth0:ClientId"];
+       options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+       options.Scope.Add(builder.Configuration["Auth0:ProfileAccess"]);
+       options.Scope.Add(builder.Configuration["Auth0:EmailAccess"]);
+       options.Scope.Add(builder.Configuration["Auth0:BirthDayAccess"]);
+       options.Scope.Add(builder.Configuration["Auth0:PhoneAccess"]);
    });
 builder.Services.AddCors(options =>
 {

@@ -10,6 +10,7 @@ using AutoMapper;
 using _2Sport_BE.Service.Services;
 using System.Text;
 using System.Security.Cryptography;
+using _2Sport_BE.Helpers;
 
 namespace _2Sport_BE.Controllers
 {
@@ -32,20 +33,27 @@ namespace _2Sport_BE.Controllers
             _refreshTokenService = refreshTokenService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAllUserList(DefaultSearch defaultSearch, string fullName, string username)
         {
-            ResponseModel<User> response = new ResponseModel<User>();
-            var users = await _userService.GetAllAsync();
-            if(users == null)
+            try
             {
-                return NotFound();
-            }
-            response.IsSuccess = true;
-            response.Message = "Query Successfully";
+                var query = await _userService.GetAllAsync();
+                if(!string.IsNullOrWhiteSpace(fullName))
+                {
+                    fullName = fullName.ToLower();
+                    query = query.Where(x => x.FullName.ToLower().Contains(fullName));
+                }
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    username = username.ToLower();
+                    query = query.Where(x => x.UserName.ToLower().Contains(fullName));
+                }
 
-            foreach (var user in users)
-            {
                 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
             return Ok();
         }
@@ -75,7 +83,7 @@ namespace _2Sport_BE.Controllers
             {
                 await _userService.AddAsync(staff);
                 _userService.Save();
-                return StatusCode(201, new { processStatus = "Success", user = staff }); ;
+                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
             }
             catch (Exception ex)
             {
@@ -88,7 +96,7 @@ namespace _2Sport_BE.Controllers
             }
 
         }
-        [HttpPost("sign-up")]
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
         {
             if (!ModelState.IsValid)
@@ -104,9 +112,9 @@ namespace _2Sport_BE.Controllers
                 user.IsActive = true;
                 await _userService.AddAsync(user);
                 _userService.Save();
-                return StatusCode(201, new { processStatus = "Success", user = user }); ;
+                return StatusCode(201, new { processStatus = "Success", userId = user.Id }); ;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //Duplicate
                 if (ex is DbUpdateException dbUpdateEx)
@@ -115,35 +123,42 @@ namespace _2Sport_BE.Controllers
                 }
                 return BadRequest(ex);
             }
-            
+
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult<User>> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUM userUM)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
             try
             {
+                var user = await _userService.FindAsync(id);
+                if (user == null)
+                {
+                    return BadRequest(new { processStatus = "NotExisted" });
+                }
+                user.FullName = userUM.FullName;
+                user.Salary = userUM.Salary;
+                user.Email = userUM.Email;
+                user.BirthDate = userUM.BirthDate;
+                user.Gender = userUM.Gender;
+                user.Phone = userUM.Phone;
+
                await _userService.UpdateAsync(user);
+               return Ok(new { processStatus = "Success", data = user.Id });
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
-                if (! await _userService.CheckExistAsync(id))
+                //Duplicate
+                if (e is DbUpdateException dbUpdateEx)
                 {
-                    return NotFound();
+                    return BadRequest(new { processStatus = "Duplicate" });
                 }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(e);
             }
-            return await Task.FromResult(user);
+
         }
 
         [HttpDelete("{id}")]
