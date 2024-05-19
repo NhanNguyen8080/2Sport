@@ -30,18 +30,21 @@ namespace _2Sport_BE.Controllers
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IMailService _mailService;
         public AuthController(
             IUserService userService,
             IIdentityService identityService,
             IRefreshTokenService refreshTokenService,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper,
+            IMailService mailService)
         {
             _userService = userService;
             _identityService = identityService;
             _refreshTokenService = refreshTokenService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _mailService = mailService;
         }
 
         [Route("sign-in")]
@@ -173,16 +176,17 @@ namespace _2Sport_BE.Controllers
                 var check = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == mail && _.UserName == _.UserName);
                 if(check != null)
                 {
-                    //Gui mail xac nhan
+                    //Send mail to get a new password
                     MailRequest mailRequest = new MailRequest();
-                    mailRequest.Subject = mail;
-                    mailRequest.Body = "";
+                    mailRequest.Subject = "Request to change a new password from TwoSport";
+                    mailRequest.Body = $"We are the administrators of TwoSport. Your new password is {GenerateRandomString(6)}. Best Regards!";
                     mailRequest.ToEmail = mail;
-
+                    await _mailService.SendEmailAsync(mailRequest);
+                    return BadRequest(new { Message = "Query successfully", IsSuccess = true });
                 }
                 else
                 {
-                    return BadRequest(new { Message = "Invalid Username Or Email!", IsSuccess = false });
+                    return BadRequest(new { Message = "Invalid Information!", IsSuccess = false });
                 }
                 
             }catch(Exception ex)
@@ -205,6 +209,20 @@ namespace _2Sport_BE.Controllers
                 }
                 return builder.ToString();
             }
+        }
+        [NonAction]
+        public static string GenerateRandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder result = new StringBuilder(length);
+            Random random = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                result.Append(chars[random.Next(chars.Length)]);
+            }
+
+            return result.ToString();
         }
     }
 }

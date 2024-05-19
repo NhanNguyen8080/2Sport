@@ -239,5 +239,6 @@ namespace _2Sport_BE.Controllers
                 return builder.ToString();
             }
         }
+
     }
 }

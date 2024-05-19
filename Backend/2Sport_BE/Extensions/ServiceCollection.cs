@@ -7,6 +7,7 @@ using _2Sport_BE.API.Services;
 using Microsoft.IdentityModel.Tokens;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.Services;
+using System.Configuration;
 
 namespace _2Sport_BE.Extensions
 {
@@ -15,7 +16,6 @@ namespace _2Sport_BE.Extensions
         public static void Register (this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddDbContext<TwoSportDBContext>(options => options
             .UseSqlServer(GetConnectionStrings()));
             services.AddScoped<IUserService, UserService>();

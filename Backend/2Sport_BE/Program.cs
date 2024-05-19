@@ -1,14 +1,12 @@
 using _2Sport_BE.DataContent;
 using _2Sport_BE.Extensions;
 using _2Sport_BE.Helpers;
-using _2Sport_BE.Repository.Models;
+using _2Sport_BE.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Configuration;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -32,6 +30,8 @@ var tokenValidationParameters = new TokenValidationParameters
     RequireExpirationTime = false,
     ValidateLifetime = true
 };
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddAuthentication(options =>
     {
