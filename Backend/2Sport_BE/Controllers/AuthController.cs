@@ -181,8 +181,9 @@ namespace _2Sport_BE.Controllers
                     mailRequest.Subject = "Request to change a new password from TwoSport";
                     mailRequest.Body = $"We are the administrators of TwoSport. Your new password is {GenerateRandomString(6)}. Best Regards!";
                     mailRequest.ToEmail = mail;
+                    var imailservice = _mailService;
                     await _mailService.SendEmailAsync(mailRequest);
-                    return BadRequest(new { Message = "Query successfully", IsSuccess = true });
+                    return Ok(new { Message = "Query successfully", IsSuccess = true });
                 }
                 else
                 {
@@ -193,7 +194,7 @@ namespace _2Sport_BE.Controllers
             {
 
             }
-            return Ok();
+            return BadRequest(new {Message = "Some thing wrongs", IsSuccess = false });
         }
         [NonAction]
         public string HashPassword(string password)
