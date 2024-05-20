@@ -16,7 +16,9 @@ namespace _2Sport_BE.Repository.Models
         public string Content { get; set; }
         public DateTime? CreateAt { get; set; }
         public int? UserId { get; set; }
+        public int? SportId { get; set; }
 
+        public virtual Sport Sport { get; set; }
         public virtual ICollection<ImagesVideo> ImagesVideos { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
     }

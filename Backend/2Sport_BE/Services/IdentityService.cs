@@ -1,9 +1,9 @@
 ﻿using _2Sport_BE.DataContent;
 using _2Sport_BE.Infrastructure.Services;
+using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.ViewModels;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -15,6 +15,7 @@ namespace _2Sport_BE.API.Services
     public interface IIdentityService
     {
         Task<ResponseModel<TokenModel>> LoginAsync(UserLogin login);
+        Task<ResponseModel<TokenModel>> LoginGoogleAsync(User login);
         Task<ResponseModel<TokenModel>> RefreshTokenAsync(TokenModel request);
     }
 
@@ -24,17 +25,20 @@ namespace _2Sport_BE.API.Services
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly TokenValidationParameters _tokenValidationParameters;
-
+        private readonly IUnitOfWork _unitOfWork;
+        
         public IdentityService(TwoSportDBContext context,
             IOptions<ServiceConfiguration> settings,
             IUserService userService,
             IConfiguration configuration,
-            TokenValidationParameters tokenValidationParameters)
+            TokenValidationParameters tokenValidationParameters,
+            IUnitOfWork unitOfWork)
         {
             _context = context;
             _userService = userService;
             _configuration = configuration;
             _tokenValidationParameters = tokenValidationParameters;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -43,18 +47,24 @@ namespace _2Sport_BE.API.Services
             ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
             try
             {
-                var loginUser = _userService.Get(_ => _.UserName == login.UserName && _.Password == login.Password).FirstOrDefault();
-
-                if (loginUser == null)
-                {
+                var loginUser = await _context.Users.FirstOrDefaultAsync(_ => _.UserName == login.UserName && _.Password == login.Password);
+                    if(loginUser == null)
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Invalid Username And Password";
+                        return response;
+                    }
+                    if(loginUser != null && loginUser.IsActive != true)
+                    {
                     response.IsSuccess = false;
-                    response.Message = "Invalid Username And Password";
+                    response.Message = "Not Permission";
                     return response;
-                }
-
+                    }
                 AuthenticationResult authenticationResult = await AuthenticateAsync(loginUser);
                 if (authenticationResult != null && authenticationResult.Success)
                 {
+                    response.Message = "Query successfully";
+                    response.IsSuccess = true;
                     response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
                 }
                 else
@@ -94,12 +104,12 @@ namespace _2Sport_BE.API.Services
             try
             {
                 var symmetricKey = Encoding.UTF8.GetBytes(serect);
-                    //Convert.FromBase64String(serect);
 
+                var role = _context.Roles.FirstOrDefault(_ => _.Id == user.RoleId);
                 ClaimsIdentity Subject = new ClaimsIdentity(new Claim[]
                     {
                     new Claim("UserId", user.Id.ToString()),
-                    new Claim("FulltName", user.FullName),
+                    new Claim("FullName", user.FullName),
                     new Claim("Email",user.Email==null?"":user.Email),
                     new Claim("UserName",user.UserName==null?"":user.UserName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -115,18 +125,31 @@ namespace _2Sport_BE.API.Services
                     Expires = DateTime.UtcNow.Add(TimeSpan.Parse(_configuration.GetSection("ServiceConfiguration:JwtSettings:TokenLifetime").Value)),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(symmetricKey), SecurityAlgorithms.HmacSha256Signature)
                 };
-                var token = tokenHandler.CreateToken(tokenDescriptor);//
+                var token = tokenHandler.CreateToken(tokenDescriptor);
                 authenticationResult.Token = tokenHandler.WriteToken(token);
-                
+
                 var refreshToken = new RefreshToken
                 {
                     Token = Guid.NewGuid().ToString(),
                     JwtId = token.Id,
                     UserId = user.Id,
                     CreateDate = DateTime.UtcNow,
-                    ExpiryDate = DateTime.UtcNow.AddMonths(6)
+                    ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                    Used = false
                 };
+                var exist = await _context.RefreshTokens.FirstOrDefaultAsync(_ => _.UserId == refreshToken.UserId && _.Used == false);
+                if (exist != null)
+                {
+                    exist.Token = refreshToken.Token;
+                    exist.JwtId = refreshToken.JwtId;
+                    exist.CreateDate = refreshToken.CreateDate;
+                    exist.ExpiryDate = refreshToken.ExpiryDate;
+                    _context.RefreshTokens.Update(exist);
+                }
+                else
+                {
                 await _context.RefreshTokens.AddAsync(refreshToken);
+                }
                 await _context.SaveChangesAsync();
                 authenticationResult.RefreshToken = refreshToken.Token;
                 authenticationResult.Success = true;
@@ -160,8 +183,6 @@ namespace _2Sport_BE.API.Services
             }
             catch (Exception ex)
             {
-
-
                 response.IsSuccess = false;
                 response.Message = "Something went wrong!";
                 return response;
@@ -214,6 +235,7 @@ namespace _2Sport_BE.API.Services
 
             storedRefreshToken.Used = true;
             _context.RefreshTokens.Update(storedRefreshToken);
+
             await _context.SaveChangesAsync();
             string strUserId = validatedToken.Claims.Single(x => x.Type == "UserId").Value;
             long userId = 0;
@@ -254,6 +276,25 @@ namespace _2Sport_BE.API.Services
             return (validatedToken is JwtSecurityToken jwtSecurityToken) &&
                    jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                        StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public async Task<ResponseModel<TokenModel>> LoginGoogleAsync(User login)
+        {
+            ResponseModel<TokenModel> response = new ResponseModel<TokenModel>();
+            AuthenticationResult authenticationResult = await AuthenticateAsync(login);
+            if (authenticationResult != null && authenticationResult.Success)
+            {
+                response.Message = "Query successfully";
+                response.IsSuccess = true;
+                response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
+            }
+            else
+            {
+                response.Message = "Something went wrong!";
+                response.IsSuccess = false;
+            }
+
+            return response;
         }
     }
 }

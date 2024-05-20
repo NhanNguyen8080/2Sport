@@ -4,23 +4,24 @@ namespace _2Sport_BE.Repository.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        IEnumerable<T> Get(
-           Expression<Func<T, bool>> filter = null,
-           Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-           string includeProperties = "",
-           int? pageIndex = null,
-           int? pageSize = null);
+        Task<IEnumerable<T>> GetAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "",
+            int? pageIndex = null,
+            int? pageSize = null);
+        Task<T> GetObjectAsync(Expression<Func<T, bool>> filter = null);
+        Task<int> CountAsync(Expression<Func<T, bool>> filter = null);
 
-        int Count(Expression<Func<T, bool>> filter = null);
-        IQueryable<T> GetAll(params Expression<Func<T, object>>[] includes);
-        T GetByID(object id);
+        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
 
-        void Insert(T entity);
 
-        void Delete(object id);
+        Task InsertAsync(T entity);
 
-        void Delete(T entityToDelete);
+        Task DeleteAsync(int id);
 
-        void Update(T entityToUpdate);
+        Task DeleteAsync(T entityToDelete);
+
+        Task UpdateAsync(T entityToUpdate);
     }
 }

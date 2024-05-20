@@ -4,6 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using _2Sport_BE.DataContent;
+using _2Sport_BE.ViewModels;
+using AutoMapper;
+using _2Sport_BE.Service.Services;
+using System.Text;
+using System.Security.Cryptography;
+using _2Sport_BE.Helpers;
 
 namespace _2Sport_BE.Controllers
 {
@@ -13,81 +20,185 @@ namespace _2Sport_BE.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IMapper _mapper;
+        private readonly IRefreshTokenService _refreshTokenService;
+        public UserController(
+            IUserService userService,
+            IMapper mapper,
+            IRefreshTokenService refreshTokenService
+            )
         {
             _userService = userService;
+            _mapper = mapper;
+            _refreshTokenService = refreshTokenService;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> Get()
+        public async Task<IActionResult> GetAllUserList(DefaultSearch defaultSearch, string fullName, string username)
         {
-            var users = await Task.FromResult(_userService.GetAll().ToList());
-            if(users == null)
+            try
             {
-                return NotFound();
+                var query = await _userService.GetAllAsync();
+                if(!string.IsNullOrWhiteSpace(fullName))
+                {
+                    fullName = fullName.ToLower();
+                    query = query.Where(x => x.FullName.ToLower().Contains(fullName));
+                }
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    username = username.ToLower();
+                    query = query.Where(x => x.UserName.ToLower().Contains(fullName));
+                }
+
+                
             }
-            return users;
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok();
         }
         
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserDetail(int userId)
         {
-            var employees = await Task.FromResult(_userService.GetUserById(id));
-            if (employees == null)
+            try
             {
-                return NotFound();
+                var user = await _userService.FindAsync(userId);
+                var tokenUser = await _refreshTokenService.GetTokenDetail(userId);
+                return Ok(new { User = user, Token = tokenUser });
             }
-            return employees;
-        }
-        [HttpPost]
-        public async Task<ActionResult<User>> AddUser(User user)
-        {
-            _userService.Add(user);
-            return await Task.FromResult(user);
-        }
-        [HttpPut("{id}")]
-        public async Task<ActionResult<User>> UpdateUser(int id, User user)
-        {
-            if (id != user.Id)
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e);
+            }
+        }
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateUser([FromBody] User staff)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
             try
             {
-                _userService.Update(user);
+                await _userService.AddAsync(staff);
+                _userService.Save();
+                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!_userService.CheckExist(id))
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
                 {
-                    return NotFound();
+                    return BadRequest(new { processStatus = "Duplicate" });
                 }
-                else
-                {
-                    throw;
-                }
+                return BadRequest(ex);
             }
-            return await Task.FromResult(user);
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var user = _mapper.Map<UserCM, User>(userCM);
+                user.Password = HashPassword(userCM.Password);
+                user.CreatedDate = DateTime.Now;
+                user.RoleId = 1;
+                user.IsActive = true;
+                await _userService.AddAsync(user);
+                _userService.Save();
+                return StatusCode(201, new { processStatus = "Success", userId = user.Id }); ;
+            }
+            catch (Exception ex)
+            {
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
+                }
+                return BadRequest(ex);
+            }
+
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserUM userUM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var user = await _userService.FindAsync(id);
+                if (user == null)
+                {
+                    return BadRequest(new { processStatus = "NotExisted" });
+                }
+                user.FullName = userUM.FullName;
+                user.Salary = userUM.Salary;
+                user.Email = userUM.Email;
+                user.BirthDate = userUM.BirthDate;
+                user.Gender = userUM.Gender;
+                user.Phone = userUM.Phone;
+
+               await _userService.UpdateAsync(user);
+               return Ok(new { processStatus = "Success", data = user.Id });
+            }
+            catch (Exception e)
+            {
+                //Duplicate
+                if (e is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
+                }
+                return BadRequest(e);
+            }
+
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(int id)
         {
-            var user = _userService.GetUserById(id);
+            var user = await _userService.FindAsync(id);
             if(user == null)
             {
                 return NotFound();
             }
-            _userService.Remove(id);
+            await _userService.RemoveAsync(id);
             return await Task.FromResult(user);
         }
-
+        [HttpPut("change-status/{id}")]
+        public async Task<IActionResult> ChangeStatusUser(int id)
+        {
+            try
+            {
+                var user = await _userService.FindAsync(id);
+                if (user == null)
+                {
+                    return BadRequest(new { processStatus = "Not Existed" });
+                }
+                user.IsActive = !user.IsActive;
+                await _userService.UpdateAsync(user);
+                _userService.Save();
+                return Ok(new { processStatus = "Success", data = id });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
         [Route("getCurrentUser")]
         [HttpGet]
         [Authorize]
-        public IActionResult GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser()
         {
             var UserId = GetUserIdFromToken();
-            var result = _userService.Get(_ => _.Id == UserId);
+            var result = await _userService.GetAsync(_ => _.Id == UserId);
             return Ok(result);
         }
         protected int GetUserIdFromToken()
@@ -113,5 +224,21 @@ namespace _2Sport_BE.Controllers
                 return UserId;
             }
         }
+        [NonAction]
+        public string HashPassword(string password)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+
     }
 }

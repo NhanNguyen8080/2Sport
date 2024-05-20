@@ -19,24 +19,56 @@ CREATE TABLE [Orders] (
 	PRIMARY KEY([Id])
 );
 GO
-
-CREATE TABLE [Brands] (
+CREATE TABLE [Sports] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
-	[BrandName] NVARCHAR(255),
-	[Quantity] INT,
-	[Status] BIT,
+	[Name] NVARCHAR(Max),
 	PRIMARY KEY([Id])
 );
 GO
+INSERT INTO Sports (Name) VALUES ('Football');
+INSERT INTO Sports (Name) VALUES ('Basketball');
+INSERT INTO Sports (Name) VALUES ('Tennis');
+INSERT INTO Sports (Name) VALUES ('Golf');
+INSERT INTO Sports (Name) VALUES ('Badminton');
 
 CREATE TABLE [Categories] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
 	[CategoryName] NVARCHAR(255),
 	[Quantity] INT,
 	[Status] BIT,
+	[SportId] INT,
 	PRIMARY KEY([Id])
 );
 GO
+ALTER TABLE [Categories]
+ADD FOREIGN KEY([SportId]) REFERENCES [Sports]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Running Shoes', 1, 1);
+INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Basketballs', 1, 2);
+INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Tennis Rackets', 1, 3);
+INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Golf Clubs', 1, 4);
+INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Rackets', 1, 5);
+
+CREATE TABLE [Brands] (
+	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[BrandName] NVARCHAR(255),
+	[Logo] NVARCHAR(Max),
+	[Quantity] INT,
+	[Status] BIT,
+	[CategoryId] INT,
+	PRIMARY KEY([Id])
+);
+GO
+ALTER TABLE [Brands]
+ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
+GO
+INSERT INTO Brands (BrandName, Logo, Status, CategoryId) VALUES ('Nike', 'url_to_nike_logo', 1, 1);
+INSERT INTO Brands (BrandName, Logo, Status, CategoryId) VALUES ('Adidas', 'url_to_adidas_logo', 1, 2);
+INSERT INTO Brands (BrandName, Logo, Status, CategoryId) VALUES ('Wilson', 'url_to_wilson_logo', 1, 3);
+INSERT INTO Brands (BrandName, Logo, Status, CategoryId) VALUES ('Callaway', 'url_to_callaway_logo', 1, 4);
+INSERT INTO Brands (BrandName, Logo, Status, CategoryId) VALUES ('Speedo', 'url_to_speedo_logo', 1, 5);
 
 CREATE TABLE [Products] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
@@ -51,9 +83,14 @@ CREATE TABLE [Products] (
 	[ReviewId] INT,
 	[CategoryId] INT,
 	[BrandId] INT,
+	[SportId] INT,
 	[ProductCode] NVARCHAR(255),
 	PRIMARY KEY([Id])
 );
+GO
+ALTER TABLE [Products]
+ADD FOREIGN KEY([SportId]) REFERENCES [Sports]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 
 CREATE TABLE [CartItems] (
@@ -119,8 +156,13 @@ CREATE TABLE [Blogs] (
 	[Content] NVARCHAR(Max),
 	[CreateAt] DATETIME,
 	[UserId] INT,
+	[SportId] INT,
 	PRIMARY KEY([Id])
 );
+GO
+ALTER TABLE [Blogs]
+ADD FOREIGN KEY([SportId]) REFERENCES [Sports]([Id])
+ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 
 CREATE TABLE [Roles] (
