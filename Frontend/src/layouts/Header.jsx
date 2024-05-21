@@ -40,7 +40,7 @@ function Header() {
                             />
                             <FontAwesomeIcon icon={faLocationDot} />
                             {/* <p>Ho Chi Minh, Viet Nam</p> */}
-                            <GetCurrentLocation />
+                            {/* <GetCurrentLocation /> */}
                             <Switch
                                 checked={enabled}
                                 onChange={() => {
