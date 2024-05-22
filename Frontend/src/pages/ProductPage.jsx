@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import Breadcrumb from "../components/Breadcrumb";
+// import Breadcrumb from "../components/Breadcrumb";
 import Pagination from "../components/Product/Pagination";
 import ProductCard from "../components/Product/ProductCard";
 // import Slider from "./Slider";
@@ -55,7 +55,7 @@ function ProductPage() {
   return (
     <div className="pt-28 py-10">
       <div className="container mx-auto pt-4 px-20">
-        <Breadcrumb firstli="Home" secondli="Products" />
+        {/* <Breadcrumb firstli="Home" secondli="Products" /> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
@@ -132,7 +132,7 @@ function ProductPage() {
               </div>
 
               <div className="relative inline-block mt-6">
-                <img src="/assets/images/hero.png" alt="Hero" />
+                <img src="/assets/images/product/hero.png" alt="Hero" />
                 <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center p-[10px]">
                   <span className="text-white font-bold text-xl font-poppins">
                     Get Yours
