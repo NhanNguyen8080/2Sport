@@ -5,7 +5,6 @@ import Productv2Card from "../components/Product/Productv2Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
-import { Button } from "@material-tailwind/react";
 
 function Productv2Page() {
   const product = [
@@ -43,7 +42,7 @@ function Productv2Page() {
   return (
     <div className="pt-28 py-10">
       <div className="container mx-auto pt-4 px-20">
-        <Breadcrumb firstli="Home" secondli="Products" />
+        {/* <Breadcrumb firstli="Home" secondli="Products" /> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
@@ -126,7 +125,7 @@ function Productv2Page() {
               </div>
 
               <div className="relative inline-block mt-6">
-                <img src="/assets/images/hero.png" alt="Hero" />
+                <img src="/assets/images/product/hero.png" alt="Hero" />
                 <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center p-[10px]">
                   <span className="text-white font-bold text-xl font-poppins">
                     Get Yours
