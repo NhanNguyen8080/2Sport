@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faShareNodes } from "@fortawesome/free-solid-svg-icons";
-import { Button, Rating } from "@material-tailwind/react";
+import {Rating } from "@material-tailwind/react";
 import Pagination from "../Product/Paginationv2";
 
 const products = [
   {
     id: 1,
-    image: "./public/assets/images/pair-trainers 1.png",
+    image: "./public/assets/images/product/pair-trainers 1.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -18,7 +18,7 @@ const products = [
   },
   {
     id: 2,
-    image: "./public/assets/images/pair-trainers 2.png",
+    image: "./public/assets/images/product/pair-trainers 2.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -28,7 +28,7 @@ const products = [
   },
   {
     id: 3,
-    image: "./public/assets/images/pair-trainers 3.png",
+    image: "./public/assets/images/product/pair-trainers 3.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -38,7 +38,7 @@ const products = [
   },
   {
     id: 4,
-    image: "./public/assets/images/pair-trainers 4.png",
+    image: "./public/assets/images/product/pair-trainers 4.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -48,7 +48,7 @@ const products = [
   },
   {
     id: 5,
-    image: "./public/assets/images/pair-trainers 5.png",
+    image: "./public/assets/images/product/pair-trainers 5.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -58,7 +58,7 @@ const products = [
   },
   {
     id: 6,
-    image: "./public/assets/images/pair-trainers 6.png",
+    image: "./public/assets/images/product/pair-trainers 6.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -68,7 +68,7 @@ const products = [
   },
   {
     id: 7,
-    image: "./public/assets/images/pair-trainers 7.png",
+    image: "./public/assets/images/product/pair-trainers 7.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -78,7 +78,7 @@ const products = [
   },
   {
     id: 8,
-    image: "./public/assets/images/pair-trainers 8.png",
+    image: "./public/assets/images/product/pair-trainers 8.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -88,7 +88,7 @@ const products = [
   },
   {
     id: 9,
-    image: "./public/assets/images/pair-trainers 1.png",
+    image: "./public/assets/images/product/pair-trainers 1.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -99,7 +99,7 @@ const products = [
   {
     id: 10,
     name: "Name Of Product",
-    image: "./public/assets/images/pair-trainers 2.png",
+    image: "./public/assets/images/product/pair-trainers 2.png",
     description: "Name Of Producttt",
     price: "$19.5",
     rating: 4,
@@ -163,17 +163,23 @@ export default function Productv2Card() {
                 Available
               </div>
             </div>
-            <div className="flex text-center mt-4 space-x-2 my-2">
-              <Button color="orange" className="w-full">
+            <div className="flex text-center mt-4 space-x-2 my-2 w-fit">
+              <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded w-[200px] h-10">
                 ADD TO CART
-              </Button>
+              </button>
               <div className="flex justify-center space-x-2 w-full">
-                <Button color="black">
+                {/* <Button color="black">
                   <FontAwesomeIcon icon={faHeart} color="orange" />
-                </Button>
-                <Button color="black">
-                  <FontAwesomeIcon icon={faShareNodes} color="orange" />
-                </Button>
+                </Button> */}
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded w-10 h-10">
+                  <FontAwesomeIcon icon={faHeart} color="black" />
+                </button>
+                {/* <Button color="black">
+                  
+                </Button> */}
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded w-10 h-10">
+                  <FontAwesomeIcon icon={faShareNodes} color="black" />
+                </button>
               </div>
             </div>
           </div>
