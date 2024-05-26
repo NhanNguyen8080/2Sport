@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.API.Services;
 using Microsoft.IdentityModel.Tokens;
+using _2Sport_BE.Service.Services;
+using _2Sport_BE.Services;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace _2Sport_BE.Extensions
 {
@@ -13,10 +17,14 @@ namespace _2Sport_BE.Extensions
         public static void Register (this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddDbContext<TwoSportDBContext>(options => options.UseSqlServer(GetConnectionStrings()));
+            services.AddDbContext<TwoSportDBContext>(options => options
+            .UseSqlServer(GetConnectionStrings()));
             services.AddScoped<IUserService, UserService>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IBrandService, BrandService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+            //Mail service
+            
         }
 
         private static string GetConnectionStrings()

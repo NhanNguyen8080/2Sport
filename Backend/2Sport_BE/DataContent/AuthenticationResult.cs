@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using _2Sport_BE.Repository.Models;
+using Newtonsoft.Json;
 
 namespace _2Sport_BE.DataContent
 {

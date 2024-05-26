@@ -1,42 +1,50 @@
 ﻿using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace _2Sport_BE.Infrastructure.Services
 {
     public interface IUserService
     {
-        User GetUserById(int id);
-        IEnumerable<User> GetAll();
-        IEnumerable<User> Get(Expression<Func<User, bool>> where, string? includes = "");
-        void Add(User user);
-        void AddRange(IEnumerable<User> users);
-        void Update(User user);
-        void Remove(int Id);
-        bool CheckExist(int Id);
+        Task<User> FindAsync(int id);
+        Task<IQueryable<User>> GetAllAsync();
+        Task<IEnumerable<User>> GetAsync(Expression<Func<User, bool>> where, string? includes = "");
+        Task AddAsync(User user);
+        Task AddRangeAsync(IEnumerable<User> users);
+        Task UpdateAsync(User user);
+        Task RemoveAsync(int id);
+        Task<User> FindOrInsert(Expression<Func<User, bool>> where);
+        Task<bool> CheckExistAsync(int id);
+        void Save();
 
     }
     public class UserService : IUserService
     {
         private IUnitOfWork unitOfWork;
-        public UserService(IUnitOfWork unitOfWork)
+        private TwoSportDBContext _context;
+        public UserService(
+            IUnitOfWork unitOfWork,
+            TwoSportDBContext dBContext)
         {
             this.unitOfWork = unitOfWork;
+            _context = dBContext;
         }
 
-        public void Add(User user)
+
+        public async Task AddAsync(User user)
         {
-            unitOfWork.UserRepository.Insert(user);
+           await unitOfWork.UserRepository.InsertAsync(user);
         }
 
-        public void AddRange(IEnumerable<User> users)
+        public Task AddRangeAsync(IEnumerable<User> users)
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckExist(int Id)
+        public async Task<bool> CheckExistAsync(int id)
         {
-            IEnumerable<User> users = unitOfWork.UserRepository.Get(_ => _.Id == Id);
+            IEnumerable<User> users = await unitOfWork.UserRepository.GetAsync(_ => _.Id == id);
             if (users.Any())
             {
                 return true;
@@ -44,33 +52,51 @@ namespace _2Sport_BE.Infrastructure.Services
             return false;
         }
 
-        public IEnumerable<User> Get(Expression<Func<User, bool>> where, string? includes = "")
+        public async Task<User> FindAsync(int id)
         {
-            IEnumerable<User> users = unitOfWork.UserRepository.Get(where, null, includes);
-            return users;
-        }
-
-        public IEnumerable<User> GetAll()
-        {
-            IEnumerable<User> users = unitOfWork.UserRepository.GetAll();
-            return users;
-
-        }
-
-        public User GetUserById(int id)
-        {
-            var user = (User)unitOfWork.UserRepository.GetByID(id);
+            var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
             return user;
         }
-
-        public void Remove(int Id)
+        //HAM NAY NUA
+        public async Task<User> FindOrInsert(Expression<Func<User, bool>> where)
         {
-            unitOfWork.UserRepository.Delete(Id);
+            var user = await _context.Users.Where(where).FirstOrDefaultAsync();
+            if(user != null)
+            {
+                
+            }
+            else
+            {
+
+            }
+            throw new NotImplementedException();
         }
 
-        public void Update(User user)
+        public async Task<IQueryable<User>> GetAllAsync()
         {
-            unitOfWork.UserRepository.Update(user);
+            IEnumerable<User> users = await unitOfWork.UserRepository.GetAllAsync();
+            return users.AsQueryable();
+        }
+
+        public async Task<IEnumerable<User>> GetAsync(Expression<Func<User, bool>> where, string? includes = "")
+        {
+            IEnumerable<User> users = await unitOfWork.UserRepository.GetAsync(where, null, includes);
+            return users;
+        }
+
+        public async Task RemoveAsync(int id)
+        {
+           await unitOfWork.UserRepository.DeleteAsync(id);
+        }
+
+        public void Save()
+        {
+            unitOfWork.Save();
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            await unitOfWork.UserRepository.UpdateAsync(user);
         }
     }
 }

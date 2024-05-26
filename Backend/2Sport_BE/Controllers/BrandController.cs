@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using _2Sport_BE.DataContent;
+using _2Sport_BE.Repository.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using _2Sport_BE.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace _2Sport_BE.Controllers
 {
@@ -7,10 +11,24 @@ namespace _2Sport_BE.Controllers
     [ApiController]
     public class BrandController : ControllerBase
     {
-        [HttpGet]
-        public IActionResult Index()
+        private readonly IBrandService _brandService;
+        public BrandController(IBrandService brandService)
         {
-            return Ok();
+            _brandService = brandService;
+        }
+        [HttpGet]
+        [Route("list-all")]
+        public async Task<IActionResult> ListAllAsync()
+        {
+            try
+            {
+               var result = await _brandService.ListAllAsync();
+                return Ok(new { total = result.Count(), data = result });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }
