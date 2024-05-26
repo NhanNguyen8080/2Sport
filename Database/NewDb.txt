@@ -82,7 +82,6 @@ CREATE TABLE [Products] (
 	[Offers] NVARCHAR(Max) NOT NULL,
 	[MainImageName] VARCHAR(255) NULL,
 	[MainImagePath] VARCHAR(MAX) NULL,
-	[ReviewId] INT,
 	[CategoryId] INT,
 	[BrandId] INT,
 	[SportId] INT,
