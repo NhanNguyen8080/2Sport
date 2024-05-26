@@ -148,8 +148,8 @@ CREATE TABLE [ImagesVideos] (
 	[ImagePath] VARCHAR(MAX) NOT NULL,
 	[VideoName] VARCHAR(255) NOT NULL,
 	[VideoPath] VARCHAR(MAX) NOT NULL,
-	[BlogId] INT NOT NULL,
-	[ProductId] INT NOT NULL,
+	[BlogId] INT NULL,
+	[ProductId] INT NULL,
 	PRIMARY KEY([Id])
 );
 GO
