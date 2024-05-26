@@ -43,7 +43,11 @@ namespace _2Sport_BE.Repository.Implements
             _dbSet.Remove(entityToDelete);
         }
 
-        public IEnumerable<T> Get(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", int? pageIndex = null, int? pageSize = null)
+        public IEnumerable<T> Get(Expression<Func<T, bool>> filter = null, 
+                                  Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                  string includeProperties = "", 
+                                  int? pageIndex = null, 
+                                  int? pageSize = null)
         {
             IQueryable<T> query = _dbSet;
 
