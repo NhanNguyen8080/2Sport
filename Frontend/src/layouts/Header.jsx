@@ -17,6 +17,7 @@ import i18n from "i18next";
 import { Switch } from '@headlessui/react'
 import SignInModal from "../components/SignInModal";
 import { motion, useScroll } from "framer-motion";
+import { BreadcrumbsDefault } from "./BreadcrumbsDefault";
 
 function Header() {
     const { scrollYProgress } = useScroll();
@@ -33,11 +34,13 @@ function Header() {
                 <div className="fixed top-0 left-0 right-0">
                     <div className="bg-white/95 backdrop-blur-lg font-medium text-black flex justify-between items-center relative text-xs py-2">
                         <div className="flex pl-20 items-center space-x-2">
+                            <Link to="/" >
                             <img
                                 src="/assets/images/Logo.png"
                                 alt="2Sport"
                                 className="max-w-sm max-h-8 pr-3"
                             />
+                            </Link>
                             <FontAwesomeIcon icon={faLocationDot} />
                             {/* <p>Ho Chi Minh, Viet Nam</p> */}
                             <GetCurrentLocation />
@@ -67,8 +70,8 @@ function Header() {
                             <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
                         </div>
                         <div className="flex pr-20 items-center space-x-4">
-                            <p><FontAwesomeIcon icon={faPhone} className="pr-1" />+84 123-456-789</p>
-                            <p><FontAwesomeIcon icon={faEnvelope} className="pr-1" />support@gmail.com</p>
+                            <p><FontAwesomeIcon icon={faPhone} className="pr-1" />+84 338-581-571</p>
+                            <p><FontAwesomeIcon icon={faEnvelope} className="pr-1" />2sportteam@gmail.com</p>
                             {/* <select onChange={changeLanguage} className="text-orange-500">
                                 <option value="eng">English</option>
                                 <option value="vie">Vietnamese</option>
@@ -99,6 +102,7 @@ function Header() {
                         className="progress-bar"
                         style={{ scaleX: scrollYProgress }}
                     />
+                    {/* <BreadcrumbsDefault/> */}
                 </div>
             </div>
         </>
