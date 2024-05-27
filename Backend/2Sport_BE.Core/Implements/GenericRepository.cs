@@ -43,6 +43,11 @@ namespace _2Sport_BE.Repository.Implements
             _dbSet.Remove(entityToDelete);
         }
 
+        public async Task<T> FindAsync(int id)
+        {
+            return await _dbSet.FindAsync(id);
+        }
+
         public IEnumerable<T> Get(Expression<Func<T, bool>> filter = null, 
                                   Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
                                   string includeProperties = "", 
@@ -96,7 +101,11 @@ namespace _2Sport_BE.Repository.Implements
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", int? pageIndex = null, int? pageSize = null)
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null, 
+                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
+                                string includeProperties = "", 
+                                int? pageIndex = null, 
+                                int? pageSize = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -141,6 +150,11 @@ namespace _2Sport_BE.Repository.Implements
         public async Task InsertAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
+        }
+
+        public async Task InsertRangeAsync(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
         }
 
         public async Task UpdateAsync(T entityToUpdate)

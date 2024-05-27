@@ -24,6 +24,8 @@ namespace _2Sport_BE.Repository.Interfaces
         IGenericRepository<User> UserRepository { get; }
         IGenericRepository<Warehouse> WarehouseRepository { get; }
         IGenericRepository<RefreshToken> RefreshTokenRepository { get; }
+        IGenericRepository<Sport> SportRepository { get; }
         void Save();
+        Task<bool> SaveChanges();
     }
 }

@@ -25,7 +25,8 @@ namespace _2Sport_BE.Repository.Models
         public bool? Status { get; set; }
         public string Color { get; set; }
         public string Offers { get; set; }
-        public int? ReviewId { get; set; }
+        public string MainImageName { get; set; }
+        public string MainImagePath { get; set; }
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? SportId { get; set; }

@@ -30,6 +30,7 @@ namespace _2Sport_BE.Repository.Implements
         private IGenericRepository<User> _userRepository;
         private IGenericRepository<Warehouse> _warehouseRepository;
         private IGenericRepository<RefreshToken> _refreshTokenRepository;
+        private IGenericRepository<Sport> _sportRepository;
 
         public IGenericRepository<Blog> BlogRepository
         {
@@ -268,6 +269,18 @@ namespace _2Sport_BE.Repository.Implements
             }
         }
 
+        public IGenericRepository<Sport> SportRepository
+        {
+            get
+            {
+                if (_sportRepository == null)
+                {
+                    _sportRepository = new GenericRepository<Sport>(_dbContext);
+                }
+                return _sportRepository;
+            }
+        }
+
         private bool disposed = false;
         protected virtual void Dispose(bool disposing)
         {
@@ -290,6 +303,11 @@ namespace _2Sport_BE.Repository.Implements
         public void Save()
         {
             _dbContext.SaveChanges();
+        }
+
+        public async Task<bool> SaveChanges()
+        {
+            return await _dbContext.SaveChangesAsync() > 0;
         }
     }
 }

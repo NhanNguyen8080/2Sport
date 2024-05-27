@@ -4,6 +4,7 @@ namespace _2Sport_BE.Repository.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
+        Task<T> FindAsync(int id);
         Task<IEnumerable<T>> GetAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
@@ -17,6 +18,7 @@ namespace _2Sport_BE.Repository.Interfaces
 
 
         Task InsertAsync(T entity);
+        Task InsertRangeAsync(IEnumerable<T> entities);
 
         Task DeleteAsync(int id);
 

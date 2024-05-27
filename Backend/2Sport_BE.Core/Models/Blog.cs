@@ -15,6 +15,8 @@ namespace _2Sport_BE.Repository.Models
         public string BlogName { get; set; }
         public string Content { get; set; }
         public DateTime? CreateAt { get; set; }
+        public string MainImageName { get; set; }
+        public string MainImagePath { get; set; }
         public int? UserId { get; set; }
         public int? SportId { get; set; }
 

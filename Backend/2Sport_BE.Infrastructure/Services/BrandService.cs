@@ -1,4 +1,4 @@
-﻿using _2Sport_BE.Repository.Interfaces;
+using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +14,7 @@ namespace _2Sport_BE.Infrastructure.Services
         Task<IQueryable<Brand>> ListAllAsync();
         Task<int> NumberOfBrandsAsync();
         Task<IQueryable<Brand>> GetBrandsAsync(string brandName);
+        Task<IQueryable<Brand>> GetBrandById(int? id);
         Task<IQueryable<Brand>> GetBrandsByCategoryAsync(string category);
 
         Task CreateANewBrandAsync(Brand brand);
@@ -32,7 +33,7 @@ namespace _2Sport_BE.Infrastructure.Services
 
         public async Task CreateANewBrandAsync(Brand brand)
         {
-           await _unitOfWork.BrandRepository.InsertAsync(brand);
+            await _unitOfWork.BrandRepository.InsertAsync(brand);
         }
 
         public async Task DeleteBrandAsync(int id)
@@ -40,8 +41,14 @@ namespace _2Sport_BE.Infrastructure.Services
             var toDeleteObject = await _dBContext.Brands.FirstOrDefaultAsync(_ => _.Id == id);
             if (toDeleteObject != null)
             {
-               await _unitOfWork.BrandRepository.DeleteAsync(toDeleteObject);
+                await _unitOfWork.BrandRepository.DeleteAsync(toDeleteObject);
             }
+        }
+
+        public async Task<IQueryable<Brand>> GetBrandById(int? id)
+        {
+            IEnumerable<Brand> filter = await _unitOfWork.BrandRepository.GetAsync(_ => _.Id == id);
+            return filter.AsQueryable();
         }
 
         public async Task<IQueryable<Brand>> GetBrandsAsync(string brandName)
