@@ -10,11 +10,11 @@ namespace _2Sport_BE.Services
 {
     public class MailSettings
     {
-        public string Mail { get; set; }
-        public string DisplayName { get; set; }
-        public string Password { get; set; }
-        public string Host { get; set; }
-        public int Port { get; set; }
+        public string? Mail { get; set; } = "2sportteam@gmail.com";
+        public string? DisplayName { get; set; } = "TwoSport";
+        public string? Password { get; set; } = "supportTeam@2Sport";
+        public string? Host { get; set; } = "smtp.gmail.com";
+        public int Port { get; set; } = 587;
     }
     public class MailRequest
     {
@@ -33,6 +33,7 @@ namespace _2Sport_BE.Services
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
+
         public MailService(IOptions<MailSettings> mailSettings)
         {
             _mailSettings = mailSettings.Value;
@@ -40,6 +41,8 @@ namespace _2Sport_BE.Services
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             var email = new MimeMessage();
+            var check = _mailSettings.DisplayName;
+
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
             email.Subject = mailRequest.Subject;
