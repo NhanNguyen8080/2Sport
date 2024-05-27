@@ -80,6 +80,8 @@ CREATE TABLE [Products] (
 	[Status] BIT,
 	[Color] NVARCHAR(255) NOT NULL,
 	[Offers] NVARCHAR(Max) NOT NULL,
+	[MainImageName] VARCHAR(255) NULL,
+	[MainImagePath] VARCHAR(MAX) NULL,
 	[ReviewId] INT,
 	[CategoryId] INT,
 	[BrandId] INT,
@@ -142,10 +144,12 @@ GO
 
 CREATE TABLE [ImagesVideos] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
-	[Image] VARBINARY(Max) NOT NULL,
-	[Video] VARBINARY(Max) NOT NULL,
-	[BlogId] INT NOT NULL,
-	[ProductId] INT NOT NULL,
+	[ImageName] VARCHAR(255) NOT NULL,
+	[ImagePath] VARCHAR(MAX) NOT NULL,
+	[VideoName] VARCHAR(255) NOT NULL,
+	[VideoPath] VARCHAR(MAX) NOT NULL,
+	[BlogId] INT NULL,
+	[ProductId] INT NULL,
 	PRIMARY KEY([Id])
 );
 GO
@@ -155,6 +159,8 @@ CREATE TABLE [Blogs] (
 	[BlogName] NVARCHAR(255),
 	[Content] NVARCHAR(Max),
 	[CreateAt] DATETIME,
+	[MainImageName] VARCHAR(255) NULL,
+	[MainImagePath] VARCHAR(MAX) NULL,
 	[UserId] INT,
 	[SportId] INT,
 	PRIMARY KEY([Id])

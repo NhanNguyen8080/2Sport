@@ -91,46 +91,60 @@ namespace _2Sport_BE.Controllers
             return Challenge(props, GoogleDefaults.AuthenticationScheme);
         }
         [HttpGet("signin-google")]
-        public async Task<IActionResult> GoogleLogin()
+public async Task<IActionResult> GoogleLogin()
+{
+    var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+    if (response.Principal == null) return BadRequest();
+
+    var name = response.Principal.FindFirstValue(ClaimTypes.Name);
+    var email = response.Principal.FindFirstValue(ClaimTypes.Email);
+    var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
+    var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
+
+    if (email == null)
+    {
+        return BadRequest("Error retrieving Google user information");
+    }
+
+    ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
+    var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
+    if (user != null)
+    {
+        result = await _identityService.LoginGoogleAsync(user);
+    }
+    else
+    {
+        user = new User()
         {
-            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            if (response.Principal == null) return BadRequest();
+            FullName = name,
+            Email = email,
+            Phone = phone,
+            CreatedDate = DateTime.Now,
+            RoleId = 4,
+            Gender = gender,
+            IsActive = true,
+        };
+        await _userService.AddAsync(user);
+        _unitOfWork.Save();
 
-            var name = response.Principal.FindFirstValue(ClaimTypes.Name);
-            var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-            var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
-            var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
+        result = await _identityService.LoginGoogleAsync(user);
+    }
 
-            if (email == null)
-            {
-                return BadRequest("Error retrieving Google user information");
-            }
-            ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
-            var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
-            if (user != null)
-            {
-                result = await _identityService.LoginGoogleAsync(user);
-                return Ok(result);
-            }
-            else
-            {
-                user = new User()
-                {
-                    FullName = name,
-                    Email = email,
-                    Phone = phone,
-                    CreatedDate = DateTime.Now,
-                    RoleId = 4,
-                    Gender = gender,
-                    IsActive = true,
-                };
-                await _userService.AddAsync(user);
-                _unitOfWork.Save();
+    var token = result.Data.Token;
+    var refreshToken = result.Data.RefreshToken;
 
-                result = await _identityService.LoginGoogleAsync(user);
-                return Ok(result);
-            }
-        }
+    var script = $@"
+        <script>
+            window.opener.postMessage({{
+                token: '{token}',
+                refreshToken: '{refreshToken}'
+            }}, 'http://localhost:5173');
+            window.close();
+        </script>";
+
+    return Content(script, "text/html");
+}
+
         [HttpPost("sign-up")]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
         {
@@ -181,8 +195,9 @@ namespace _2Sport_BE.Controllers
                     mailRequest.Subject = "Request to change a new password from TwoSport";
                     mailRequest.Body = $"We are the administrators of TwoSport. Your new password is {GenerateRandomString(6)}. Best Regards!";
                     mailRequest.ToEmail = mail;
+                    var imailservice = _mailService;
                     await _mailService.SendEmailAsync(mailRequest);
-                    return BadRequest(new { Message = "Query successfully", IsSuccess = true });
+                    return Ok(new { Message = "Query successfully", IsSuccess = true });
                 }
                 else
                 {
@@ -193,7 +208,7 @@ namespace _2Sport_BE.Controllers
             {
 
             }
-            return Ok();
+            return BadRequest(new {Message = "Some thing wrongs", IsSuccess = false });
         }
         [NonAction]
         public string HashPassword(string password)

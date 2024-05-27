@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.Services;
 using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace _2Sport_BE.Extensions
 {
@@ -23,6 +24,9 @@ namespace _2Sport_BE.Extensions
             services.AddTransient<IBrandService, BrandService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddTransient<IMailService, MailService>();
+            services.AddScoped<ISportService, SportService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
 
         }
 

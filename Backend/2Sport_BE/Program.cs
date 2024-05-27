@@ -16,6 +16,10 @@ builder.Services.Register();
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 ;
+builder.Services.AddOptions();
+var mailsettings = builder.Configuration.GetSection("MailSettings");
+builder.Services.Configure<MailSettings>(mailsettings);
+
 //JWT services
 var appsettingSection = builder.Configuration.GetSection("ServiceConfiguration");
 builder.Services.Configure<ServiceConfiguration>(appsettingSection);
@@ -32,6 +36,7 @@ var tokenValidationParameters = new TokenValidationParameters
 };
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IMailService, MailService>();
+
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddAuthentication(options =>
     {
