@@ -184,6 +184,45 @@ VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, 0, N'<div class="c
 						</div>', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 6, 7, 2, 'QC_VS002');
 
 GO
+INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
+MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
+VALUES (N'Quấn Cán Vợt Cầu Lông Lining GP2000', 20000, 20000, 0, N'<div class="col-md-12">
+								<h2 style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif"><strong>1. Giới thiệu Quấn cán vợt cầu lông Lining GP2000</strong></span></span></h2>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông là một phụ kiện quan trọng trên vợt giúp người chơi có thể bảo vệ cốt cán của vợt, cầm có cảm giác đầm tay , thoải mái và chắc chắn hơn, cũng như đảm bảo tính thẩm mỹ cao cho cây vợt. </span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông Lining GP2000</a> được làm từ chất liệu cao su PU cao cấp đượ rất nhiều người chơi cầu lông ưa chuộng.</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Lining GP2000 dày dặn mang đến cảm giác êm ái, chống trơn trượt tốt, có độ bền cao, không ra màu như những cán quấn vợt giá rẻ.</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Ngoài ra, quấn cán Lining GP2000 có độ bám vợt rất chắc, khít vào cán vợt, tránh tình trạng bị bung góc khi dán.</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Ngoài ra các bạn có thể tham khảo thêm các loại quấn cán cầu lông khác đang có tại shop VNB</span></span></p>
+
+<h2 style="text-align:justify"><strong><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">2. Ưu điểm của Quấn cán vợt cầu lông Lining GP2000</span></span></strong></h2>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông Lining GP2000 với khả năng bám dính tốt, bề mặt mịn màng.</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Sản phẩm này có thể dùng trong mọi điều kiện thời tiết, phù hợp với khi hậu nóng ẩm ở Việt Nam.</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Với khả năng thấm hút mồ hôi tốt tạo cảm giác khô ráo thoáng mát trong suốt quá trình chơi và tập luyện</span></span></p>
+
+<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Đặc biệt, sản phẩm này không sử dụng hóa chất, an toàn tuyệt đối cho da của bạn.</span></span></p>												
+						</div>', 1, N'Đủ màu', '',N'Quấn Cán Vợt Cầu Lông Lining GP2000', 'https://cdn.shopvnb.com/uploads/gallery/quan-can-vot-cau-long-lining-gp2000_1712886881.webp', 6, 5, 2, 'QC_GP2000');
+
+GO
+INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
+MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
+VALUES (N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu', 72000, 60000, 0, N'', 1, N'Trắng Viền Đỏ', '',N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-2225-trang-vien-do-xanh-reu-60k_1715645158.webp', 9, 6, 2, 'SO_YO2225');
+
+GO
+
+INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
+MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
+VALUES (N'Vớ Cầu Lông Yonex SKSE100', 47000, 39000, 0, N'', 1, N'Trắng', '',N'Vớ Cầu Lông Yonex SKSE100 Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-skse100-chinh-hang_1716154218.webp', 9, 6, 2, 'SO_YOSKSE100');
+
+GO
+
 CREATE TABLE [CartItems] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
 	[ProductId] INT,
