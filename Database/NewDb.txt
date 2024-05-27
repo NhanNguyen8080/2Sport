@@ -181,7 +181,7 @@ VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, 0, N'<div class="c
 <p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt VS002 với khả năng thấm hút mồ hôi tốt tạo cảm giác khô ráo thoáng mát trong suốt quá trình hoạt động trên sân cầu.</span></span></p>
 
 <p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Đặc biệt, sản phẩm này không sử dụng hóa chất, an toàn tuyệt đối cho da của bạn.</span></span></p>					
-						</div>', 1, 'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 6, 7, 2, 'QC_VS002');
+						</div>', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 6, 7, 2, 'QC_VS002');
 
 GO
 CREATE TABLE [CartItems] (
