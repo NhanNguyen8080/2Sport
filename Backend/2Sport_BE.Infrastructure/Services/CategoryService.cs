@@ -20,7 +20,7 @@ namespace _2Sport_BE.Service.Services
                                   int? pageIndex = null,
                                   int? pageSize = null);
 
-        Task<Category> GetCategoryById(int id);
+        Task<Category> GetCategoryById(int? id);
         Task AddCategories(IEnumerable<Category> categories);
         Task DeleteCategoryById(int id);
         Task UpdateCategory(Category newCategory);
@@ -50,7 +50,7 @@ namespace _2Sport_BE.Service.Services
             return query.AsQueryable();
         }
 
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Category> GetCategoryById(int? id)
         {
             return await _unitOfWork.CategoryRepository.FindAsync(id);
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using _2Sport_BE.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using _2Sport_BE.Service.Services;
 
 namespace _2Sport_BE.Controllers
 {
@@ -12,9 +13,11 @@ namespace _2Sport_BE.Controllers
     public class BrandController : ControllerBase
     {
         private readonly IBrandService _brandService;
-        public BrandController(IBrandService brandService)
+        private readonly IProductService _productService;
+        public BrandController(IBrandService brandService, IProductService productService)
         {
             _brandService = brandService;
+            _productService = productService;
         }
         [HttpGet]
         [Route("list-all")]
@@ -22,7 +25,12 @@ namespace _2Sport_BE.Controllers
         {
             try
             {
-               var result = await _brandService.ListAllAsync();
+                var result = await _brandService.ListAllAsync();
+                foreach (var item in result.ToList())
+                {
+                    var product = await _productService.GetProducts(_ => _.BrandId == item.Id);
+                    item.Quantity = product.ToList().Count;
+                }
                 return Ok(new { total = result.Count(), data = result });
             }
             catch (Exception e)

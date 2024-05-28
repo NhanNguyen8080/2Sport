@@ -17,15 +17,20 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
+        private readonly ICategoryService _categoryService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductController(IProductService productService, IBrandService brandService, IUnitOfWork unitOfWork, IMapper mapper)
+        public ProductController(IProductService productService, 
+                                IBrandService brandService, 
+                                ICategoryService categoryService,
+                                IUnitOfWork unitOfWork, IMapper mapper)
         {
             _productService = productService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _brandService = brandService;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
@@ -40,12 +45,96 @@ namespace _2Sport_BE.Controllers
                 {
                     var brand = await _brandService.GetBrandById(product.BrandId);
                     product.Brand = brand.FirstOrDefault();
+                    var category = await _categoryService.GetCategoryById(product.CategoryId);
+                    product.Category = category;
                 }
                 var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
-                //var pr = await query.Select(_ => _mapper.Map<Category, CategoryVM>(_)).ToListAsync();
                 return Ok(new { total = result.Count, data = result });
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        //[HttpGet]
+        //[Route("sort-products-by-price")]
+        //public async Task<IActionResult> SortProductsByPrice([FromQuery] DefaultSearch defaultSearch)
+        //{
+        //    try
+        //    {
+        //        var query = await _productService.GetProducts(_ => _.Status == true, null, "", defaultSearch.currentPage, defaultSearch.perPage);
+        //        var products = query.ToList();
+        //        foreach (var product in products)
+        //        {
+        //            var brand = await _brandService.GetBrandById(product.BrandId);
+        //            product.Brand = brand.FirstOrDefault();
+        //            var category = await _categoryService.GetCategoryById(product.CategoryId);
+        //            product.Category = category;
+        //        }
+        //        var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
+        //        return Ok(new { total = result.Count, data = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex);
+        //    }
+        //}
+
+        //[HttpGet]
+        //[Route("filter-products-by-category/{categoryId}")]
+        //public async Task<IActionResult> FilterProductsByCategory([FromQuery] DefaultSearch defaultSearch, int categoryId)
+        //{
+        //    try
+        //    {
+        //        var query = await _productService.GetProducts(_ => _.Status == true && _.CategoryId == categoryId, null, "", 
+        //                                        defaultSearch.currentPage, defaultSearch.perPage);
+        //        var products = query.ToList();
+        //        foreach (var product in products)
+        //        {
+        //            var brand = await _brandService.GetBrandById(product.BrandId);
+        //            product.Brand = brand.FirstOrDefault();
+        //            var category = await _categoryService.GetCategoryById(product.CategoryId);
+        //            product.Category = category;
+        //        }
+        //        var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
+        //        return Ok(new { total = result.Count, data = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex);
+        //    }
+        //}
+
+        [HttpPut]
+        [Route("update-product/{productId}")]
+        public async Task<IActionResult> UpdateProduct([FromQuery] int productId, ProductUM productUM)
+        {
+            try
+            {
+                var updatedProduct = await _productService.GetProductById(productId);
+                if (updatedProduct != null)
+                {
+                    updatedProduct.ProductName = productUM.ProductName;
+                    updatedProduct.ListedPrice = productUM.ListedPrice;
+                    updatedProduct.Price = productUM.Price;
+                    updatedProduct.Size = productUM.Size;
+                    updatedProduct.Description = productUM.Description;
+                    updatedProduct.Status = productUM.Status;
+                    updatedProduct.Color = productUM.Color;
+                    updatedProduct.Offers = productUM.Offers;
+                    updatedProduct.MainImageName = productUM.MainImageName;
+                    updatedProduct.MainImagePath = productUM.MainImagePath;
+                    updatedProduct.CategoryId = productUM.CategoryId;
+                    updatedProduct.BrandId = productUM.BrandId;
+                    updatedProduct.SportId = productUM.SportId;
+                    await _productService.UpdateProduct(updatedProduct);
+                    return Ok(updatedProduct);
+                } else
+                {
+                    return BadRequest("Update failed!");
+                }
+            } catch (Exception ex)
             {
                 return BadRequest(ex);
             }
