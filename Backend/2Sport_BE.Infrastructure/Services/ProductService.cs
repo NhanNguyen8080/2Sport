@@ -15,6 +15,10 @@ namespace _2Sport_BE.Service.Services
         Task<IQueryable<Product>> GetProducts(Expression<Func<Product, bool>> filter = null);
 
         Task<IQueryable<Product>> GetProducts(Expression<Func<Product, bool>> filter = null,
+                                                    string includeProperties = "",
+                                                    int? pageIndex = null, int? pageSize = null);
+
+        Task<IQueryable<Product>> GetProducts(Expression<Func<Product, bool>> filter = null,
                                   Func<IQueryable<Product>, IOrderedQueryable<Product>> orderBy = null,
                                   string includeProperties = "",
                                   int? pageIndex = null,
@@ -75,6 +79,14 @@ namespace _2Sport_BE.Service.Services
                                                     int? pageIndex = null, int? pageSize = null)
         {
             var query = await _unitOfWork.ProductRepository.GetAsync(filter, orderBy, includeProperties, pageIndex, pageSize);
+            return query.AsQueryable();
+        }
+
+        public async Task<IQueryable<Product>> GetProducts(Expression<Func<Product, bool>> filter = null,
+                                                    string includeProperties = "",
+                                                    int? pageIndex = null, int? pageSize = null)
+        {
+            var query = await _unitOfWork.ProductRepository.GetAsync(filter, includeProperties, pageIndex, pageSize);
             return query.AsQueryable();
         }
 

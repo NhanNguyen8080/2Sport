@@ -57,6 +57,29 @@ namespace _2Sport_BE.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("filter-sort-products")]
+        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, int sportId, int brandId, int categoryId)
+        {
+            try
+            {
+                var query = await _productService.GetProducts(_ => _.Status == true, "", defaultSearch.currentPage, defaultSearch.perPage);
+                if (sportId != 0 || brandId != 0 || categoryId != 0)
+                {
+                    query = await _productService.GetProducts(_ => _.CategoryId == categoryId || _.SportId == sportId || _.BrandId == brandId,
+                                                        "", defaultSearch.currentPage, defaultSearch.perPage);
+                }
+                
+                var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
+                                  .Select(_ => _mapper.Map<Product, ProductVM>(_))
+                                  .ToList();
+                return Ok(new { total = result.Count, data = result });
+            } catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         //[HttpGet]
         //[Route("sort-products-by-price")]
         //public async Task<IActionResult> SortProductsByPrice([FromQuery] DefaultSearch defaultSearch)

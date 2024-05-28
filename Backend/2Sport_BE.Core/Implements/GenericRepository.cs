@@ -43,45 +43,11 @@ namespace _2Sport_BE.Repository.Implements
             _dbSet.Remove(entityToDelete);
         }
 
-        public async Task<T> FindAsync(int id)
+        public async Task<T> FindAsync(int? id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public IEnumerable<T> Get(Expression<Func<T, bool>> filter = null, 
-                                  Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-                                  string includeProperties = "", 
-                                  int? pageIndex = null, 
-                                  int? pageSize = null)
-        {
-            IQueryable<T> query = _dbSet;
-
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-
-            foreach (var includeProperty in includeProperties.Split
-                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                query = query.Include(includeProperty);
-            }
-
-            if (orderBy != null)
-            {
-                query = orderBy(query);
-            }
-
-            if (pageIndex.HasValue && pageSize.HasValue)
-            {
-                int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value - 1 : 0;
-                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10;
-
-                query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
-            }
-
-            return query.ToList();
-        }
 
         public IQueryable<T> GetAll()
         {
@@ -96,6 +62,47 @@ namespace _2Sport_BE.Repository.Implements
             foreach (var include in includes)
             {
                 query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null,
+                                string includeProperties = "",
+                                int? pageIndex = null,
+                                int? pageSize = null)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (var includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (pageIndex.HasValue && pageSize.HasValue)
+            {
+                int validPageIndex = pageIndex.Value > 0 ? pageIndex.Value - 1 : 0;
+                int validPageSize = pageSize.Value > 0 ? pageSize.Value : 10;
+
+                query = query.Skip(validPageIndex * validPageSize).Take(validPageSize);
             }
 
             return await query.ToListAsync();
