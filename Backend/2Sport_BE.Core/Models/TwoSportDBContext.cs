@@ -39,13 +39,6 @@ namespace _2Sport_BE.Repository.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
