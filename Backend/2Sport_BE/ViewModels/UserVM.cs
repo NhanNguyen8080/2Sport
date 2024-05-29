@@ -53,4 +53,13 @@ namespace _2Sport_BE.ViewModels
         [JsonProperty("email")]
         public string Email { get; set; }
     }
+    public class ChangePasswordVM
+    {
+        [Required]
+        [JsonProperty("userName")]
+        public string OldPassword { get; set; }
+        [Required]
+        [JsonProperty("email")]
+        public string NewPassword { get; set; }
+    }
 }

@@ -7,18 +7,19 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using MailKit;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("AppSettings:MailSettings"));
+builder.Services.AddTransient<ISendMailService, _2Sport_BE.Services.MailService>();
+
 builder.Services.Register();
 // Add services to the container.
 builder.Services.AddControllers().AddJsonOptions(x =>
    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 ;
-builder.Services.AddOptions();
-var mailsettings = builder.Configuration.GetSection("MailSettings");
-builder.Services.Configure<MailSettings>(mailsettings);
 
 //JWT services
 var appsettingSection = builder.Configuration.GetSection("ServiceConfiguration");
@@ -34,8 +35,6 @@ var tokenValidationParameters = new TokenValidationParameters
     RequireExpirationTime = false,
     ValidateLifetime = true
 };
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddTransient<IMailService, MailService>();
 
 builder.Services.AddSingleton(tokenValidationParameters);
 builder.Services.AddAuthentication(options =>

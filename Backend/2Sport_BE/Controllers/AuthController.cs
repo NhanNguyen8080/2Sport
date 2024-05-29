@@ -30,14 +30,14 @@ namespace _2Sport_BE.Controllers
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IMailService _mailService;
+        private readonly ISendMailService _mailService;
         public AuthController(
             IUserService userService,
             IIdentityService identityService,
             IRefreshTokenService refreshTokenService,
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IMailService mailService)
+            ISendMailService mailService)
         {
             _userService = userService;
             _identityService = identityService;
@@ -46,7 +46,29 @@ namespace _2Sport_BE.Controllers
             _mapper = mapper;
             _mailService = mailService;
         }
+        [HttpPost("send")]
+        public async Task<IActionResult> SendEmail([FromForm] MailRequest mailRequest)
+        {
+            
 
+            mailRequest.Subject = mailRequest.Subject;
+            mailRequest.Body = mailRequest.Body;
+            mailRequest.ToEmail = mailRequest.ToEmail;
+            mailRequest.Attachments = mailRequest.Attachments;
+            if (mailRequest == null)
+            {
+                return BadRequest("Email request is null");
+            }
+            var result = await _mailService.SendEmailAsync(mailRequest);
+            if (result)
+            {
+            return Ok("Email sent successfully");
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
         [Route("sign-in")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] UserLogin loginModel)
@@ -178,8 +200,13 @@ public async Task<IActionResult> GoogleLogin()
             }
 
         }
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordVM model)
+        {
+            return Ok();
+
+        }
         [HttpPost("forgot-password")]
-        //con forgot
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotVM forgotVM)
         {
             try
@@ -190,14 +217,28 @@ public async Task<IActionResult> GoogleLogin()
                 var check = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == mail && _.UserName == _.UserName);
                 if(check != null)
                 {
+                    var newPassword = GenerateRandomString(6);
+                    //Đổi mk user
+                    check.Password = HashPassword(newPassword);
+                    _unitOfWork.Save();
                     //Send mail to get a new password
                     MailRequest mailRequest = new MailRequest();
                     mailRequest.Subject = "Request to change a new password from TwoSport";
-                    mailRequest.Body = $"We are the administrators of TwoSport. Your new password is {GenerateRandomString(6)}. Best Regards!";
+                    mailRequest.Body = $"We are the administrators of TwoSport. Your new password is {newPassword}. Best Regards!";
                     mailRequest.ToEmail = mail;
                     var imailservice = _mailService;
-                    await _mailService.SendEmailAsync(mailRequest);
-                    return Ok(new { Message = "Query successfully", IsSuccess = true });
+                    var result = await _mailService.SendEmailAsync(mailRequest);
+                    
+
+                    if(result)
+                    {
+                        return Ok(new { Message = "Query successfully", IsSuccess = true });
+                    }
+                    else
+                    {
+                        return Ok(new { Message = "Query failed", IsSuccess = false });
+                    }
+                   
                 }
                 else
                 {
