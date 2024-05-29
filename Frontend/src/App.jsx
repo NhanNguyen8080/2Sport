@@ -8,6 +8,9 @@ import Productv2Page from './pages/Productv2Page';
 import Footer from './layouts/Footer';
 import ManageAccount from './pages/ManageAccount';
 import { BreadcrumbsDefault } from './layouts/BreadcrumbsDefault';
+import NotFoundPage from './pages/NotFoundPage';
+import ProductList from './pages/ProductList';
+import ProductRoutes from './routes/ProductRoutes';
 
 function App() {
   return (
@@ -17,8 +20,11 @@ function App() {
       {/* <BreadcrumbsDefault/> */}
      <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/manage-account" element={<ManageAccount />} />
           <Route path="/product" element={<ProductPage />} />
           <Route path="/productv2" element={<Productv2Page />} />
+          <Route path="/*" element={<ProductRoutes />} />
+          <Route path="*" element={<NotFoundPage />} />
      </Routes>
      </div>
      <Footer/>

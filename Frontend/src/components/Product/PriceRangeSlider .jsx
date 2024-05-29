@@ -70,7 +70,7 @@ const PriceRangeSlider = () => {
         />
         <div className="relative z-10 h-2 bg-gray-300 rounded-full">
           <div
-            className="absolute h-2 bg-blue-500 rounded-full"
+            className="absolute h-2 bg-orange-500 rounded-full"
             style={{
               left: `${(minValue / 1000) * 100}%`,
               right: `${100 - (maxValue / 1000) * 100}%`,

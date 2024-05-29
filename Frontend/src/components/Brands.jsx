@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "framer-motion";
 import { wrap } from "@motionone/utils";
+import { fetchBrands } from '../services/brandService';
 
 function ParallaxText({ children, baseVelocity = 100 }) {
     const baseX = useMotionValue(0);
@@ -38,23 +39,38 @@ function ParallaxText({ children, baseVelocity = 100 }) {
                 <span className="w-2/3 justify-self-center">{children} </span>
                 <span className="w-2/3 justify-self-center">{children} </span>
                 <span className="w-2/3 justify-self-center">{children} </span>
+                <span className="w-2/3 justify-self-center">{children} </span>
+                <span className="w-2/3 justify-self-center">{children} </span>
             </motion.div>
         </div>
     );
 }
 
 export default function Brands() {
+    const [brands, setBrands] = useState([]);
+
+  useEffect(() => {
+    const getBrands = async () => {
+      try {
+        const brandsData = await fetchBrands();
+        setBrands(brandsData);
+      } catch (error) {
+        console.error('Error fetching brand data:', error);
+      }
+    };
+
+    getBrands();
+  }, []);
+
+
     return (
         <div className="flex flex-col items-center justify-center px-20">
             <p className="font-rubikmonoone text-orange-500 text-3xl pt-2">BRANDS</p>
             <ParallaxText baseVelocity={-5}>
-                <div className="grid grid-cols-6 gap-5 px-3 items-center">
-                    <img src="/assets/images/brands/adidas.png" />
-                    <img src="/assets/images/brands/bitis.png" />
-                    <img src="/assets/images/brands/Lining.png" />
-                    <img src="/assets/images/brands/NB.png" />
-                    <img src="/assets/images/brands/nike.png" />
-                    <img src="/assets/images/brands/Yonex.png" />
+                <div className="grid grid-cols-9 gap-5 px-3 items-center">
+                    {brands.map(brand => (
+                        brand.logo ? <img key={brand.id} src={brand.logo} alt={brand.brandName} /> : null
+                    ))}
                 </div>
             </ParallaxText>
         </div>

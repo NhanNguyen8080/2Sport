@@ -1,32 +1,52 @@
-import { useCallback, useState } from "react";
-// import Breadcrumb from "../components/Breadcrumb";
+import { useCallback, useState, useEffect } from "react";
 import Pagination from "../components/Product/Pagination";
-import ProductCard from "../components/Product/ProductCard";
-// import Slider from "./Slider";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faTableCellsLarge,
+  faBars,
+  faXmark
+}
+  from '@fortawesome/free-solid-svg-icons';
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
+import ProductList from "./ProductList";
+import { fetchBrands } from '../services/brandService';
+import { fetchCategories } from '../services/categoryService';
+import { Link } from 'react-router-dom';
 
 function ProductPage() {
-  const categories = [
-    { name: "New in Closet (50)", value: "new-in-closet" },
-    { name: "Featured Items (150)", value: "featured-items" },
-    { name: "Men's Wear (220)", value: "mens-wear" },
-    { name: "Women's Wear (350)", value: "womens-wear" },
-    { name: "Kids' Wear (120)", value: "kids-wear" },
-    { name: "Sports Shoes (80)", value: "sports-shoes" },
-    { name: "Sports Equipment (70)", value: "sports-equipment" },
-  ];
+  const [brands, setBrands] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [sortBy, setSortBy] = useState('');
 
-  const brands = [
-    { name: "Nike (430)", value: "nike" },
-    { name: "Puma (320)", value: "puma" },
-    { name: "Adidas (300)", value: "adidas" },
-    { name: "Reebok (280)", value: "reebok" },
-    { name: "New Balance (150)", value: "new-balance" },
-    { name: "Skechers (100)", value: "skechers" },
-    { name: "Others (80)", value: "others" },
-  ];
+  useEffect(() => {
+    const getBrands = async () => {
+      try {
+        const brandsData = await fetchBrands();
+        setBrands(brandsData);
+      } catch (error) {
+        console.error('Error fetching brand data:', error);
+      }
+    };
+
+    getBrands();
+  }, []);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Error fetching category data:', error);
+      }
+    };
+
+    getCategories();
+  }, []);
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+  };
 
   const products = Array.from({ length: 50 }, (_, index) => ({
     category: "SHOES",
@@ -35,12 +55,12 @@ function ProductPage() {
     image: "https://via.placeholder.com/300",
   }));
 
-  const [sortBy, setSortBy] = useState("popularity");
+  // const [sortBy, setSortBy] = useState("popularity");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const handleSortChange = useCallback((event) => {
-    setSortBy(event.target.value);
-  }, []);
+  // const handleSortChange = useCallback((event) => {
+  //   setSortBy(event.target.value);
+  // }, []);
 
   const itemsPerPage = 15;
   const currentItems = products.slice(
@@ -53,10 +73,8 @@ function ProductPage() {
   };
 
   return (
-    <div className="pt-28 py-10">
-      <div className="container mx-auto pt-4 px-20">
-        {/* <Breadcrumb firstli="Home" secondli="Products" /> */}
-
+    <div className="">
+      <div className="w-full px-20">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
             <div className="ProductWrapper w-full">
@@ -72,9 +90,9 @@ function ProductPage() {
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
-                        value={category.value}
+                        value={category.categoryName}
                       />
-                      <span className="ml-2 text-black">{category.name}</span>
+                      <span className="ml-2 text-black">{category.categoryName}</span>
                     </label>
                   ))}
                 </div>
@@ -92,7 +110,7 @@ function ProductPage() {
                         className="form-checkbox h-5 w-5 text-orange-500"
                         value={brand.value}
                       />
-                      <span className="ml-2 text-black">{brand.name}</span>
+                      <span className="ml-2 text-black">{brand.brandName} ({brand.quantity})</span>
                     </label>
                   ))}
                 </div>
@@ -165,56 +183,31 @@ function ProductPage() {
                     value={sortBy}
                     onChange={handleSortChange}
                   >
-                    <option value="popularity">Popularity</option>
-                    <option value="price">Price</option>
-                    <option value="rating">Rating</option>
+                    <option value="">None</option>
+                    <option value="listedprice">Price</option>
                   </select>
                   <div className="ml-4 flex items-center space-x-2">
                     <button>
-                      <svg
-                        className="w-5 h-5 text-orange-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M3 12h18m-6 6h6m-6-6h6m-6-6h6"
-                        />
-                      </svg>
+                      <FontAwesomeIcon icon={faTableCellsLarge} />
                     </button>
-                    <button>
-                      <svg
-                        className="w-5 h-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M4 6h16M4 10h16M4 14h16M4 18h16"
-                        />
-                      </svg>
-                    </button>
+                    <Link to="/productv2">
+                      <button>
+                        <FontAwesomeIcon icon={faBars} />
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {currentItems.map((product, index) => (
-                <ProductCard key={index} product={product} />
-              ))}
+            <div className="">
+              <ProductList products={products} sortBy={sortBy} />
             </div>
 
-            <Pagination
+            {/* <Pagination
               total={products.length}
               current={currentPage}
               onChange={setCurrentPage}
-            />
+            /> */}
           </div>
         </div>
       </div>

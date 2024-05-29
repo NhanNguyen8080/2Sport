@@ -8,7 +8,7 @@ import Pagination from "../Product/Paginationv2";
 const products = [
   {
     id: 1,
-    image: "./public/assets/images/product/pair-trainers 1.png",
+    image: "./assets/images/product/pair-trainers 1.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -18,7 +18,7 @@ const products = [
   },
   {
     id: 2,
-    image: "./public/assets/images/product/pair-trainers 2.png",
+    image: "./assets/images/product/pair-trainers 2.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -28,7 +28,7 @@ const products = [
   },
   {
     id: 3,
-    image: "./public/assets/images/product/pair-trainers 3.png",
+    image: "./assets/images/product/pair-trainers 3.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -38,7 +38,7 @@ const products = [
   },
   {
     id: 4,
-    image: "./public/assets/images/product/pair-trainers 4.png",
+    image: "./assets/images/product/pair-trainers 4.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -48,7 +48,7 @@ const products = [
   },
   {
     id: 5,
-    image: "./public/assets/images/product/pair-trainers 5.png",
+    image: "./assets/images/product/pair-trainers 5.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -58,7 +58,7 @@ const products = [
   },
   {
     id: 6,
-    image: "./public/assets/images/product/pair-trainers 6.png",
+    image: "./assets/images/product/pair-trainers 6.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -68,7 +68,7 @@ const products = [
   },
   {
     id: 7,
-    image: "./public/assets/images/product/pair-trainers 7.png",
+    image: "./assets/images/product/pair-trainers 7.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -78,7 +78,7 @@ const products = [
   },
   {
     id: 8,
-    image: "./public/assets/images/product/pair-trainers 8.png",
+    image: "./assets/images/product/pair-trainers 8.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -88,7 +88,7 @@ const products = [
   },
   {
     id: 9,
-    image: "./public/assets/images/product/pair-trainers 1.png",
+    image: "./assets/images/product/pair-trainers 1.png",
     name: "Name Of Product",
     description: "Name Of Producttt",
     price: "$19.5",
@@ -99,7 +99,7 @@ const products = [
   {
     id: 10,
     name: "Name Of Product",
-    image: "./public/assets/images/product/pair-trainers 2.png",
+    image: "./assets/images/product/pair-trainers 2.png",
     description: "Name Of Producttt",
     price: "$19.5",
     rating: 4,

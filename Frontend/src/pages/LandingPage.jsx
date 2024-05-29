@@ -2,7 +2,7 @@ import React from "react";
 import Banner from "../components/Banner";
 import Brands from "../components/Brands";
 import Ads from "../components/Ads";
-import PriceRangeSlider from "../components/PriceRangeSlider ";
+import WebServices from "../components/WebServices";
 
 function LandingPage() {
 
@@ -11,6 +11,7 @@ function LandingPage() {
             <Banner />
             <Brands />
             <Ads />
+            <WebServices/>
         </>
     );
 }

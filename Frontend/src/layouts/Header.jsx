@@ -15,7 +15,7 @@ import GetCurrentLocation from "../components/GetCurrentLocation";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import { Switch } from '@headlessui/react'
-import SignInModal from "../components/SignInModal";
+import SignInModal from "../components/Auth/SignInModal";
 import { motion, useScroll } from "framer-motion";
 import { BreadcrumbsDefault } from "./BreadcrumbsDefault";
 
@@ -43,7 +43,7 @@ function Header() {
                             </Link>
                             <FontAwesomeIcon icon={faLocationDot} />
                             {/* <p>Ho Chi Minh, Viet Nam</p> */}
-                            {/* <GetCurrentLocation /> */}
+                            <GetCurrentLocation />
                             <Switch
                                 checked={enabled}
                                 onChange={() => {
@@ -79,13 +79,13 @@ function Header() {
                         </div>
                     </div>
 
-                    <div className="bg-zinc-800/80 backdrop-blur-lg text-white  flex justify-between items-center text-base font-normal py-5 pr-20">
+                    <div className="bg-zinc-800/80 backdrop-blur-lg text-white  flex justify-between items-center text-base font-normal py-5 pr-20 ">
                         <div className="flex space-x-10 pl-20 ">
                             <Link to="/" >
                                 {t("hcat")}
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
-                            <Link to="/">
+                            <Link to="/product" className=" hover:text-orange-500 focus:text-orange-500">
                                 {t("hproduct")}
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
