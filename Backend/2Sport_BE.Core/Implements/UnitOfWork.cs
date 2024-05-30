@@ -3,7 +3,7 @@ using _2Sport_BE.Repository.Models;
 
 namespace _2Sport_BE.Repository.Implements
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly TwoSportDBContext _dbContext;
         public UnitOfWork(TwoSportDBContext dbContext)

@@ -11,8 +11,8 @@ namespace _2Sport_BE.Repository.Implements
         private readonly DbSet<T> _dbSet;
         public GenericRepository(TwoSportDBContext context)
         {
-            this._dbContext = context;
-            this._dbSet = _dbContext.Set<T>();
+            _dbContext = context;
+            _dbSet = _dbContext.Set<T>();
         }
         public Task<int> CountAsync(Expression<Func<T, bool>> filter = null)
         {
@@ -69,6 +69,7 @@ namespace _2Sport_BE.Repository.Implements
 
         public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null)
         {
+            
             IQueryable<T> query = _dbSet;
 
             if (filter != null)
@@ -76,7 +77,9 @@ namespace _2Sport_BE.Repository.Implements
                 query = query.Where(filter);
             }
 
-            return await query.ToListAsync();
+            // Using AsNoTracking for read-only queries
+            return await query.AsNoTracking().ToListAsync();
+           
         }
 
         public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null,
