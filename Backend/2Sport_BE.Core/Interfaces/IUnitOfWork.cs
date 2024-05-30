@@ -2,7 +2,7 @@
 
 namespace _2Sport_BE.Repository.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Blog> BlogRepository { get; }
         IGenericRepository<Brand> BrandRepository { get; }

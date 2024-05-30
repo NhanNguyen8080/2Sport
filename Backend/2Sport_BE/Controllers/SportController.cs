@@ -47,7 +47,6 @@ namespace _2Sport_BE.Controllers
             try
             {
                 await _sportService.AddSports(newSports);
-                await _unitOfWork.SaveChanges();
                 return Ok("Add new sports successfully!");
             } catch (Exception ex)
             {

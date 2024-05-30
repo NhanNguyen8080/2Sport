@@ -27,6 +27,7 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<ISportService, SportService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartItemService, CartItemService>();
 
         }
 
