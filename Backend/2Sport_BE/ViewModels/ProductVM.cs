@@ -4,7 +4,7 @@ namespace _2Sport_BE.ViewModels
 {
     public class ProductDTO
     {
-        public int Id { get; set; }
+        
         public string ProductName { get; set; }
         public decimal? ListedPrice { get; set; }
         public decimal? Price { get; set; }
@@ -18,6 +18,7 @@ namespace _2Sport_BE.ViewModels
     }
     public class ProductVM : ProductDTO
     {
+        public int Id { get; set; }
         public int? BrandId { get; set; }
         public string BrandName { get; set; }
         public ICollection<ImagesVideo> ImagesVideos { get; set; }
