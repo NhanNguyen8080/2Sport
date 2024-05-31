@@ -7,7 +7,7 @@ const ProductRoutes = () => {
   return (
     <Routes>
       <Route path="/product" element={<ProductList />} />
-      <Route path="/product/:id" element={<ProductDetails />} />
+      <Route path="/product/:productId" element={<ProductDetails />} />
     </Routes>
   );
 };
