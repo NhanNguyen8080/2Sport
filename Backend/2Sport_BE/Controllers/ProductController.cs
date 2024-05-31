@@ -34,6 +34,20 @@ namespace _2Sport_BE.Controllers
         }
 
         [HttpGet]
+        [Route("get-product/{productId}")]
+        public async Task<IActionResult> GetProductById(int productId)
+        {
+            try
+            {
+                var product = await _productService.GetProductById(productId);
+                return Ok(product);
+            } catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpGet]
         [Route("list-products")]
         public async Task<IActionResult> GetProducts([FromQuery] DefaultSearch defaultSearch)
         {
@@ -59,15 +73,38 @@ namespace _2Sport_BE.Controllers
 
         [HttpGet]
         [Route("filter-sort-products")]
-        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, int sportId, int brandId, int categoryId)
+        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, string? size, decimal minPrice, decimal maxPrice,
+                                                        int sportId, int brandId, int categoryId)
         {
             try
             {
                 var query = await _productService.GetProducts(_ => _.Status == true, "", defaultSearch.currentPage, defaultSearch.perPage);
-                if (sportId != 0 || brandId != 0 || categoryId != 0)
+                if (sportId != 0)
                 {
-                    query = await _productService.GetProducts(_ => _.CategoryId == categoryId || _.SportId == sportId || _.BrandId == brandId,
-                                                        "", defaultSearch.currentPage, defaultSearch.perPage);
+                    query = query.Where(_ => _.SportId == sportId);
+                }
+                if (brandId != 0)
+                {
+                    query = query.Where(_ => _.BrandId == brandId);
+                }
+                if (categoryId != 0)
+                {
+                    query = query.Where(_ => _.CategoryId == categoryId);
+                }
+                if (!String.IsNullOrEmpty(size))
+                {
+                    query = query.Where(_ => _.Size == decimal.Parse(size));
+                }
+                if (minPrice > 0 || maxPrice > 0)
+                {
+                    if (minPrice > 0 && maxPrice > 0 && minPrice < maxPrice)
+                    {
+                        query = query.Where(_ => _.Price > minPrice && _.Price < maxPrice);
+                    }
+                    else
+                    {
+                        return BadRequest("Invalid query!");
+                    }
                 }
                 
                 var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
@@ -80,58 +117,9 @@ namespace _2Sport_BE.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("sort-products-by-price")]
-        //public async Task<IActionResult> SortProductsByPrice([FromQuery] DefaultSearch defaultSearch)
-        //{
-        //    try
-        //    {
-        //        var query = await _productService.GetProducts(_ => _.Status == true, null, "", defaultSearch.currentPage, defaultSearch.perPage);
-        //        var products = query.ToList();
-        //        foreach (var product in products)
-        //        {
-        //            var brand = await _brandService.GetBrandById(product.BrandId);
-        //            product.Brand = brand.FirstOrDefault();
-        //            var category = await _categoryService.GetCategoryById(product.CategoryId);
-        //            product.Category = category;
-        //        }
-        //        var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
-        //        return Ok(new { total = result.Count, data = result });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("filter-products-by-category/{categoryId}")]
-        //public async Task<IActionResult> FilterProductsByCategory([FromQuery] DefaultSearch defaultSearch, int categoryId)
-        //{
-        //    try
-        //    {
-        //        var query = await _productService.GetProducts(_ => _.Status == true && _.CategoryId == categoryId, null, "", 
-        //                                        defaultSearch.currentPage, defaultSearch.perPage);
-        //        var products = query.ToList();
-        //        foreach (var product in products)
-        //        {
-        //            var brand = await _brandService.GetBrandById(product.BrandId);
-        //            product.Brand = brand.FirstOrDefault();
-        //            var category = await _categoryService.GetCategoryById(product.CategoryId);
-        //            product.Category = category;
-        //        }
-        //        var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
-        //        return Ok(new { total = result.Count, data = result });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
         [HttpPut]
         [Route("update-product/{productId}")]
-        public async Task<IActionResult> UpdateProduct([FromQuery] int productId, ProductUM productUM)
+        public async Task<IActionResult> UpdateProduct(int productId, ProductUM productUM)
         {
             try
             {
