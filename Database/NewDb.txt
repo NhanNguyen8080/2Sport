@@ -227,10 +227,10 @@ GO
 
 CREATE TABLE [ImagesVideos] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
-	[ImageName],
-	[ImagePath],
-	[VideoName],
-	[VideoPath],
+	[ImageName] NVARCHAR(50),
+	[ImagePath] VARCHAR(MAX),
+	[VideoName] NVARCHAR(50),
+	[VideoPath] VARCHAR(MAX),
 	[BlogId] INT NULL,
 	[ProductId] INT NULL,
 	PRIMARY KEY([Id])
