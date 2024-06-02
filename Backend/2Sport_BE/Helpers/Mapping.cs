@@ -31,7 +31,9 @@ namespace _2Sport_BE.Helpers
 
             #region Product
             CreateMap<Product, ProductVM>()
-                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName));
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
+				.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
+				.ForMember(dest => dest.SportName, opt => opt.MapFrom(src => src.Sport.Name));
             CreateMap<Product, ProductCM>();
             CreateMap<Product, ProductUM>();
             CreateMap<ProductUM, Product>();

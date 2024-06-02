@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace _2Sport_BE.Repository.Models
 {
@@ -36,7 +35,6 @@ namespace _2Sport_BE.Repository.Models
         public virtual DbSet<ShipmentDetail> ShipmentDetails { get; set; }
         public virtual DbSet<Sport> Sports { get; set; }
         public virtual DbSet<Supplier> Suppliers { get; set; }
-        public virtual DbSet<TransportUnit> TransportUnits { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
 
@@ -44,23 +42,16 @@ namespace _2Sport_BE.Repository.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(GetConnectionString());
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=(local);uid=sa;pwd=12345;database=TwoSportDB;TrustServerCertificate=True");
             }
         }
-        private string GetConnectionString()
-        {
-            IConfiguration config = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true)
-            .Build();
-            var strConn = config["ConnectionStrings:DefaultConnection"];
-            return strConn;
-        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Blog>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Blogs__3214EC06DC5DB814")
+                entity.HasIndex(e => e.Id, "UQ__Blogs__3214EC0693196DBE")
                     .IsUnique();
 
                 entity.Property(e => e.BlogName).HasMaxLength(255);
@@ -76,12 +67,12 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Blogs)
                     .HasForeignKey(d => d.SportId)
-                    .HasConstraintName("FK__Blogs__SportId__17036CC0");
+                    .HasConstraintName("FK__Blogs__SportId__5DCAEF64");
             });
 
             modelBuilder.Entity<Brand>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Brands__3214EC067A2AF853")
+                entity.HasIndex(e => e.Id, "UQ__Brands__3214EC062B1DD238")
                     .IsUnique();
 
                 entity.Property(e => e.BrandName).HasMaxLength(255);
@@ -91,34 +82,34 @@ namespace _2Sport_BE.Repository.Models
             {
                 entity.ToTable("BrandCategory");
 
-                entity.HasIndex(e => e.Id, "UQ__BrandCat__3214EC064F461A31")
+                entity.HasIndex(e => e.Id, "UQ__BrandCat__3214EC06CDDC1719")
                     .IsUnique();
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.BrandCategories)
                     .HasForeignKey(d => d.BrandId)
-                    .HasConstraintName("FK__BrandCate__Brand__45F365D3");
+                    .HasConstraintName("FK__BrandCate__Brand__44FF419A");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.BrandCategories)
                     .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__BrandCate__Categ__44FF419A");
+                    .HasConstraintName("FK__BrandCate__Categ__440B1D61");
             });
 
             modelBuilder.Entity<Cart>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Carts__3214EC06693AF8CA")
+                entity.HasIndex(e => e.Id, "UQ__Carts__3214EC06AAD6E660")
                     .IsUnique();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Carts)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Carts__UserId__245D67DE");
+                    .HasConstraintName("FK__Carts__UserId__797309D9");
             });
 
             modelBuilder.Entity<CartItem>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__CartItem__3214EC06BD51B437")
+                entity.HasIndex(e => e.Id, "UQ__CartItem__3214EC06CFCFB618")
                     .IsUnique();
 
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
@@ -126,64 +117,49 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Cart)
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.CartId)
-                    .HasConstraintName("FK__CartItems__CartI__25518C17");
+                    .HasConstraintName("FK__CartItems__CartI__7A672E12");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.CartItems)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__CartItems__Produ__06CD04F7");
+                    .HasConstraintName("FK__CartItems__Produ__02FC7413");
             });
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Categori__3214EC06990DC2F6")
+                entity.HasIndex(e => e.Id, "UQ__Categori__3214EC06E5B3CC2C")
                     .IsUnique();
 
                 entity.Property(e => e.CategoryName).HasMaxLength(255);
-
-                entity.HasOne(d => d.Sport)
-                    .WithMany(p => p.Categories)
-                    .HasForeignKey(d => d.SportId)
-                    .HasConstraintName("FK__Categorie__Sport__3E52440B");
             });
 
             modelBuilder.Entity<ImagesVideo>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__ImagesVi__3214EC06E83620DC")
+                entity.HasIndex(e => e.Id, "UQ__ImagesVi__3214EC06E3704065")
                     .IsUnique();
 
-                entity.Property(e => e.ImageName)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.ImageName).HasMaxLength(50);
 
-                entity.Property(e => e.ImagePath)
-                    .IsRequired()
-                    .IsUnicode(false);
+                entity.Property(e => e.ImagePath).IsUnicode(false);
 
-                entity.Property(e => e.VideoName)
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.VideoName).HasMaxLength(50);
 
-                entity.Property(e => e.VideoPath)
-                    .IsRequired()
-                    .IsUnicode(false);
+                entity.Property(e => e.VideoPath).IsUnicode(false);
 
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.ImagesVideos)
                     .HasForeignKey(d => d.BlogId)
-                    .HasConstraintName("FK__ImagesVid__BlogI__236943A5");
+                    .HasConstraintName("FK__ImagesVid__BlogI__787EE5A0");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ImagesVideos)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__ImagesVid__Produ__22751F6C");
+                    .HasConstraintName("FK__ImagesVid__Produ__778AC167");
             });
 
             modelBuilder.Entity<ImportHistory>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__ImportHi__3214EC06DE224E00")
+                entity.HasIndex(e => e.Id, "UQ__ImportHi__3214EC0637C325A8")
                     .IsUnique();
 
                 entity.Property(e => e.ImportCode).HasMaxLength(255);
@@ -195,38 +171,38 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.ImportHistories)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__ImportHis__Produ__0D7A0286");
+                    .HasConstraintName("FK__ImportHis__Produ__09A971A2");
 
                 entity.HasOne(d => d.Supplier)
                     .WithMany(p => p.ImportHistories)
                     .HasForeignKey(d => d.SupplierId)
-                    .HasConstraintName("FK__ImportHis__Suppl__0E6E26BF");
+                    .HasConstraintName("FK__ImportHis__Suppl__0A9D95DB");
             });
 
             modelBuilder.Entity<Like>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Likes__3214EC06F7AC180A")
+                entity.HasIndex(e => e.Id, "UQ__Likes__3214EC069464DCC6")
                     .IsUnique();
 
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.Likes)
                     .HasForeignKey(d => d.BlogId)
-                    .HasConstraintName("FK__Likes__BlogId__02FC7413");
+                    .HasConstraintName("FK__Likes__BlogId__7F2BE32F");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Likes)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Likes__ProductId__02084FDA");
+                    .HasConstraintName("FK__Likes__ProductId__7E37BEF6");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Likes)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Likes__UserId__03F0984C");
+                    .HasConstraintName("FK__Likes__UserId__00200768");
             });
 
             modelBuilder.Entity<Order>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Orders__3214EC06FABAD9A4")
+                entity.HasIndex(e => e.Id, "UQ__Orders__3214EC06EFAAC59E")
                     .IsUnique();
 
                 entity.Property(e => e.IntoMoney).HasColumnType("decimal(18, 0)");
@@ -242,45 +218,40 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.PaymentMethodId)
-                    .HasConstraintName("FK__Orders__PaymentM__08B54D69");
+                    .HasConstraintName("FK__Orders__PaymentM__04E4BC85");
 
                 entity.HasOne(d => d.ShipmentDetail)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ShipmentDetailId)
-                    .HasConstraintName("FK__Orders__Shipment__07C12930");
-
-                entity.HasOne(d => d.TransportUnit)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.TransportUnitId)
-                    .HasConstraintName("FK__Orders__Transpor__0F624AF8");
+                    .HasConstraintName("FK__Orders__Shipment__03F0984C");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Orders__UserId__09A971A2");
+                    .HasConstraintName("FK__Orders__UserId__05D8E0BE");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__OrderDet__3214EC06B75CA833")
+                entity.HasIndex(e => e.Id, "UQ__OrderDet__3214EC06BDAD68F4")
                     .IsUnique();
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__OrderDeta__Order__0A9D95DB");
+                    .HasConstraintName("FK__OrderDeta__Order__06CD04F7");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__OrderDeta__Produ__0B91BA14");
+                    .HasConstraintName("FK__OrderDeta__Produ__07C12930");
             });
 
             modelBuilder.Entity<PaymentMethod>(entity =>
             {
                 entity.ToTable("PaymentMethod");
 
-                entity.HasIndex(e => e.Id, "UQ__PaymentM__3214EC06624600B0")
+                entity.HasIndex(e => e.Id, "UQ__PaymentM__3214EC06BC2A56D4")
                     .IsUnique();
 
                 entity.Property(e => e.PaymentMethodName).HasMaxLength(255);
@@ -288,7 +259,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<Product>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Products__3214EC068D0222EC")
+                entity.HasIndex(e => e.Id, "UQ__Products__3214EC06DF65E655")
                     .IsUnique();
 
                 entity.Property(e => e.Color)
@@ -297,9 +268,7 @@ namespace _2Sport_BE.Repository.Models
 
                 entity.Property(e => e.ListedPrice).HasColumnType("decimal(18, 0)");
 
-                entity.Property(e => e.MainImageName)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.MainImageName).HasMaxLength(255);
 
                 entity.Property(e => e.MainImagePath).IsUnicode(false);
 
@@ -311,29 +280,32 @@ namespace _2Sport_BE.Repository.Models
 
                 entity.Property(e => e.ProductName).HasMaxLength(255);
 
-                entity.Property(e => e.Size).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Size)
+                    .IsRequired()
+                    .HasMaxLength(5)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.BrandId)
-                    .HasConstraintName("FK__Products__BrandI__01142BA1");
+                    .HasConstraintName("FK__Products__BrandI__7C4F7684");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.CategoryId)
-                    .HasConstraintName("FK__Products__Catego__00200768");
+                    .HasConstraintName("FK__Products__Catego__7D439ABD");
 
                 entity.HasOne(d => d.Sport)
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.SportId)
-                    .HasConstraintName("FK__Products__SportI__49C3F6B7");
+                    .HasConstraintName("FK__Products__SportI__48CFD27E");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {
                 entity.ToTable("RefreshToken");
 
-                entity.HasIndex(e => e.RefreshTokenId, "UQ__RefreshT__F5845E384BFCC797")
+                entity.HasIndex(e => e.RefreshTokenId, "UQ__RefreshT__F5845E38FCABDF16")
                     .IsUnique();
 
                 entity.Property(e => e.CreateDate).HasColumnType("datetime");
@@ -343,12 +315,12 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RefreshTokens)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__RefreshTo__UserI__1BC821DD");
+                    .HasConstraintName("FK__RefreshTo__UserI__68487DD7");
             });
 
             modelBuilder.Entity<Review>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Reviews__3214EC060E41610E")
+                entity.HasIndex(e => e.Id, "UQ__Reviews__3214EC0678B0813F")
                     .IsUnique();
 
                 entity.Property(e => e.Review1)
@@ -360,17 +332,17 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Reviews__Product__04E4BC85");
+                    .HasConstraintName("FK__Reviews__Product__01142BA1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Reviews)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Reviews__UserId__05D8E0BE");
+                    .HasConstraintName("FK__Reviews__UserId__02084FDA");
             });
 
             modelBuilder.Entity<Role>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Roles__3214EC0650DBADA8")
+                entity.HasIndex(e => e.Id, "UQ__Roles__3214EC063B39D64F")
                     .IsUnique();
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
@@ -382,7 +354,7 @@ namespace _2Sport_BE.Repository.Models
 
             modelBuilder.Entity<ShipmentDetail>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Shipment__3214EC064ED72E07")
+                entity.HasIndex(e => e.Id, "UQ__Shipment__3214EC06FD719AD4")
                     .IsUnique();
 
                 entity.Property(e => e.Address).HasMaxLength(255);
@@ -394,18 +366,18 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ShipmentDetails)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__ShipmentD__UserI__2645B050");
+                    .HasConstraintName("FK__ShipmentD__UserI__7B5B524B");
             });
 
             modelBuilder.Entity<Sport>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Sports__3214EC068A10FC8F")
+                entity.HasIndex(e => e.Id, "UQ__Sports__3214EC0620487C3B")
                     .IsUnique();
             });
 
             modelBuilder.Entity<Supplier>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Supplier__3214EC065E76D8A9")
+                entity.HasIndex(e => e.Id, "UQ__Supplier__3214EC06299DBE49")
                     .IsUnique();
 
                 entity.Property(e => e.Location).HasMaxLength(255);
@@ -413,17 +385,9 @@ namespace _2Sport_BE.Repository.Models
                 entity.Property(e => e.SupplierName).HasMaxLength(255);
             });
 
-            modelBuilder.Entity<TransportUnit>(entity =>
-            {
-                entity.HasIndex(e => e.Id, "UQ__Transpor__3214EC0632131BB3")
-                    .IsUnique();
-
-                entity.Property(e => e.TransportUnitName).HasMaxLength(255);
-            });
-
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Users__3214EC0654C0AD89")
+                entity.HasIndex(e => e.Id, "UQ__Users__3214EC066582F2A1")
                     .IsUnique();
 
                 entity.Property(e => e.BirthDate).HasColumnType("datetime");
@@ -449,18 +413,18 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK__Users__RoleId__19DFD96B");
+                    .HasConstraintName("FK__Users__RoleId__6477ECF3");
             });
 
             modelBuilder.Entity<Warehouse>(entity =>
             {
-                entity.HasIndex(e => e.Id, "UQ__Warehous__3214EC0689A78639")
+                entity.HasIndex(e => e.Id, "UQ__Warehous__3214EC069561577D")
                     .IsUnique();
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Warehouses)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("FK__Warehouse__Produ__0C85DE4D");
+                    .HasConstraintName("FK__Warehouse__Produ__08B54D69");
             });
 
             OnModelCreatingPartial(modelBuilder);

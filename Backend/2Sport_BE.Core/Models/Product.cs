@@ -20,7 +20,7 @@ namespace _2Sport_BE.Repository.Models
         public string ProductName { get; set; }
         public decimal? ListedPrice { get; set; }
         public decimal? Price { get; set; }
-        public decimal Size { get; set; }
+        public string Size { get; set; }
         public string Description { get; set; }
         public bool? Status { get; set; }
         public string Color { get; set; }

@@ -21,7 +21,7 @@ namespace _2Sport_BE.Service.Services
                                   int? pageIndex = null,
                                   int? pageSize = null);
 
-        Task<Sport> GetSportById(int id);
+        Task<Sport> GetSportById(int? id);
         Task AddSports(IEnumerable<Sport> sports);
         Task DeleteSportById(int id);
         Task UpdateSport(Sport newSport);
@@ -51,7 +51,7 @@ namespace _2Sport_BE.Service.Services
             return query.AsQueryable();
         }
 
-        public async Task<Sport> GetSportById(int id)
+        public async Task<Sport> GetSportById(int? id)
         {
             return await _unitOfWork.SportRepository.FindAsync(id);
         }

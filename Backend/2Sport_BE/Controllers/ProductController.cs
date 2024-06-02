@@ -18,19 +18,23 @@ namespace _2Sport_BE.Controllers
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
         private readonly ICategoryService _categoryService;
+        private readonly ISportService _sportService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+		private readonly IMapper _mapper;
 
         public ProductController(IProductService productService, 
                                 IBrandService brandService, 
                                 ICategoryService categoryService,
-                                IUnitOfWork unitOfWork, IMapper mapper)
+                                IUnitOfWork unitOfWork,
+								ISportService sportService,
+                                IMapper mapper)
         {
             _productService = productService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _brandService = brandService;
             _categoryService = categoryService;
+            _sportService = sportService;
         }
 
         [HttpGet]
@@ -61,7 +65,9 @@ namespace _2Sport_BE.Controllers
                     product.Brand = brand.FirstOrDefault();
                     var category = await _categoryService.GetCategoryById(product.CategoryId);
                     product.Category = category;
-                }
+					var sport = await _sportService.GetSportById(product.SportId);
+					product.Sport = sport;
+				}
                 var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
                 return Ok(new { total = result.Count, data = result });
             }
@@ -93,7 +99,7 @@ namespace _2Sport_BE.Controllers
                 }
                 if (!String.IsNullOrEmpty(size))
                 {
-                    query = query.Where(_ => _.Size == decimal.Parse(size));
+                    query = query.Where(_ => _.Size.Equals(size));
                 }
                 if (minPrice > 0 || maxPrice > 0)
                 {
@@ -106,8 +112,19 @@ namespace _2Sport_BE.Controllers
                         return BadRequest("Invalid query!");
                     }
                 }
-                
-                var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
+
+				var products = query.ToList();
+				foreach (var product in products)
+				{
+					var brand = await _brandService.GetBrandById(product.BrandId);
+					product.Brand = brand.FirstOrDefault();
+					var category = await _categoryService.GetCategoryById(product.CategoryId);
+					product.Category = category;
+					var sport = await _sportService.GetSportById(product.SportId);
+					product.Sport = sport;
+				}
+
+				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
                                   .Select(_ => _mapper.Map<Product, ProductVM>(_))
                                   .ToList();
                 return Ok(new { total = result.Count, data = result });

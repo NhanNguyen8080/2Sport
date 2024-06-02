@@ -25,7 +25,6 @@ namespace _2Sport_BE.Repository.Models
 
         public virtual PaymentMethod PaymentMethod { get; set; }
         public virtual ShipmentDetail ShipmentDetail { get; set; }
-        public virtual TransportUnit TransportUnit { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }

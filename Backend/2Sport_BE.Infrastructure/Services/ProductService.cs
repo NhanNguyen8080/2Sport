@@ -65,7 +65,7 @@ namespace _2Sport_BE.Service.Services
             return query.AsQueryable();
         }
 
-        public async Task<IQueryable<Product>> GetCategories(Expression<Func<Product, bool>> filter = null,
+        public async Task<IQueryable<Product>> GetProducts(Expression<Func<Product, bool>> filter = null,
                                                             int? pageIndex = null,
                                                             int? pageSize = null)
         {

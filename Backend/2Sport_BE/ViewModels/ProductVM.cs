@@ -8,7 +8,7 @@ namespace _2Sport_BE.ViewModels
         public string ProductName { get; set; }
         public decimal? ListedPrice { get; set; }
         public decimal? Price { get; set; }
-        public decimal Size { get; set; }
+        public string Size { get; set; }
         public string Description { get; set; }
         public bool? Status { get; set; }
         public string Color { get; set; }
@@ -21,7 +21,11 @@ namespace _2Sport_BE.ViewModels
         public int Id { get; set; }
         public int? BrandId { get; set; }
         public string BrandName { get; set; }
-        public ICollection<ImagesVideo> ImagesVideos { get; set; }
+		public int? SportId { get; set; }
+		public string SportName { get; set; }
+		public int? CategoryID { get; set; }
+		public string CategoryName { get; set; }
+		public ICollection<ImagesVideo> ImagesVideos { get; set; }
         public ICollection<Like> Likes { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }
