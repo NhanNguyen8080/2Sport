@@ -29,7 +29,7 @@ INSERT INTO Sports (Name) VALUES ('Basketball');
 INSERT INTO Sports (Name) VALUES ('Badminton');
 
 CREATE TABLE [Categories] (
-	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Id] INT NOT NULL IDENTITY(1,1) UNIQUE,
 	[CategoryName] NVARCHAR(255),
 	[Quantity] INT,
 	[Status] BIT,
@@ -133,7 +133,7 @@ INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 7);
 GO
 CREATE TABLE [Products] (
-	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Id] INT NOT NULL IDENTITY(1,1) UNIQUE,
 	[ProductName] NVARCHAR(255),
 	[ListedPrice] DECIMAL,
 	[Price] DECIMAL,
@@ -158,23 +158,23 @@ GO
 
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, '', N'', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 6, 7, 2, 'QC_VS002');
+VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, '', N'', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 4, 7, 2, 'QC_VS002');
 
 GO
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Quấn Cán Vợt Cầu Lông Lining GP2000', 20000, 20000, '', N'', 1, N'Đủ màu', '',N'Quấn Cán Vợt Cầu Lông Lining GP2000', 'https://cdn.shopvnb.com/uploads/gallery/quan-can-vot-cau-long-lining-gp2000_1712886881.webp', 6, 5, 2, 'QC_GP2000');
+VALUES (N'Quấn Cán Vợt Cầu Lông Lining GP2000', 20000, 20000, '', N'', 1, N'Đủ màu', '',N'Quấn Cán Vợt Cầu Lông Lining GP2000', 'https://cdn.shopvnb.com/uploads/gallery/quan-can-vot-cau-long-lining-gp2000_1712886881.webp', 4, 5, 2, 'QC_GP2000');
 
 GO
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu', 72000, 60000, '', N'', 1, N'Trắng Viền Đỏ', '',N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-2225-trang-vien-do-xanh-reu-60k_1715645158.webp', 9, 6, 2, 'SO_YO2225');
+VALUES (N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu', 72000, 60000, '', N'', 1, N'Trắng Viền Đỏ', '',N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-2225-trang-vien-do-xanh-reu-60k_1715645158.webp', 1, 6, 2, 'SO_YO2225');
 
 GO
 
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Vớ Cầu Lông Yonex SKSE100', 47000, 39000, '', N'', 1, N'Trắng', '',N'Vớ Cầu Lông Yonex SKSE100 Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-skse100-chinh-hang_1716154218.webp', 9, 6, 2, 'SO_YOSKSE100');
+VALUES (N'Vớ Cầu Lông Yonex SKSE100', 47000, 39000, '', N'', 1, N'Trắng', '',N'Vớ Cầu Lông Yonex SKSE100 Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-skse100-chinh-hang_1716154218.webp', 1, 6, 2, 'SO_YOSKSE100');
 
 GO
 
@@ -373,11 +373,11 @@ ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Products]
-ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
+ADD FOREIGN KEY([BrandId]) REFERENCES [Brands]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Products]
-ADD FOREIGN KEY([BrandId]) REFERENCES [Brands]([Id])
+ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Likes]
