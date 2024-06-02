@@ -11,6 +11,10 @@ import UserDropdown from '../User/userDropdown';
 import SignUpModal from './SIgnUpModal';
 import { jwtDecode } from "jwt-decode";
 import LoginGoogle from './LoginGoogle';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { authenticateUser } from '../../services/authService';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 export default function SignInModal() {
   const dispatch = useDispatch();
@@ -20,6 +24,7 @@ export default function SignInModal() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -27,23 +32,11 @@ export default function SignInModal() {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        'https://localhost:7276/api/Auth/sign-in',
-        {
-          userName: data.userName,
-          password: data.password,
-        }
-      );
-      // document.cookie = `token=${response.data.data.token}; path=/;`;
-      // document.cookie = `refreshToken=${response.data.data.refreshToken}; path=/;`;
-      localStorage.setItem('token', response.data.data.token);
-      localStorage.setItem('refreshToken', response.data.data.refreshToken);
-      const decoded = jwtDecode(response.data.data.token);
-      dispatch(login(decoded));
+      const decoded = await authenticateUser(dispatch, data);
       // console.log('Login successful', decoded);
       setIsSignInOpen(false);
     } catch (error) {
-      console.error('Login failed', error);
+      // Handle error inside authenticateUser
     }
   };
 
@@ -61,6 +54,14 @@ export default function SignInModal() {
 
   function openSignUpModal() {
     setIsSignUpOpen(true);
+  }
+
+  function closeForgotPasswordModal() {
+    setIsForgotPasswordOpen(false);
+  }
+
+  function openForgotPasswordModal() {
+    setIsForgotPasswordOpen(true);
   }
 
   return (
@@ -124,57 +125,66 @@ export default function SignInModal() {
                     </button>
                   </div>
                   <div className="bg-white w-1/2 px-20 text-black flex-col flex font-poppins justify-center" >
-                  <form onSubmit={handleSubmit(onSubmit)} className=" text-black flex-col flex font-poppins justify-center pb-5" >
-                    <label className="font-rubikmonoone text-xl items-center text-center mb-2">Sign in</label>
-                    <label className="">Username</label>
-                    <input
-                      type="text"
-                      placeholder="Enter your username"
-                      className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
-                      {...register('userName', {
-                        required: true,
-                        maxLength: 20,
-                        pattern: /^[a-zA-Z0-9_]+$/,
-                      })}
-                    />
-                    {errors.username && errors.username.type === 'required' && (
-                      <p className="text-red-400 text-sm italic">This field is required!</p>
-                    )}
-                    {errors.username && errors.username.type === 'maxLength' && (
-                      <p>Username cannot exceed 20 characters</p>
-                    )}
-                    {errors.username && errors.username.type === 'pattern' && (
-                      <p className="text-red-400 text-sm italic">Username can only contain letters, numbers, and underscores</p>
-                    )}
-
-                    <label className="">Password</label>
-                    <div className="relative">
+                    <form onSubmit={handleSubmit(onSubmit)} className=" text-black flex-col flex font-poppins justify-center pb-5" >
+                      <label className="font-rubikmonoone text-xl items-center text-center mb-2">Sign in</label>
+                      <label className="">Username</label>
                       <input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Enter your password"
+                        type="text"
+                        placeholder="Enter your username"
                         className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
-                        {...register('password', { required: true })}
+                        {...register('userName', {
+                          required: true,
+                          maxLength: 20,
+                          pattern: /^[a-zA-Z0-9_]+$/,
+                        })}
                       />
-                      <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-                        <FontAwesomeIcon
-                          icon={showPassword ? faEyeSlash : faEye}
-                          className="cursor-pointer text-orange-400"
-                          onClick={togglePasswordVisibility}
-                        />
-                      </div>
-                    </div>
-                    {errors.password && <p className="text-red-400 text-sm italic">Password is required</p>}
-                    <label className="text-left pb-3">Forgot password?</label>
-                    <button
-                      type="submit"
-                      className="bg-orange-500 font-rubikmonoone text-white rounded-lg px-10 py-2 w-full"
-                      onClick={closeSignInModal}
-                    >
-                      Sign in
-                    </button>
-                  </form>
+                      {errors.userName && errors.userName.type === 'required' && (
+                        <p className="text-red-400 text-sm italic">This field is required!</p>
+                      )}
+                      {errors.userName && errors.userName.type === 'maxLength' && (
+                        <p>Username cannot exceed 20 characters</p>
+                      )}
+                      {errors.userName && errors.userName.type === 'pattern' && (
+                        <p className="text-red-400 text-sm italic">Username can only contain letters, numbers, and underscores</p>
+                      )}
 
-                <LoginGoogle setIsSignInOpen={setIsSignInOpen}/>
+                      <label className="">Password</label>
+                      <div className="relative">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="Enter your password"
+                          className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
+                          {...register('password', { required: true })}
+                        />
+                        <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                          <FontAwesomeIcon
+                            icon={showPassword ? faEyeSlash : faEye}
+                            className="cursor-pointer text-orange-400"
+                            onClick={togglePasswordVisibility}
+                          />
+                        </div>
+                      </div>
+                      {errors.password && <p className="text-red-400 text-sm italic">Password is required</p>}
+                      <button
+                        className="text-left pb-3 text-blue-500 underline"
+                        onClick={() => {
+                          closeSignInModal();
+                          openForgotPasswordModal();
+                        }}
+                      >
+                        Forgot password?
+                      </button>
+
+                      <button
+                        type="submit"
+                        className="bg-orange-500 font-rubikmonoone text-white rounded-lg px-10 py-2 w-full"
+                        onClick={closeSignInModal}
+                      >
+                        Sign in
+                      </button>
+                    </form>
+
+                    <LoginGoogle setIsSignInOpen={setIsSignInOpen} />
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -182,6 +192,7 @@ export default function SignInModal() {
           </div>
         </Dialog>
       </Transition>
+      <ForgotPasswordModal isOpen={isForgotPasswordOpen} closeModal={closeForgotPasswordModal} />
 
       <SignUpModal isOpen={isSignUpOpen} closeModal={closeSignUpModal} openSignInModal={openSignInModal} />
     </>

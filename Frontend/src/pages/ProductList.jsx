@@ -1,28 +1,45 @@
-// src/components/ProductList.js
 import React, { useEffect, useState } from 'react';
-import { fetchProducts, fetchProductsSorted  } from '../services/productService';
+import { fetchProducts, fetchProductsSorted } from '../services/productService';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProducts, setProducts } from '../redux/slices/productSlice';
 
 const ProductList = ({ sortBy }) => {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const products = useSelector(selectProducts);
 
   useEffect(() => {
     const getProducts = async () => {
-      try {
-        const productsData = sortBy ? await fetchProductsSorted(sortBy) : await fetchProducts();
-        setProducts(productsData);
+       try {
+        let productsData;
+        if (sortBy) {
+          productsData = await fetchProductsSorted(sortBy);
+        } else {
+          productsData = await fetchProducts();
+        }
+
+        const productsArray = sortBy ? productsData : productsData.products;
+        dispatch(setProducts({ data: { products: productsArray, total: productsData.total } }));
+        console.log(productsArray);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
+      // try {
+      //   const productsData = sortBy ? await fetchProductsSorted(sortBy) : await fetchProducts();
+      //   dispatch(setProducts({ data: productsData }));
+      //   console.log(productsData);
+      // } catch (error) {
+      //   console.error('Error fetching products:', error);
+      // }
     };
 
     getProducts();
-  }, [sortBy]);
+  }, [sortBy, dispatch]);
 
   return (
     <div className="">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map(product => (
+        {products.products.map(product => (
           <Link key={product.id} to={`/product/${product.id}`}>
             <div className="bg-white hover:drop-shadow-lg">
               <div className="relative">

@@ -104,6 +104,8 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Logout = () => {
     const navigate = useNavigate();
@@ -114,7 +116,6 @@ const Logout = () => {
         // const cookiesArray = document.cookie.split(';');
         // let token = null;
         // let refreshToken = null;
-
         // // Iterate through the array to find the token and refreshToken
         // cookiesArray.forEach(cookie => {
         //     const [name, value] = cookie.trim().split('=');
@@ -141,7 +142,7 @@ const Logout = () => {
             refreshToken: refreshToken
         };
 
-        console.log('Request Payload:', JSON.stringify(data));
+        // console.log('Request Payload:', JSON.stringify(data));
 
         try {
             const response = await axios.post('https://localhost:7276/api/Auth/sign-out', data, {
@@ -153,7 +154,7 @@ const Logout = () => {
             // Optionally, handle logout success (e.g., redirect to login page)
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
-
+            toast.success("You have signed out successfully");
             navigate('/');
             dispatch(logout());
         } catch (error) {

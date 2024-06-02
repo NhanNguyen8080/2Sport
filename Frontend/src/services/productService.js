@@ -4,7 +4,8 @@ import { getProductList, getProductById,getProductSortBy   } from '../api/apiPro
 export const fetchProducts = async (sortBy = '') => {
   try {
     const response = await getProductList(sortBy);
-    return response.data.data.$values;
+    const { total, data } = response.data;
+    return { total, products: data.$values };
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error;
@@ -24,9 +25,9 @@ export const fetchProductsSorted = async (sortBy = '') => {
 export const fetchProductById = async (id) => {
   try {
     const response = await getProductById(id);
-    return response.data.data;
+    return response.data;
   } catch (error) {
-    console.error('Error fetching product details:', error);
+    console.error(`Error fetching product with id ${id}:`, error);
     throw error;
   }
 };
