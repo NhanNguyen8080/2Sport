@@ -52,8 +52,7 @@ namespace _2Sport_BE.Service.Services
                     {
                         var newCart = new Cart()
                         {
-                            UserId = userId,
-                            User = user
+                            UserId = userId
                         };
                         await _cartRepository.InsertAsync(newCart);
                         try
