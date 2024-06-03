@@ -167,5 +167,26 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(ex);
             }
         }
+
+        [HttpPost]
+        [Route("add-product-list")]
+        public async Task<IActionResult> AddProductList(List<ProductCM> productList)
+        {
+            try
+            {
+                var addedProducts = _mapper.Map<List<Product>>(productList);
+				await _productService.AddProducts(addedProducts);
+                if (await _unitOfWork.SaveChanges())
+                {
+                    return Ok("Add products successfully!");
+                }
+                return BadRequest("Add products failed");
+                
+			} catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+            
+        }
     }
 }

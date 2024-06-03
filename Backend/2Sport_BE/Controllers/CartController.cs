@@ -6,6 +6,7 @@ using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace _2Sport_BE.Controllers
 {
@@ -25,18 +26,34 @@ namespace _2Sport_BE.Controllers
         }
 
         [HttpPost]
-        [Route("get-cart/{userId}")]
-        public async Task<IActionResult> GetCarts(int userId, DefaultSearch defaultSearch)
+        [Route("get-cart")]
+        public async Task<IActionResult> GetCarts(DefaultSearch defaultSearch)
         {
             try
             {
-                var query = await _cartItemService.GetCartItems(userId, defaultSearch.currentPage, defaultSearch.perPage);
-                var cartItems = query.Select(_ => _mapper.Map<CartItem, CartItemVM>(_)).ToList();
-                foreach (var carItem in cartItems)
+				var userId = GetCurrentUserIdFromToken();
+
+				if (userId == 0)
+				{
+					return Unauthorized();
+				}
+
+				var query = await _cartItemService.GetCartItems(userId, defaultSearch.currentPage, defaultSearch.perPage);
+                if (query != null)
                 {
-                    carItem.ProductName = (await _unitOfWork.ProductRepository.FindAsync(carItem.ProductId)).ProductName;
-                }
-                return Ok(new { total = cartItems.Count(), data = cartItems });
+					var cartItems = query.Select(_ => _mapper.Map<CartItem, CartItemVM>(_)).ToList();
+					if (cartItems != null)
+					{
+						foreach (var carItem in cartItems)
+						{
+							carItem.ProductName = (await _unitOfWork.ProductRepository.FindAsync(carItem.ProductId)).ProductName;
+						}
+						return Ok(new { total = cartItems.Count(), data = cartItems });
+					}
+					return BadRequest();
+				}
+                
+				return BadRequest();
             } catch (Exception ex)
             {
                 return BadRequest(ex);
@@ -45,12 +62,19 @@ namespace _2Sport_BE.Controllers
         }
 
         [HttpPost]
-        [Route("add-to-cart/{userId}")]
-        public async Task<IActionResult> AddToCart(int userId, CartItemCM cartItemCM)
+        [Route("add-to-cart")]
+        public async Task<IActionResult> AddToCart(CartItemCM cartItemCM)
         {
             try
             {
-                var newCartItem = _mapper.Map<CartItemCM, CartItem>(cartItemCM);
+                var userId = GetCurrentUserIdFromToken();
+
+                if (userId == 0)
+                {
+                    return Unauthorized();
+                }
+
+				var newCartItem = _mapper.Map<CartItemCM, CartItem>(cartItemCM);
 
                 var addedCartItem = await _cartItemService.AddCartItem(userId, newCartItem);
                 if (addedCartItem != null)
@@ -65,5 +89,29 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(ex);
             }
         }
-    }
+
+		protected int GetCurrentUserIdFromToken()
+		{
+			int UserId = 0;
+			try
+			{
+				if (HttpContext.User.Identity.IsAuthenticated)
+				{
+					var identity = HttpContext.User.Identity as ClaimsIdentity;
+					if (identity != null)
+					{
+						IEnumerable<Claim> claims = identity.Claims;
+						string strUserId = identity.FindFirst("UserId").Value;
+						int.TryParse(strUserId, out UserId);
+
+					}
+				}
+				return UserId;
+			}
+			catch
+			{
+				return UserId;
+			}
+		}
+	}
 }
