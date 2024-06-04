@@ -25,9 +25,9 @@ namespace _2Sport_BE.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get-cart")]
-        public async Task<IActionResult> GetCarts(DefaultSearch defaultSearch)
+        public async Task<IActionResult> GetCarts([FromQuery]DefaultSearch defaultSearch)
         {
             try
             {

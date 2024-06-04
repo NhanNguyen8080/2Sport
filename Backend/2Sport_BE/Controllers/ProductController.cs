@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace _2Sport_BE.Controllers
 {
@@ -134,7 +135,40 @@ namespace _2Sport_BE.Controllers
             }
         }
 
-        [HttpPut]
+		[HttpGet]
+		[Route("search-products")]
+		public async Task<IActionResult> SearchProducts([FromQuery] string keywords, [FromQuery] DefaultSearch defaultSearch)
+		{
+			try
+			{
+				var query = await _productService.GetProducts(_ => _.Status == true && 
+                                                                (_.ProductName.ToLower().Contains(keywords.ToLower()) ||
+                                                                _.ProductCode.ToLower().Contains(keywords.ToLower()))
+                                                                , "", defaultSearch.currentPage, defaultSearch.perPage);
+
+				var products = query.ToList();
+				foreach (var product in products)
+				{
+					var brand = await _brandService.GetBrandById(product.BrandId);
+					product.Brand = brand.FirstOrDefault();
+					var category = await _categoryService.GetCategoryById(product.CategoryId);
+					product.Category = category;
+					var sport = await _sportService.GetSportById(product.SportId);
+					product.Sport = sport;
+				}
+
+				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
+								  .Select(_ => _mapper.Map<Product, ProductVM>(_))
+								  .ToList();
+				return Ok(new { total = result.Count, data = result });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
+		[HttpPut]
         [Route("update-product/{productId}")]
         public async Task<IActionResult> UpdateProduct(int productId, ProductUM productUM)
         {

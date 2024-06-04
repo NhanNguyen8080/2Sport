@@ -187,7 +187,13 @@ public async Task<IActionResult> GoogleLogin()
                 user.RoleId = 4;
                 user.IsActive = true;
                 await _userService.AddAsync(user);
-                _userService.Save();
+                var cart = new Cart
+                {
+                    UserId = user.Id,
+                    User = user,
+                };
+                await _unitOfWork.CartRepository.InsertAsync(cart);
+				_userService.Save();
                 return StatusCode(201, new { processStatus = "Success", userId = user.Id }); ;
             }
             catch (Exception ex)

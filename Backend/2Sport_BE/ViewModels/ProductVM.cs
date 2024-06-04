@@ -26,8 +26,8 @@ namespace _2Sport_BE.ViewModels
 		public int? CategoryID { get; set; }
 		public string CategoryName { get; set; }
 		public ICollection<ImagesVideo> ImagesVideos { get; set; }
-        public ICollection<Like> Likes { get; set; }
-        public ICollection<Review> Reviews { get; set; }
+		public ICollection<Like> Likes { get; set; }
+		public ICollection<Review> Reviews { get; set; }
     }
 
     public class ProductCM : ProductDTO

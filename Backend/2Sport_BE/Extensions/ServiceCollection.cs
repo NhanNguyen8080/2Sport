@@ -26,10 +26,11 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICartItemService, CartItemService>();
+			services.AddScoped<ILikeService, LikeService>();
+			services.AddScoped<IReviewService, ReviewService>();
+		}
 
-        }
-
-        private static string GetConnectionStrings()
+		private static string GetConnectionStrings()
         {
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
