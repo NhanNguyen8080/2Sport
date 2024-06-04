@@ -29,28 +29,20 @@ INSERT INTO Sports (Name) VALUES ('Basketball');
 INSERT INTO Sports (Name) VALUES ('Badminton');
 
 CREATE TABLE [Categories] (
-	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Id] INT NOT NULL IDENTITY(1,1) UNIQUE,
 	[CategoryName] NVARCHAR(255),
 	[Quantity] INT,
 	[Status] BIT,
-	[SportId] INT,
 	PRIMARY KEY([Id])
 );
 GO
-ALTER TABLE [Categories]
-ADD FOREIGN KEY([SportId]) REFERENCES [Sports]([Id])
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-GO
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Basketball Socks', 1, 1);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Basketball Ball', 1, 1);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Basketball Shoes', 1, 1);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Basketball Accessories', 1, 1);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Rackets', 1, 2);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Accessories', 1, 2);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Shuttlecock', 1, 2);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Shoes', 1, 2);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Socks', 1, 2);
-INSERT INTO Categories (CategoryName, Status, SportId) VALUES ('Badminton Clothes', 1, 2);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Socks', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Basketball Ball', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Shoes', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Accessories', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Rackets', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Badminton Shuttlecock', 1);
+INSERT INTO Categories (CategoryName, Status) VALUES ('Clothes', 1);
 
 CREATE TABLE [Brands] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
@@ -94,10 +86,12 @@ INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (1, 1);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (1, 2);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (1, 3);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (1, 4);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (1, 7);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (2, 1);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (2, 2);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (2, 3);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (2, 4);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (2, 7);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (3, 1);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (3, 2);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (3, 3);
@@ -106,48 +100,49 @@ INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (4, 1);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (4, 2);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (4, 3);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (4, 4);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (4, 7);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 1);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 3);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 4);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 7);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 8);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 9);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (5, 10);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 1);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 3);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 4);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 7);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 8);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 9);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (6, 10);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 1);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 3);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 4);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 7);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 8);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 9);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (7, 10);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 1);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 3);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 4);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 7);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 8);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 9);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (8, 10);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 1);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 3);
+INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 5);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 6);
 INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 7);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 8);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 9);
-INSERT INTO [BrandCategory] (BrandId, CategoryId) VALUES (9, 10);
 GO
 CREATE TABLE [Products] (
-	[Id] INT NOT NULL IDENTITY UNIQUE,
+	[Id] INT NOT NULL IDENTITY(1,1) UNIQUE,
 	[ProductName] NVARCHAR(255),
 	[ListedPrice] DECIMAL,
 	[Price] DECIMAL,
-	[Size] DECIMAL NOT NULL,
+	[Size] VARCHAR(5) NOT NULL,
 	[Description] NVARCHAR(Max),
 	[Status] BIT,
 	[Color] NVARCHAR(255) NOT NULL,
 	[Offers] NVARCHAR(Max) NOT NULL,
-	[MainImageName] VARCHAR(255) NULL,
+	[MainImageName] NVARCHAR(255) NULL,
 	[MainImagePath] VARCHAR(MAX) NULL,
 	[CategoryId] INT,
 	[BrandId] INT,
@@ -163,63 +158,23 @@ GO
 
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, 0, N'<div class="col-md-12">
-								<h2 style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif"><strong>1. Giới thiệu </strong><strong>q</strong><strong>uấn </strong><strong>c</strong><strong>án </strong><strong>v</strong><strong>ợt </strong><strong>cầu lông VS002</strong></span></span></h2>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">Quấn cán vợt cầu lông cũng là một phụ kiện quan trọng trên vợt giúp người chơi có cảm giác đầm tay hơn, thoải mái và cầm vợt chắc chắn hơn, cũng như đảm bảo tính thẩm mỹ cao cho cây vợt. </span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px">Quấn cán vợt cầu lông VS002 là sản phẩm giá rẻ được làm từ chất liệu cao su được người chơi cầu lông ưa chuộng hiện nay. Ngoài ra, quấn cán VS002 bám vợt chắc, khít vào cán vợt, tránh tình trạng bị bung góc khi dán.</span></span></p>
-
-<p style="text-align:center"><img alt="Quấn Cán Vợt Cầu Lông VS002" src="https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp" style="height:1000px; width:750px" /></p>
-
-<h2 style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif"><strong>2. Ưu điểm của q</strong><strong>uấn </strong><strong>c</strong><strong>án </strong><strong>v</strong><strong>ợt </strong><strong>cầu lông VS002</strong></span></span></h2>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông VS002 với khả năng bám dính tốt, bề mặt mịn màng. </span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Sản phẩm này có thể dùng trong mọi điều kiện thời tiết, phù hợp với khi hậu nóng ẩm ở Việt Nam.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt VS002 với khả năng thấm hút mồ hôi tốt tạo cảm giác khô ráo thoáng mát trong suốt quá trình hoạt động trên sân cầu.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Đặc biệt, sản phẩm này không sử dụng hóa chất, an toàn tuyệt đối cho da của bạn.</span></span></p>					
-						</div>', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 6, 7, 2, 'QC_VS002');
+VALUES (N'Quấn Cán Vợt Cầu Lông VS002', 15000, 15000, '', N'', 1, N'Đủ màu', '',N'Quấn cán vợt VS002 Image', 'https://cdn.shopvnb.com/uploads/images/quan-can-vot-cau-long-vs1.webp', 4, 7, 2, 'QC_VS002');
 
 GO
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Quấn Cán Vợt Cầu Lông Lining GP2000', 20000, 20000, 0, N'<div class="col-md-12">
-								<h2 style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif"><strong>1. Giới thiệu Quấn cán vợt cầu lông Lining GP2000</strong></span></span></h2>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông là một phụ kiện quan trọng trên vợt giúp người chơi có thể bảo vệ cốt cán của vợt, cầm có cảm giác đầm tay , thoải mái và chắc chắn hơn, cũng như đảm bảo tính thẩm mỹ cao cho cây vợt. </span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông Lining GP2000</a> được làm từ chất liệu cao su PU cao cấp đượ rất nhiều người chơi cầu lông ưa chuộng.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Lining GP2000 dày dặn mang đến cảm giác êm ái, chống trơn trượt tốt, có độ bền cao, không ra màu như những cán quấn vợt giá rẻ.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Ngoài ra, quấn cán Lining GP2000 có độ bám vợt rất chắc, khít vào cán vợt, tránh tình trạng bị bung góc khi dán.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Ngoài ra các bạn có thể tham khảo thêm các loại quấn cán cầu lông khác đang có tại shop VNB</span></span></p>
-
-<h2 style="text-align:justify"><strong><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">2. Ưu điểm của Quấn cán vợt cầu lông Lining GP2000</span></span></strong></h2>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Quấn cán vợt cầu lông Lining GP2000 với khả năng bám dính tốt, bề mặt mịn màng.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Sản phẩm này có thể dùng trong mọi điều kiện thời tiết, phù hợp với khi hậu nóng ẩm ở Việt Nam.</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Với khả năng thấm hút mồ hôi tốt tạo cảm giác khô ráo thoáng mát trong suốt quá trình chơi và tập luyện</span></span></p>
-
-<p style="text-align:justify"><span style="font-size:16px"><span style="font-family:arial,helvetica,sans-serif">- Đặc biệt, sản phẩm này không sử dụng hóa chất, an toàn tuyệt đối cho da của bạn.</span></span></p>												
-						</div>', 1, N'Đủ màu', '',N'Quấn Cán Vợt Cầu Lông Lining GP2000', 'https://cdn.shopvnb.com/uploads/gallery/quan-can-vot-cau-long-lining-gp2000_1712886881.webp', 6, 5, 2, 'QC_GP2000');
+VALUES (N'Quấn Cán Vợt Cầu Lông Lining GP2000', 20000, 20000, '', N'', 1, N'Đủ màu', '',N'Quấn Cán Vợt Cầu Lông Lining GP2000', 'https://cdn.shopvnb.com/uploads/gallery/quan-can-vot-cau-long-lining-gp2000_1712886881.webp', 4, 5, 2, 'QC_GP2000');
 
 GO
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu', 72000, 60000, 0, N'', 1, N'Trắng Viền Đỏ', '',N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-2225-trang-vien-do-xanh-reu-60k_1715645158.webp', 9, 6, 2, 'SO_YO2225');
+VALUES (N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu', 72000, 60000, '', N'', 1, N'Trắng Viền Đỏ', '',N'Vớ Cầu Lông Yonex 2225 - Trắng Viền Đỏ Xanh Rêu Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-2225-trang-vien-do-xanh-reu-60k_1715645158.webp', 1, 6, 2, 'SO_YO2225');
 
 GO
 
 INSERT INTO [Products] (ProductName, ListedPrice, Price, Size, Description, Status, Color, Offers, 
 MainImageName, MainImagePath, CategoryId, BrandId, SportId, ProductCode) 
-VALUES (N'Vớ Cầu Lông Yonex SKSE100', 47000, 39000, 0, N'', 1, N'Trắng', '',N'Vớ Cầu Lông Yonex SKSE100 Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-skse100-chinh-hang_1716154218.webp', 9, 6, 2, 'SO_YOSKSE100');
+VALUES (N'Vớ Cầu Lông Yonex SKSE100', 47000, 39000, '', N'', 1, N'Trắng', '',N'Vớ Cầu Lông Yonex SKSE100 Image', 'https://cdn.shopvnb.com/uploads/gallery/vo-cau-long-yonex-skse100-chinh-hang_1716154218.webp', 1, 6, 2, 'SO_YOSKSE100');
 
 GO
 
@@ -272,10 +227,10 @@ GO
 
 CREATE TABLE [ImagesVideos] (
 	[Id] INT NOT NULL IDENTITY UNIQUE,
-	[ImageName] VARCHAR(255) NOT NULL,
-	[ImagePath] VARCHAR(MAX) NOT NULL,
-	[VideoName] VARCHAR(255) NOT NULL,
-	[VideoPath] VARCHAR(MAX) NOT NULL,
+	[ImageName] NVARCHAR(50),
+	[ImagePath] VARCHAR(MAX),
+	[VideoName] NVARCHAR(50),
+	[VideoPath] VARCHAR(MAX),
 	[BlogId] INT NULL,
 	[ProductId] INT NULL,
 	PRIMARY KEY([Id])
@@ -396,13 +351,6 @@ CREATE TABLE [Suppliers] (
 );
 GO
 
-CREATE TABLE [TransportUnits] (
-	[Id] INT NOT NULL IDENTITY UNIQUE,
-	[TransportUnitName] NVARCHAR(255),
-	PRIMARY KEY([Id])
-);
-GO
-
 
 ALTER TABLE [ImagesVideos]
 ADD FOREIGN KEY([ProductId]) REFERENCES [Products]([Id])
@@ -425,11 +373,11 @@ ADD FOREIGN KEY([UserId]) REFERENCES [Users]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Products]
-ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
+ADD FOREIGN KEY([BrandId]) REFERENCES [Brands]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Products]
-ADD FOREIGN KEY([BrandId]) REFERENCES [Brands]([Id])
+ADD FOREIGN KEY([CategoryId]) REFERENCES [Categories]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [Likes]
@@ -486,9 +434,5 @@ ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
 ALTER TABLE [ImportHistories]
 ADD FOREIGN KEY([SupplierId]) REFERENCES [Suppliers]([Id])
-ON UPDATE NO ACTION ON DELETE NO ACTION;
-GO
-ALTER TABLE [Orders]
-ADD FOREIGN KEY([TransportUnitId]) REFERENCES [TransportUnits]([Id])
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 GO
