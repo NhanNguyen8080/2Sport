@@ -20,6 +20,8 @@ namespace _2Sport_BE.Controllers
         private readonly IBrandService _brandService;
         private readonly ICategoryService _categoryService;
         private readonly ISportService _sportService;
+        private readonly ILikeService _likeService;
+        private readonly IReviewService _reviewService;
         private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
 
@@ -28,24 +30,33 @@ namespace _2Sport_BE.Controllers
                                 ICategoryService categoryService,
                                 IUnitOfWork unitOfWork,
 								ISportService sportService,
+								ILikeService likeService,
+								IReviewService reviewService,
                                 IMapper mapper)
-        {
+		{
             _productService = productService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _brandService = brandService;
             _categoryService = categoryService;
             _sportService = sportService;
-        }
+            _likeService = likeService;
+            _reviewService = reviewService;
+		}
 
-        [HttpGet]
+		[HttpGet]
         [Route("get-product/{productId}")]
         public async Task<IActionResult> GetProductById(int productId)
         {
             try
             {
                 var product = await _productService.GetProductById(productId);
-                return Ok(product);
+                var productVM = _mapper.Map<ProductVM>(product);
+				var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+				productVM.Reviews = reviews.ToList();
+				var numOfLikes = await _likeService.CountLikeOfProduct(productId);
+				productVM.Likes = numOfLikes;
+				return Ok(productVM);
             } catch (Exception ex)
             {
                 return BadRequest(ex);
@@ -70,6 +81,13 @@ namespace _2Sport_BE.Controllers
 					product.Sport = sport;
 				}
                 var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
+                foreach (var product in result)
+                {
+					var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+					product.Reviews = reviews.ToList();
+					var numOfLikes = await _likeService.CountLikeOfProduct(product.Id);
+                    product.Likes = numOfLikes;
+                }
                 return Ok(new { total = result.Count, data = result });
             }
             catch (Exception ex)
@@ -128,7 +146,16 @@ namespace _2Sport_BE.Controllers
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
                                   .Select(_ => _mapper.Map<Product, ProductVM>(_))
                                   .ToList();
-                return Ok(new { total = result.Count, data = result });
+
+				foreach (var product in result)
+				{
+                    var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+                    product.Reviews = reviews.ToList();
+					var numOfLikes = await _likeService.CountLikeOfProduct(product.Id);
+					product.Likes = numOfLikes;
+				}
+
+				return Ok(new { total = result.Count, data = result });
             } catch (Exception ex)
             {
                 return BadRequest(ex);
@@ -160,6 +187,15 @@ namespace _2Sport_BE.Controllers
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
 								  .Select(_ => _mapper.Map<Product, ProductVM>(_))
 								  .ToList();
+
+				foreach (var product in result)
+				{
+					var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+					product.Reviews = reviews.ToList();
+					var numOfLikes = await _likeService.CountLikeOfProduct(product.Id);
+					product.Likes = numOfLikes;
+				}
+
 				return Ok(new { total = result.Count, data = result });
 			}
 			catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
+using _2Sport_BE.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -20,11 +21,28 @@ namespace _2Sport_BE.Controllers
 			_reviewService = reviewService;
 		}
 
-		[HttpPost]
-		[Route("add-review")]
-		public async Task<IActionResult> AddReview([FromQuery] int productId, [FromQuery] decimal star, 
-												   [FromQuery] string review)
+		[HttpGet]
+		[Route("get-all-reviews")]
+		public async Task<IActionResult> GetAllReviews()
 		{
+			try
+			{
+				var allReviews = await _reviewService.GetAllReviews();
+				return Ok(allReviews.ToList());
+			} catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
+		[HttpPost]
+		[Route("add-review/{productId}")]
+		public async Task<IActionResult> AddReview(int productId, ReviewCM reviewCM)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 			try
 			{
 				var userId = GetCurrentUserIdFromToken();
@@ -35,20 +53,15 @@ namespace _2Sport_BE.Controllers
 				}
 				var addedReview = new Review
 				{
-					Star = star,
-					Review1 = review,
+					Star = reviewCM.Star,
+					Review1 = reviewCM.Review1,
 					Status = true,
 					UserId = userId,
-					ProductId = productId
+					ProductId = productId,
 				};
 				await _reviewService.AddReview(addedReview);
-				if (await _unitOfWork.SaveChanges())
-				{
-					return Ok(addedReview);
-				} else
-				{
-					return BadRequest("Added review failed!");
-				}
+				_unitOfWork.Save();
+				return Ok(addedReview);
 			} catch (Exception ex)
 			{
 				return BadRequest(ex);

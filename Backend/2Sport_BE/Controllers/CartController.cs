@@ -61,6 +61,24 @@ namespace _2Sport_BE.Controllers
 
         }
 
+        [HttpGet]
+        [Route("get-cart-item/{cartItemId}")]
+        public async Task<IActionResult> GetCartItem(int cartItemId)
+        {
+            try
+            {
+                var cartItem = await _cartItemService.GetCartItemById(cartItemId);
+                if (cartItem != null)
+                {
+                    return Ok(cartItem);
+                }
+                return BadRequest($"Cannot find cart item with id: {cartItemId}");
+            } catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+        }
+
         [HttpPost]
         [Route("add-to-cart")]
         public async Task<IActionResult> AddToCart(CartItemCM cartItemCM)

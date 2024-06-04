@@ -25,6 +25,19 @@ namespace _2Sport_BE.Controllers
 			_productService = productService;
 		}
 
+		[HttpGet]
+		[Route("get-likes")]
+		public async Task<IActionResult> GetLikes()
+		{
+			try
+			{
+				return Ok(await _likeService.GetLikes());
+			} catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
 		[HttpPost]
 		[Route("like-product/{productId}")]
 		public async Task<IActionResult> LikeProduct(int productId)
@@ -44,7 +57,7 @@ namespace _2Sport_BE.Controllers
 					UserId = userId,
 					ProductId = productId,
 					User = user,
-					Product = product
+					Product = product,
 				};
 				await _likeService.AddLike(addedLike);
 				_unitOfWork.Save();

@@ -11,9 +11,12 @@ namespace _2Sport_BE.Service.Services
     public interface ICartItemService
     {
         Task<IQueryable<CartItem>> GetCartItems(int userId, int pageIndex, int pageSize);
-        Task<CartItem> AddCartItem(int userId, CartItem cartItem);
-    }
-    public class CartItemService : ICartItemService
+        Task<CartItem> GetCartItemById(int cartItemId);
+
+		Task<CartItem> AddCartItem(int userId, CartItem cartItem);
+		//Task DeleteCartItem(int cartItemId);
+	}
+	public class CartItemService : ICartItemService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly TwoSportDBContext _dbContext;
@@ -50,22 +53,7 @@ namespace _2Sport_BE.Service.Services
                     }
                     else
                     {
-                        var newCart = new Cart()
-                        {
-                            UserId = userId
-                        };
-                        await _cartRepository.InsertAsync(newCart);
-                        try
-                        {
-                            _unitOfWork.Save();
-                        } catch (Exception ex)
-                        {
-
-                        }
-                        cartItem.CartId = newCart.Id;
-                        cartItem.Cart = newCart;
-                        cartItem = await AddCartItem(newCart, cartItem);
-                        return cartItem;
+                        return null;
                     }
 
                 }
@@ -130,5 +118,16 @@ namespace _2Sport_BE.Service.Services
                 return null;
             }
         }
-    }
+
+		public async Task<CartItem> GetCartItemById(int cartItemId)
+		{
+            var queryCart = await _cartItemRepository.FindAsync(cartItemId);
+			return queryCart;
+		}
+
+		//public async Task DeleteCartItem(int cartItemId)
+		//{
+  //          await _cartItemRepository.DeleteAsync(cartItemId);
+		//}
+	}
 }
