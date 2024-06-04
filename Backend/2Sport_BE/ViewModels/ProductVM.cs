@@ -38,6 +38,5 @@ namespace _2Sport_BE.ViewModels
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? SportId { get; set; }
-
     }
 }

@@ -31,13 +31,16 @@ namespace _2Sport_BE.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISendMailService _mailService;
+        private readonly ICartService _cartService;
+
         public AuthController(
             IUserService userService,
             IIdentityService identityService,
             IRefreshTokenService refreshTokenService,
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ISendMailService mailService)
+            ISendMailService mailService,
+            ICartService cartService)
         {
             _userService = userService;
             _identityService = identityService;
@@ -45,6 +48,7 @@ namespace _2Sport_BE.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _mailService = mailService;
+            _cartService = cartService;
         }
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromForm] MailRequest mailRequest)
@@ -76,6 +80,15 @@ namespace _2Sport_BE.Controllers
             var password = HashPassword(loginModel.Password);
             loginModel.Password = password;
             var result = await _identityService.LoginAsync(loginModel);
+            var cart = await _cartService.GetCartByUserId(result.Data.UserId);
+            result.Data.CartId = cart.Id;
+            result.Data.CartItems = cart.CartItems.Select(item => new CartItemVM
+            {
+                Id = item.Id,
+                ProductId = item.ProductId,
+                Quantity = item.Quantity,
+                TotalPrice = item.TotalPrice
+            }).ToList();
             return Ok(result);
         }
 
@@ -113,7 +126,7 @@ namespace _2Sport_BE.Controllers
             return Challenge(props, GoogleDefaults.AuthenticationScheme);
         }
         [HttpGet("signin-google")]
-public async Task<IActionResult> GoogleLogin()
+        public async Task<IActionResult> GoogleLogin()
 {
     var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     if (response.Principal == null) return BadRequest();

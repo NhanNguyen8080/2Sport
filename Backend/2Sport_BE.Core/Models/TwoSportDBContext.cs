@@ -253,7 +253,7 @@ namespace _2Sport_BE.Repository.Models
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("FK__OrderDeta__Order__0A9D95DB");
-
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)
@@ -429,7 +429,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.Property(e => e.Salary).HasMaxLength(20);
 
                 entity.Property(e => e.UserName).HasMaxLength(255);
-
+                entity.Property(e => e.Address).HasMaxLength(255);
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)

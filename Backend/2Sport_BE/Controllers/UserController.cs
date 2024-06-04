@@ -197,11 +197,11 @@ namespace _2Sport_BE.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var UserId = GetUserIdFromToken();
+            var UserId = GetCurrentUserIdFromToken();
             var result = await _userService.GetAsync(_ => _.Id == UserId);
             return Ok(result);
         }
-        protected int GetUserIdFromToken()
+        protected int GetCurrentUserIdFromToken()
         {
             int UserId = 0;
             try

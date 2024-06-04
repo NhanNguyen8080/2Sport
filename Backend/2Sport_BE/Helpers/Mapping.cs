@@ -21,7 +21,18 @@ namespace _2Sport_BE.Helpers
             CreateMap<Sport, SportUM>();
             CreateMap<SportUM, Sport>();
             #endregion
-
+            #region ShipmentDetail
+            CreateMap<ShipmentDetail, ShipmentDetailVM>();
+            CreateMap<ShipmentDetail, ShipmentDetailCM>();
+            CreateMap<ShipmentDetail, ShipmentDetailUM>();
+            CreateMap<ShipmentDetailUM, ShipmentDetail>();
+            #endregion
+            #region Order
+            CreateMap<Order, OrderCM>();
+            CreateMap<Order, OrderVM>();
+            CreateMap<Order, OrderUM>();
+            CreateMap<OrderUM, Order>();
+            #endregion
             #region Category
             CreateMap<Category, CategoryVM>();
             CreateMap<Category, CategoryCM>();
@@ -37,6 +48,7 @@ namespace _2Sport_BE.Helpers
             CreateMap<ProductUM, Product>();
             CreateMap<ProductCM, Product>();
             #endregion
+
 
         }
 
