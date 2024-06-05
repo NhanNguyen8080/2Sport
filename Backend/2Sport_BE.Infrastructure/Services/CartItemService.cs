@@ -70,8 +70,10 @@ namespace _2Sport_BE.Service.Services
 
         public async Task<CartItem> AddCartItem(Cart cart, CartItem cartItem)
         {
-            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId)).FirstOrDefault();
-            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId)).FirstOrDefault();
+            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId ||
+                                                                        _.Status == true)).FirstOrDefault();
+            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId || _.Status == true))
+                                                   .FirstOrDefault();
             if (currentItem != null)
             {
                 currentItem.Quantity += cartItem.Quantity;
@@ -112,7 +114,8 @@ namespace _2Sport_BE.Service.Services
             var cart = queryCart.FirstOrDefault();
             if (cart != null)
             {
-                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id, null, "", pageIndex, pageSize);
+                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id || _.Status == true,
+                                                                    null, "", pageIndex, pageSize);
                 return cartItems.AsQueryable();
             }
             else
@@ -123,7 +126,7 @@ namespace _2Sport_BE.Service.Services
 
 		public async Task<CartItem> GetCartItemById(int cartItemId)
 		{
-            var queryCart = await _cartItemRepository.FindAsync(cartItemId);
+            var queryCart = (await _cartItemRepository.GetAsync(_ => _.Status == true || _.Id == cartItemId)).FirstOrDefault();
 			return queryCart;
 		}
 
