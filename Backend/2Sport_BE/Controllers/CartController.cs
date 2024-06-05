@@ -108,6 +108,75 @@ namespace _2Sport_BE.Controllers
             }
         }
 
+		[HttpPut]
+		[Route("reduce-cart/{cartItemId}")]
+		public async Task<IActionResult> ReduceCart(int cartItemId)
+		{
+			try
+			{
+				var userId = GetCurrentUserIdFromToken();
+
+				if (userId == 0)
+				{
+					return Unauthorized();
+				}
+
+                await _cartItemService.ReduceCartItem(cartItemId);
+                _unitOfWork.Save();
+                return Ok($"Reduce cart item with id: {cartItemId}");
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
+		[HttpPut]
+		[Route("update-quantity-cart-item/{cartItemId}")]
+		public async Task<IActionResult> UpdateQuantityOfCart(int cartItemId, [FromQuery] int quantity)
+		{
+			try
+			{
+				var userId = GetCurrentUserIdFromToken();
+
+				if (userId == 0)
+				{
+					return Unauthorized();
+				}
+
+				await _cartItemService.UpdateQuantityOfCartItem(cartItemId, quantity);
+				_unitOfWork.Save();
+				return Ok($"Update quantity cart item with id: {cartItemId}");
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
+		[HttpDelete]
+		[Route("delete-cart-item/{cartItemId}")]
+		public async Task<IActionResult> DeleteCartItem(int cartItemId)
+		{
+			try
+			{
+				var userId = GetCurrentUserIdFromToken();
+
+				if (userId == 0)
+				{
+					return Unauthorized();
+				}
+
+				await _cartItemService.DeleteCartItem(cartItemId);
+				_unitOfWork.Save();
+				return Ok($"Delete cart item with id: {cartItemId}");
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex);
+			}
+		}
+
 		protected int GetCurrentUserIdFromToken()
 		{
 			int UserId = 0;

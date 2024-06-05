@@ -14,7 +14,9 @@ namespace _2Sport_BE.Service.Services
         Task<CartItem> GetCartItemById(int cartItemId);
 
 		Task<CartItem> AddCartItem(int userId, CartItem cartItem);
-		//Task DeleteCartItem(int cartItemId);
+        Task DeleteCartItem(int cartItemId);
+        Task ReduceCartItem(int cartItemId);
+        Task UpdateQuantityOfCartItem(int cartItemId, int quantity);
 	}
 	public class CartItemService : ICartItemService
     {
@@ -125,9 +127,48 @@ namespace _2Sport_BE.Service.Services
 			return queryCart;
 		}
 
-		//public async Task DeleteCartItem(int cartItemId)
-		//{
-  //          await _cartItemRepository.DeleteAsync(cartItemId);
-		//}
+        public async Task DeleteCartItem(int cartItemId)
+        {
+            var deletedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+            if (deletedCartItem != null)
+            {
+                deletedCartItem.Status = false;
+                await _unitOfWork.CartItemRepository.UpdateAsync(deletedCartItem);
+			}
+		}
+
+        public async Task ReduceCartItem(int cartItemId)
+        {
+            var reducedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+            if (reducedCartItem != null)
+            {
+				if (reducedCartItem.Quantity == 0)
+				{
+					DeleteCartItem(reducedCartItem.Id);
+				}
+				else
+				{
+					reducedCartItem.Quantity -= 1;
+                    await _unitOfWork.CartItemRepository.UpdateAsync(reducedCartItem);
+				}
+			}
+		}
+
+		public async Task UpdateQuantityOfCartItem(int cartItemId, int quantity)
+		{
+			var updatedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+			if (updatedCartItem != null)
+			{
+				if (updatedCartItem.Quantity == 0)
+				{
+					DeleteCartItem(updatedCartItem.Id);
+				}
+				else
+				{
+					updatedCartItem.Quantity = quantity;
+                    await _unitOfWork.CartItemRepository.UpdateAsync(updatedCartItem);
+				}
+			}
+		}
 	}
 }
