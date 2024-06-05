@@ -8,7 +8,6 @@ namespace _2Sport_BE.Repository.Models
         public Sport()
         {
             Blogs = new HashSet<Blog>();
-            Categories = new HashSet<Category>();
             Products = new HashSet<Product>();
         }
 
@@ -16,7 +15,6 @@ namespace _2Sport_BE.Repository.Models
         public string Name { get; set; }
 
         public virtual ICollection<Blog> Blogs { get; set; }
-        public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }
 }

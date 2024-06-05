@@ -2,7 +2,7 @@
 
 namespace _2Sport_BE.Repository.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<Blog> BlogRepository { get; }
         IGenericRepository<Brand> BrandRepository { get; }
@@ -20,7 +20,6 @@ namespace _2Sport_BE.Repository.Interfaces
         IGenericRepository<Role> RoleRepository { get; }
         IGenericRepository<ShipmentDetail> ShipmentDetailRepository { get; }
         IGenericRepository<Supplier> SupplierRepository { get; }
-        IGenericRepository<TransportUnit> TransportUnitRepository { get; }
         IGenericRepository<User> UserRepository { get; }
         IGenericRepository<Warehouse> WarehouseRepository { get; }
         IGenericRepository<RefreshToken> RefreshTokenRepository { get; }

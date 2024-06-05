@@ -1,5 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
-import Pagination from "../components/Product/Pagination";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTableCellsLarge,
@@ -12,11 +11,14 @@ import ProductList from "./ProductList";
 import { fetchBrands } from '../services/brandService';
 import { fetchCategories } from '../services/categoryService';
 import { Link } from 'react-router-dom';
+import {  useSelector } from 'react-redux';
+import { selectProducts} from '../redux/slices/productSlice';
 
 function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortBy, setSortBy] = useState('');
+  const products = useSelector(selectProducts);
 
   useEffect(() => {
     const getBrands = async () => {
@@ -48,26 +50,6 @@ function ProductPage() {
     setSortBy(e.target.value);
   };
 
-  const products = Array.from({ length: 50 }, (_, index) => ({
-    category: "SHOES",
-    name: `Product ${index + 1}`,
-    price: parseFloat((Math.random() * 100).toFixed(2)),
-    image: "https://via.placeholder.com/300",
-  }));
-
-  // const [sortBy, setSortBy] = useState("popularity");
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // const handleSortChange = useCallback((event) => {
-  //   setSortBy(event.target.value);
-  // }, []);
-
-  const itemsPerPage = 15;
-  const currentItems = products.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const handleClearFilters = () => {
     console.log("All filters cleared");
   };
@@ -77,13 +59,13 @@ function ProductPage() {
       <div className="w-full px-20">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
-            <div className="ProductWrapper w-full">
-              <div className="ProductTitle mb-4 font-bold text-3xl">
+            <div className=" w-full">
+              <div className=" mb-4 font-bold text-3xl">
                 Products
               </div>
 
               <div className="Products text-black font-bold">Categories</div>
-              <div className="Categories relative p-4">
+              <div className=" relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {categories.map((category, index) => (
                     <label key={index} className="inline-flex items-center">
@@ -100,8 +82,8 @@ function ProductPage() {
 
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
 
-              <div className="Products text-black font-bold">Brands</div>
-              <div className="Categories relative p-4">
+              <div className=" text-black font-bold">Brands</div>
+              <div className=" relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
                     <label key={index} className="inline-flex items-center">
@@ -118,9 +100,9 @@ function ProductPage() {
 
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
 
-              <div className="Products text-black font-bold">Size</div>
+              <div className=" text-black font-bold">Size</div>
 
-              <div className="Sizes relative p-4">
+              <div className="relative p-4">
                 <div className="grid grid-cols-4 gap-2">
                   {["XS", "S", "M", "L", "XL", "2XL"].map((size) => (
                     <button
@@ -134,7 +116,7 @@ function ProductPage() {
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div>
-                <div className="Products text-black font-bold">Price</div>
+                <div className=" text-black font-bold">Price</div>
                 <PriceRangeSlider />
                 <div className="h-px bg-gray-300 my-5 mx-auto"></div>
 
@@ -172,9 +154,7 @@ function ProductPage() {
             <div className="py-6">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div className="text-sm text-gray-600">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} -{" "}
-                  {Math.min(currentPage * itemsPerPage, products.length)} of{" "}
-                  {products.length} results
+                  Showing of {products.total} results 
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2 text-sm text-gray-600">Sort by</span>
@@ -200,14 +180,8 @@ function ProductPage() {
               </div>
             </div>
             <div className="">
-              <ProductList products={products} sortBy={sortBy} />
+              <ProductList sortBy={sortBy} />
             </div>
-
-            {/* <Pagination
-              total={products.length}
-              current={currentPage}
-              onChange={setCurrentPage}
-            /> */}
           </div>
         </div>
       </div>

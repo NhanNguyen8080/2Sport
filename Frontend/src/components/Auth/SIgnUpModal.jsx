@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from "react-i18next";
 import { useForm } from 'react-hook-form';
-import axios from "axios";
+import { toast } from 'react-toastify';
 import LoginGoogle from './LoginGoogle';
+import { signUpUser } from '../../services/authService'; 
+
 
 export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
   const { t } = useTranslation("translation");
@@ -19,29 +21,19 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const { username, password, fullName, email } = data;
 
-    axios.post("https://localhost:7276/api/Auth/sign-up", {
-      username: username,
-      password: password,
-      fullName: fullName,
-      email: email
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(data => {
-        // dispatch(login(data.data.user));
-        console.log("Sign-up successful");
-        closeModal();
-      })
-      .catch(error => {
-        console.error("Sign-up failed", error);
-      });
+    try {
+      const response = await signUpUser({ username, password, fullName, email });
+      console.log("Sign-up successful:", response);
+      toast.success("Sign up successful");
+      // dispatch(login(response.user)); // Uncomment and adjust if needed
+      closeModal();
+    } catch (error) {
+      console.error("Sign-up failed:", error);
+    }
   };
-
 
   const handleSignInClick = () => {
     closeModal();

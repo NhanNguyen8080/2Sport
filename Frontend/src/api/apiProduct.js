@@ -1,4 +1,3 @@
-// src/api/productApi.js
 import axios from 'axios';
 
 const API_BASE_URL = 'https://localhost:7276/api/Product';
@@ -9,7 +8,7 @@ export const getProductList = (sortBy = '') => {
   if (sortBy) {
     params.sortBy = sortBy;
   } else {
-    params.sortBy = '""'; // To ensure the same behavior as your original working code
+    params.sortBy = '""'; 
   }
   return axios.get(url, {
     params,
@@ -20,7 +19,8 @@ export const getProductList = (sortBy = '') => {
 };
 
 export const getProductById = (id) => {
-  return axios.get(`${API_BASE_URL}/${id}`, {
+  const url = `${API_BASE_URL}/get-product/${id}`;
+  return axios.get(url, {
     headers: {
       'accept': '*/*'
     }

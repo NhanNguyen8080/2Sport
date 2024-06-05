@@ -3,7 +3,7 @@ using _2Sport_BE.Repository.Models;
 
 namespace _2Sport_BE.Repository.Implements
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly TwoSportDBContext _dbContext;
         public UnitOfWork(TwoSportDBContext dbContext)
@@ -26,7 +26,6 @@ namespace _2Sport_BE.Repository.Implements
         private IGenericRepository<Role> _roleRepository;
         private IGenericRepository<ShipmentDetail> _shipmentDetailRepository;
         private IGenericRepository<Supplier> _supplierRepository;
-        private IGenericRepository<TransportUnit> _transportUnitRepository;
         private IGenericRepository<User> _userRepository;
         private IGenericRepository<Warehouse> _warehouseRepository;
         private IGenericRepository<RefreshToken> _refreshTokenRepository;
@@ -219,17 +218,6 @@ namespace _2Sport_BE.Repository.Implements
                     _supplierRepository = new GenericRepository<Supplier>(_dbContext);
                 }
                 return _supplierRepository;
-            }
-        }
-        public IGenericRepository<TransportUnit> TransportUnitRepository
-        {
-            get
-            {
-                if (_transportUnitRepository == null)
-                {
-                    _transportUnitRepository = new GenericRepository<TransportUnit>(_dbContext);
-                }
-                return _transportUnitRepository;
             }
         }
 

@@ -15,9 +15,7 @@ namespace _2Sport_BE.Repository.Models
         public string CategoryName { get; set; }
         public int? Quantity { get; set; }
         public bool? Status { get; set; }
-        public int? SportId { get; set; }
 
-        public virtual Sport Sport { get; set; }
         public virtual ICollection<BrandCategory> BrandCategories { get; set; }
         public virtual ICollection<Product> Products { get; set; }
     }

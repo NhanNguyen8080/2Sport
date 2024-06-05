@@ -24,19 +24,10 @@ export default function LoginGoogle({ setIsSignInOpen }) {
           newTab.close();
         }
       }
-    }, { once: true }); // Use { once: true } to ensure the event listener is only called once
+    }, { once: true }); 
   };
-
-
-
-  
-
- 
-
   return (
     <>
-     
-
                   <button
                     onClick={handleSubmitButton}
                     className="border-zinc-400 border-2 rounded-lg"

@@ -1,4 +1,3 @@
-// categoryService.js
 import { getAllCategories } from '../api/apiCategory';
 
 export const fetchCategories = async () => {

@@ -12,20 +12,28 @@ const UserProfile = ({ onEditClick }) => {
       <h2 className="text-orange-500 font-semibold text-xl mb-4">User Profile</h2>
       <div className="space-y-4">
         <div>
+          <label className="block text-gray-700">Username:</label>
+          <p>{user.Username}</p>
+        </div>
+        <div>
           <label className="block text-gray-700">Fullname:</label>
           <p>{user.FullName}</p>
         </div>
         <div>
           <label className="block text-gray-700">Gender:</label>
-          <p>{user.gender}</p>
+          <p>{user.Gender}</p>
         </div>
         <div>
           <label className="block text-gray-700">Email:</label>
           <p>{user.Email}</p>
         </div>
         <div>
+          <label className="block text-gray-700">Phone:</label>
+          <p>{user.Phone}</p>
+        </div>
+        <div>
           <label className="block text-gray-700">Address:</label>
-          <p>{user.address}</p>
+          <p>{user.Address}</p>
         </div>
         <div className="flex justify-end space-x-4">
           <Button

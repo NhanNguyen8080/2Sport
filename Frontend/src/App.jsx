@@ -11,6 +11,8 @@ import { BreadcrumbsDefault } from './layouts/BreadcrumbsDefault';
 import NotFoundPage from './pages/NotFoundPage';
 import ProductList from './pages/ProductList';
 import ProductRoutes from './routes/ProductRoutes';
+import Checkout from './pages/Checkout';
+
 
 function App() {
   return (
@@ -24,7 +26,10 @@ function App() {
           <Route path="/product" element={<ProductPage />} />
           <Route path="/productv2" element={<Productv2Page />} />
           <Route path="/*" element={<ProductRoutes />} />
+          <Route path="/checkout" element={<Checkout />} />
+        
           <Route path="*" element={<NotFoundPage />} />
+          
      </Routes>
      </div>
      <Footer/>

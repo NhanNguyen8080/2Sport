@@ -25,6 +25,7 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<ISportService, SportService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+<<<<<<< HEAD
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShipmentDetailService, ShipmentDetailService>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
@@ -32,8 +33,14 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
 
         }
+=======
+            services.AddScoped<ICartItemService, CartItemService>();
+			services.AddScoped<ILikeService, LikeService>();
+			services.AddScoped<IReviewService, ReviewService>();
+		}
+>>>>>>> 43cc858d1ff4be91d1343020888a25ced5919028
 
-        private static string GetConnectionStrings()
+		private static string GetConnectionStrings()
         {
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

@@ -48,13 +48,26 @@ namespace _2Sport_BE.Helpers
 
             #region Product
             CreateMap<Product, ProductVM>()
-                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName));
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.BrandName))
+				.ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName))
+				.ForMember(dest => dest.SportName, opt => opt.MapFrom(src => src.Sport.Name))
+				.ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count));
             CreateMap<Product, ProductCM>();
             CreateMap<Product, ProductUM>();
             CreateMap<ProductUM, Product>();
             CreateMap<ProductCM, Product>();
             #endregion
 
+<<<<<<< HEAD
+=======
+            #region CartItem
+            CreateMap<CartItem, CartItemVM>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+            CreateMap<CartItem, CartItemCM>().ReverseMap();
+            CreateMap<CartItem, CartItemUM>().ReverseMap();
+
+            #endregion
+>>>>>>> 43cc858d1ff4be91d1343020888a25ced5919028
 
         }
 
