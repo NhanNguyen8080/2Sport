@@ -27,6 +27,12 @@ namespace _2Sport_BE.Helpers
             CreateMap<ShipmentDetail, ShipmentDetailUM>();
             CreateMap<ShipmentDetailUM, ShipmentDetail>();
             #endregion
+            #region PaymentMethod
+            CreateMap<PaymentMethod, PaymentMethodCM>();
+            CreateMap<PaymentMethod, PaymentMethodVM>();
+            CreateMap<PaymentMethod, PaymentMethodUM>();
+            CreateMap<PaymentMethodUM, PaymentMethod>();
+            #endregion
             #region Order
             CreateMap<Order, OrderCM>();
             CreateMap<Order, OrderVM>();

@@ -12,6 +12,7 @@ namespace _2Sport_BE.Service.Services
     public interface ICartService
     {
         Task<Cart> GetCartByUserId(int userId);
+        Task AddNewCart(Cart cart);
     }
     public class CartService : ICartService
     {
@@ -33,6 +34,10 @@ namespace _2Sport_BE.Service.Services
                 return test.FirstOrDefault();
             }
             return null;
+        }
+        public async Task AddNewCart(Cart cart)
+        {
+            await _unitOfWork.CartRepository.InsertAsync(cart);
         }
     }
 }

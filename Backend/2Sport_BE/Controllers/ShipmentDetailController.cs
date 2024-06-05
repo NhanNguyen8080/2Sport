@@ -4,6 +4,7 @@ using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace _2Shipment_BE.Controllers
 {
@@ -41,7 +42,7 @@ namespace _2Shipment_BE.Controllers
         }
 
         [HttpPost]
-        [Route("add-shipment-details")]
+        [Route("add-many-shipment-details")]
         public async Task<IActionResult> AddShipments(List<ShipmentDetail> newShipments)
         {
             try
@@ -54,17 +55,76 @@ namespace _2Shipment_BE.Controllers
                 return BadRequest(ex);
             }
         }
+        [HttpPost]
+        [Route("add-shipment-detail")]
+        public async Task<IActionResult> AddShipment([FromBody]ShipmentDetailCM shipmentDetailCM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid request data");
+            }
+            var userId = GetCurrentUserIdFromToken();
+            if(userId == null)
+            {
+                return BadRequest("Invalid user");
+            }
+            try
+            {
+                var newShipmentDetail = new ShipmentDetail()
+                {
+                    PhoneNumber = shipmentDetailCM.PhoneNumber,
+                    Address = shipmentDetailCM.Address,
+                    FullName = shipmentDetailCM.FullName,
+                    UserId = userId
+                };
+                await _shipmentDetailService.AddShipmentDetail(newShipmentDetail);
 
+                ShipmentDetailVM detailVM = new ShipmentDetailVM()
+                {
+                    FullName = shipmentDetailCM.FullName,
+                    Address = shipmentDetailCM.Address,
+                    PhoneNumber = shipmentDetailCM.PhoneNumber,
+                    UserId = userId
+                   
+                };
+                return Ok("Query successfully!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
         [HttpPut]
-        [Route("update-shipment-detail")]
-        public async Task<IActionResult> UpdateShipment(ShipmentDetailUM shipmentDetailUM)
+        [Route("update-shipment-detail/{id}")]
+        public async Task<IActionResult> UpdateShipment(int id, [FromBody]ShipmentDetailUM shipmentDetailUM)
         {
             try
             {
+                var checkExist = await _shipmentDetailService.GetShipmentDetailById(id);
+                var userId = GetCurrentUserIdFromToken();
+                if (userId == null || checkExist == null)
+                {
+                    return BadRequest("Invalid request data or user!");
+                }
+                if (checkExist != null)
+                {
+                    checkExist.FullName = shipmentDetailUM.FullName;
+                    checkExist.PhoneNumber = shipmentDetailUM.PhoneNumber;
+                    checkExist.Address = shipmentDetailUM.Address;
 
-                var updatedShipment = _mapper.Map<ShipmentDetailUM, ShipmentDetail>(shipmentDetailUM);
-                await _shipmentDetailService.UpdateShipmentDetail(updatedShipment);
-                return Ok(updatedShipment);
+                    await _shipmentDetailService.UpdateShipmentDetail(checkExist);
+                    ShipmentDetailVM detailVM = new ShipmentDetailVM()
+                    {
+                        Id = checkExist.Id,
+                        FullName = shipmentDetailUM.FullName,
+                        Address = shipmentDetailUM.Address,
+                        PhoneNumber = shipmentDetailUM.PhoneNumber,
+                        UserId = userId
+                    };
+                    return Ok(detailVM);
+                }
+
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -84,6 +144,30 @@ namespace _2Shipment_BE.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex);
+            }
+        }
+        [NonAction]
+        protected int GetCurrentUserIdFromToken()
+        {
+            int UserId = 0;
+            try
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var identity = HttpContext.User.Identity as ClaimsIdentity;
+                    if (identity != null)
+                    {
+                        IEnumerable<Claim> claims = identity.Claims;
+                        string strUserId = identity.FindFirst("UserId").Value;
+                        int.TryParse(strUserId, out UserId);
+
+                    }
+                }
+                return UserId;
+            }
+            catch
+            {
+                return UserId;
             }
         }
     }

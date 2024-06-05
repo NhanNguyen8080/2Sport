@@ -11,9 +11,9 @@ namespace _2Sport_BE.DataContent
         [JsonProperty("refreshToken")]
         public string RefreshToken { get; set; }
         [JsonProperty("userId")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         [JsonProperty("cartId")]
-        public int CartId { get; set; }
+        public int? CartId { get; set; }
         [JsonProperty("cartItems")]
         public List<CartItemVM>? CartItems { get; set; }
     }

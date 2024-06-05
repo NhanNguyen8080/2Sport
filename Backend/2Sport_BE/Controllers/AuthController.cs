@@ -80,15 +80,28 @@ namespace _2Sport_BE.Controllers
             var password = HashPassword(loginModel.Password);
             loginModel.Password = password;
             var result = await _identityService.LoginAsync(loginModel);
-            var cart = await _cartService.GetCartByUserId(result.Data.UserId);
-            result.Data.CartId = cart.Id;
-            result.Data.CartItems = cart.CartItems.Select(item => new CartItemVM
+            var cart = await _cartService.GetCartByUserId((int)result.Data.UserId);
+            if (cart == null)
             {
-                Id = item.Id,
-                ProductId = item.ProductId,
-                Quantity = item.Quantity,
-                TotalPrice = item.TotalPrice
-            }).ToList();
+                cart = new Cart
+                {
+                    UserId = result.Data.UserId,
+                    CartItems = new List<CartItem>()
+                };
+
+                await _cartService.AddNewCart(cart);
+            }
+            else
+            {
+                result.Data.CartId = cart.Id;
+                result.Data.CartItems = cart.CartItems.Select(item => new CartItemVM
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    TotalPrice = item.TotalPrice
+                }).ToList();
+            }
             return Ok(result);
         }
 

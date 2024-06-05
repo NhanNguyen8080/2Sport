@@ -13,12 +13,6 @@ using System.Threading.Tasks;
 
 namespace _2Sport_BE.Service.Services
 {
-    public class PayOSSettings
-    {
-        public string ClientId { get; set; }
-        public string ApiKey { get; set; }
-        public string ChecksumKey { get; set; }
-    }
     public interface IOrderService
     {
         Task<IEnumerable<Order>> GetOrdersAsync();

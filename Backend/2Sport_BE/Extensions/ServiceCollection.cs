@@ -28,6 +28,9 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShipmentDetailService, ShipmentDetailService>();
             services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
         }
 
         private static string GetConnectionStrings()

@@ -9,16 +9,15 @@
         public int? ShipmentDetailId { get; set; }
         public DateTime? ReceivedDate { get; set; }
         public int? TransportUnitId { get; set; }
-        public int? UserId { get; set; }
         public List<OrderDetailRequest> OrderDetails { get; set; }
     }
-    public class OrderCM
+    public class OrderCM : OrderDTO
     {
     }
-    public class OrderUM
+    public class OrderUM : OrderDTO
     {
     }
-    public class OrderVM
+    public class OrderVM : OrderDTO
     {
     }
     public class OrderDetailRequest

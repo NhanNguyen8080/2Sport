@@ -233,11 +233,6 @@ namespace _2Sport_BE.Repository.Models
                     .HasForeignKey(d => d.ShipmentDetailId)
                     .HasConstraintName("FK__Orders__Shipment__07C12930");
 
-                entity.HasOne(d => d.TransportUnit)
-                    .WithMany(p => p.Orders)
-                    .HasForeignKey(d => d.TransportUnitId)
-                    .HasConstraintName("FK__Orders__Transpor__0F624AF8");
-
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.UserId)

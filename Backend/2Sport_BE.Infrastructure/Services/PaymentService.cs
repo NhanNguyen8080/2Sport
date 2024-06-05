@@ -5,13 +5,8 @@ using _2Sport_BE.Service.Services;
 using Microsoft.Extensions.Configuration;
 using Net.payOS;
 using Net.payOS.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace _2Sport_BE.Infrastructure.Services
+namespace _2Sport_BE.Service.Services
 {
     public class PayOSSettings
     {
@@ -57,6 +52,7 @@ namespace _2Sport_BE.Infrastructure.Services
             {
                 List<ItemData> orders = new List<ItemData>();
                 var listOrderDetail = order.OrderDetails.ToList();
+
                 for(int i = 0; i < listOrderDetail.Count; i++)
                 {
                     var name = listOrderDetail[i].Id.ToString();

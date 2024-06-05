@@ -1,5 +1,7 @@
 ﻿using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
+using _2Sport_BE.ViewModels;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace _2Sport_BE.Controllers
@@ -9,10 +11,11 @@ namespace _2Sport_BE.Controllers
     public class PaymentMethodController : Controller
     {
         private readonly IPaymentMethodService _paymentMethodService;
-
-        public PaymentMethodController(IPaymentMethodService paymentMethodService)
+        private readonly IMapper _mapper;
+        public PaymentMethodController(IPaymentMethodService paymentMethodService, IMapper mapper)
         {
             _paymentMethodService = paymentMethodService;
+            _mapper = mapper;
         }
 
         // GET: api/PaymentMethods
@@ -58,8 +61,12 @@ namespace _2Sport_BE.Controllers
 
         // POST: api/PaymentMethods
         [HttpPost]
-        public async Task<ActionResult<PaymentMethod>> PostPaymentMethod(PaymentMethod paymentMethod)
+        public async Task<ActionResult<PaymentMethod>> PostPaymentMethod([FromBody] PaymentMethodCM paymentMethodCM)
         {
+            var paymentMethod = new PaymentMethod()
+            {
+                PaymentMethodName = paymentMethodCM.Name
+            };
             var createdPaymentMethod = await _paymentMethodService.AddPaymentMethodAsync(paymentMethod);
             return CreatedAtAction("GetPaymentMethod", new { id = createdPaymentMethod.Id }, createdPaymentMethod);
         }

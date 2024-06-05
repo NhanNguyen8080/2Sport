@@ -201,6 +201,7 @@ namespace _2Sport_BE.Controllers
             var result = await _userService.GetAsync(_ => _.Id == UserId);
             return Ok(result);
         }
+        [NonAction]
         protected int GetCurrentUserIdFromToken()
         {
             int UserId = 0;
