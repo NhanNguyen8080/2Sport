@@ -12,9 +12,14 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProductList from './pages/ProductList';
 import ProductRoutes from './routes/ProductRoutes';
 import Checkout from './pages/Checkout';
+import Cart from './pages/Cart';
+import UserCart from './pages/UserCart';
+import { useSelector } from 'react-redux';
+import { selectUser } from './redux/slices/authSlice';
 
 
 function App() {
+  const user = useSelector(selectUser)
   return (
     <>
      <Header/>
@@ -26,6 +31,7 @@ function App() {
           <Route path="/product" element={<ProductPage />} />
           <Route path="/productv2" element={<Productv2Page />} />
           <Route path="/*" element={<ProductRoutes />} />
+          <Route path="/cart" element={user ? <UserCart/> : <Cart />} />
           <Route path="/checkout" element={<Checkout />} />
         
           <Route path="*" element={<NotFoundPage />} />

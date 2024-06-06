@@ -1,4 +1,3 @@
-// FeatureProductSlide.js
 import React, { useState } from 'react';
 
 const FeatureProductSlide = ({ products }) => {
@@ -14,16 +13,13 @@ const FeatureProductSlide = ({ products }) => {
 
   return (
     <div className="relative">
-      {/* Display current slide */}
       <div className="bg-white">
         <img src={products[currentSlide].mainImagePath} alt={products[currentSlide].mainImageName} className="w-full h-48 object-cover mb-4" />
-        {/* Add to Cart button */}
         <h2 className="text-xl font-semibold mb-2">{products[currentSlide].productName}</h2>
         <p className="text-gray-700 mb-2">Brand: {products[currentSlide].brandName}</p>
         <p className="text-gray-700 mb-2">Price: {products[currentSlide].price} VND</p>
       </div>
 
-      {/* Buttons to navigate between slides */}
       <button className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-900 bg-opacity-75 text-white py-2 px-4" onClick={prevSlide}>
         Prev
       </button>

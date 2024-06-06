@@ -46,7 +46,10 @@ namespace _2Sport_BE.Controllers
 					{
 						foreach (var carItem in cartItems)
 						{
-							carItem.ProductName = (await _unitOfWork.ProductRepository.FindAsync(carItem.ProductId)).ProductName;
+							var product = await _unitOfWork.ProductRepository.FindAsync(carItem.ProductId);
+							carItem.ProductName = product.ProductName;
+							carItem.MainImageName = product.MainImageName;
+							carItem.MainImagePath = product.MainImagePath;
 						}
 						return Ok(new { total = cartItems.Count(), data = cartItems });
 					}

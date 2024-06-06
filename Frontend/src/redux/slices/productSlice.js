@@ -6,27 +6,26 @@ const productPersistConfig = {
     key: "product",
     storage,
 };
+
 const initialState = {
-    data: [],
+    products: [], // should be an array to match the expected structure
+    total: 0, // include total to match the structure of the response
 };
+
 const productSlice = createSlice({
     name: "product",
     initialState,
     reducers: {
         setProducts: (state, action) => {
-            state.data = action.payload.data;
+            const { products, total } = action.payload.data;
+            state.products = products;
+            state.total = total;
         },
-        // updateProduct: (state, action) => {
-        //     const index = state.data.findIndex(product => product.id === action.payload.id);
-        //     if (index !== -1) {
-        //         state.data[index] = action.payload;
-        //     }
-        // },
     },
 });
 
 export const { setProducts } = productSlice.actions;
 
-export const selectProducts = (state) => state.product.data;
+export const selectProducts = (state) => state.product;
 
 export default persistReducer(productPersistConfig, productSlice.reducer);

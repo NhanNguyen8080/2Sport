@@ -75,7 +75,7 @@ export default function SignInModal() {
             onClick={openSignInModal}
             className="border-r-2 pr-4"
           >
-            <FontAwesomeIcon icon={faUser} className="pr-1" /> {t('loginbtn')}
+            <FontAwesomeIcon icon={faUser} className="pr-1" /> {t('header.signin')}
           </button>
         )}
       </div>

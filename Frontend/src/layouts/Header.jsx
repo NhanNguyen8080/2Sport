@@ -25,7 +25,7 @@ function Header() {
     const [enabled, setEnabled] = useState(false);
 
     const changeLanguage = () => {
-        const languageValue = enabled ? 'eng' : 'vie'; // Toggle between 'eng' and 'vie'
+        const languageValue = enabled ? 'eng' : 'vie'; 
         i18n.changeLanguage(languageValue);
     }
     return (
@@ -82,20 +82,19 @@ function Header() {
                     <div className="bg-zinc-800/80 backdrop-blur-lg text-white  flex justify-between items-center text-base font-normal py-5 pr-20 ">
                         <div className="flex space-x-10 pl-20 ">
                             <Link to="/" >
-                                {t("hcat")}
-                                <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
+                                {t("header.home")}
                             </Link>
                             <Link to="/product" className=" hover:text-orange-500 focus:text-orange-500">
-                                {t("hproduct")}
+                                {t("header.product")}
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
-                            <Link to="/">{t("hblog")}</Link>
-                            <Link to="/">{t("habout")}</Link>
-                            <Link to="/">{t("hcontact")}</Link>
+                            <Link to="/">{t("header.blog")}</Link>
+                            <Link to="/">{t("header.about")}</Link>
+                            <Link to="/">{t("header.contact")}</Link>
                         </div>
                         <div className="flex space-x-4  ">
                             <SignInModal />
-                            <Link to="/"><FontAwesomeIcon icon={faCartShopping} className="pr-1" /> {t("cartbtn")}</Link>
+                            <Link to="/cart"><FontAwesomeIcon icon={faCartShopping} className="pr-1" /> {t("header.cart")}</Link>
                         </div>
                     </div>
                     <motion.div
