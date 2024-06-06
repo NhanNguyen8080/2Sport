@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useLocation } from 'react-router-dom';
 
 function Checkout() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -16,6 +17,11 @@ function Checkout() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
   const [isEditing, setIsEditing] = useState(false);
+  const location = useLocation();
+  const { selectedProducts } = location.state || { selectedProducts: [] };
+
+  const totalPrice = selectedProducts.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  
   const [userData, setUserData] = useState({
     fullName: "",
     email: "",
@@ -58,7 +64,7 @@ function Checkout() {
           <div className="text-center">
             <FontAwesomeIcon
               icon={faCircleCheck}
-              className="text-orange-500 text-8xl"
+              className="text-green-500 text-8xl"
             />
             <div className="font-bold text-2xl pt-5">Order Success</div>
             <div>
@@ -78,32 +84,31 @@ function Checkout() {
         </div>
 
         <div className="pl-14 pr-12 py-10 basis-1/2">
-          <h3 className="text-2xl font-bold text-center">Order Summary</h3>
-
-          <div className="flex items-center p-4 border rounded">
-            <div className="w-1/5">
-              <img
-                src="https://via.placeholder.com/150"
-                alt="Product"
-                className="w-28 h-auto object-cover rounded"
-              />
+        <h3 className="text-2xl font-bold text-center">Order Summary</h3>
+      {selectedProducts.length === 0 ? (
+        <p>No products selected for checkout</p>
+      ) : (
+        <div>
+          {selectedProducts.map(item => (
+            <div key={item.id} className="flex items-center p-4 border rounded my-4">
+              <div className="w-1/4">
+                <img src={item.mainImagePath} alt={item.mainImageName} className="w-16 h-16 object-cover" />
+              </div>
+              <div className="w-1/2 pr-10">
+                <h3 className="text-lg font-semibold">{item.productName}</h3>
+              </div>
+              <div className="w-1/4 text-right">
+                <p className="text-lg text-black">{item.price * item.quantity} VND</p>
+              </div>
             </div>
-            <div className="w-3/5 pr-10">
-              <h3 className="text-lg font-semibold">Name of Product</h3>
-              <h4>Size S, Black</h4>
-            </div>
-
-            <div className="w-1/5 text-right">
-              <p className="text-lg text-black">$99.99</p>
-            </div>
-          </div>
-
+          ))}
           <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
           <div className="flex justify-between items-center pt-1 border rounded mt-4">
-            <h3 className="text-lg font-semibold">Total</h3>
-            <p className="text-lg text-black">${subtotal + shippingFees}</p>
+            <h3 className="text-lg font-semibold">Subtotal</h3>
+            <p className="text-lg text-black">{totalPrice} VND</p>
           </div>
+        </div>
+      )}
         </div>
       </div>
     );
@@ -239,42 +244,30 @@ function Checkout() {
 
       <div className="pl-14 pr-12 py-10 basis-1/3">
         <h3 className="text-2xl font-bold text-center">Order Summary</h3>
-
-        <div className="flex items-center p-4 border rounded">
-          <div className="w-1/4">
-            <img
-              src="https://via.placeholder.com/150"
-              alt="Product"
-              className="w-28 h-auto object-cover rounded"
-            />
+      {selectedProducts.length === 0 ? (
+        <p>No products selected for checkout</p>
+      ) : (
+        <div>
+          {selectedProducts.map(item => (
+            <div key={item.id} className="flex items-center p-4 border rounded my-4">
+              <div className="w-1/4">
+                <img src={item.mainImagePath} alt={item.mainImageName} className="w-16 h-16 object-cover" />
+              </div>
+              <div className="w-1/2 pr-10">
+                <h3 className="text-lg font-semibold">{item.productName}</h3>
+              </div>
+              <div className="w-1/4 text-right">
+                <p className="text-lg text-black">{item.price * item.quantity} VND</p>
+              </div>
+            </div>
+          ))}
+          <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
+          <div className="flex justify-between items-center pt-1 border rounded mt-4">
+            <h3 className="text-lg font-semibold">Subtotal</h3>
+            <p className="text-lg text-black">{totalPrice} VND</p>
           </div>
-          <div className="w-1/2 pr-10">
-            <h3 className="text-lg font-semibold">Name of Product</h3>
-            <h4>Size S, Black</h4>
-          </div>
-
-          <div className="w-1/4 text-right">
-            <p className="text-lg text-black">$99.99</p>
-          </div>
         </div>
-
-        <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
-        <div className="flex justify-between items-center pt-1 border rounded mt-4">
-          <h3 className="text-lg font-semibold">Subtotal</h3>
-          <p className="text-lg text-black">${subtotal}</p>
-        </div>
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Shipping Fees</h3>
-          <p className="text-lg text-black">${shippingFees}</p>
-        </div>
-
-        <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
-        <div className="flex justify-between items-center pt-1 border rounded mt-4">
-          <h3 className="text-lg font-semibold">Total</h3>
-          <p className="text-lg text-black">${subtotal + shippingFees}</p>
-        </div>
+      )}
 
         <div className="flex justify-center items-center mt-4">
           <Button
