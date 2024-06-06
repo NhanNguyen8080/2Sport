@@ -39,6 +39,9 @@ namespace _2Sport_BE.Helpers
             CreateMap<Order, OrderUM>();
             CreateMap<OrderUM, Order>();
             #endregion
+            #region OrderDetail
+            CreateMap<OrderDetail, OrderDetailVM>();
+            #endregion
             #region Category
             CreateMap<Category, CategoryVM>();
             CreateMap<Category, CategoryCM>();
@@ -58,16 +61,14 @@ namespace _2Sport_BE.Helpers
             CreateMap<ProductCM, Product>();
             #endregion
 
-<<<<<<< HEAD
-=======
-            #region CartItem
+
+            /*#region CartItem
             CreateMap<CartItem, CartItemVM>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
             CreateMap<CartItem, CartItemCM>().ReverseMap();
             CreateMap<CartItem, CartItemUM>().ReverseMap();
 
-            #endregion
->>>>>>> 43cc858d1ff4be91d1343020888a25ced5919028
+            #endregion*/
 
         }
 

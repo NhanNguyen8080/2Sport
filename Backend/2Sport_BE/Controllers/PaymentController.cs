@@ -3,6 +3,7 @@ using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Enums;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
+using MailKit.Search;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -14,38 +15,33 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
-
-        public PaymentController(IPaymentService paymentService, IOrderService orderService)
+        private readonly IUserService _userService;
+        private readonly ICartItemService _cartItemService;
+        private readonly ICartService _cartService;
+        public PaymentController(IPaymentService paymentService, IOrderService orderService, IUserService userService, ICartService cartService, ICartItemService cartItemService)
         {
             _paymentService = paymentService;
             _orderService = orderService;
+            _userService = userService;
+            _cartService = cartService;
+            _cartItemService = cartItemService;
         }
         [HttpPost("payOs-payment-link")]
-        public async Task<IActionResult> CreatePayOsLink(int orderId)
+        public async Task<IActionResult> CreatePayOsLink([FromBody] OrderCM orderCM)
         {
-            if (orderId == null)
+            if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid request data.");
             }
 
-            var paymentLink = await _paymentService.PaymentWithPayOs(orderId);
-
-            return Ok(new { PaymentLink = paymentLink });
+            var order = await CreateOrder(orderCM, (int)OrderMethods.PayOS);
+            int userId = GetCurrentUserIdFromToken();
+            //Xoa caritem khi add vo
+            await DeleteCartItem(userId, orderCM.OrderDetails);
+            //Generate ra link để thanh toán
+            var paymentLink =await _paymentService.PaymentWithPayOs(order.Id);
+            return Ok(paymentLink);
         }
-        /*
-          public int Id { get; set; }
-        public string OrderCode { get; set; }
-        public int? OrderDetailId { get; set; }
-        public bool? Status { get; set; }
-        public decimal? TotalPrice { get; set; }
-        public decimal? TransportFee { get; set; }
-        public decimal? IntoMoney { get; set; }
-        public int? PaymentMethodId { get; set; }
-        public int? ShipmentDetailId { get; set; }
-        public DateTime? ReceivedDate { get; set; }
-        public int? TransportUnitId { get; set; }
-        public int? UserId { get; set; }
-         */
         [HttpPost("COD-payment-link")]
         public async Task<IActionResult> CreatePaymentLink([FromBody] OrderCM orderCM)
         {
@@ -53,42 +49,55 @@ namespace _2Sport_BE.Controllers
             {
                 return BadRequest("Invalid request data.");
             }
-            if(orderCM.ShipmentDetailId != 1)
-            {
-                return BadRequest("Invalid Shipment Detail data.");
-            }
+            var order = await CreateOrder(orderCM, (int)OrderMethods.COD);
             int userId = GetCurrentUserIdFromToken();
-            Order order = new Order()
-            {
-                OrderCode = GenerateOrderCode(),
-                Status = true,
-                TotalPrice = orderCM.TotalPrice,
-                TransportFee = orderCM.TransportFee,
-                IntoMoney = orderCM.IntoMoney,
-                PaymentMethodId = (int?)OrderMethods.COD,
-                ShipmentDetailId = orderCM.ShipmentDetailId,
-                ReceivedDate = orderCM.ReceivedDate,
-                UserId = userId
-            };
-            for (int i = 0; i < orderCM.OrderDetails.Count; i++)
-            {
-                order.OrderDetails.Add(new OrderDetail { OrderId =order.Id,
-                                                        ProductId = orderCM.OrderDetails[i].ProductId,
-                                                        Price = orderCM.OrderDetails[i].Price,
-                                                        Quantity = orderCM.OrderDetails[i].Quantity
-                });
-            }
-            await _orderService.AddOrderAsync(order);
-
-
+            //Xoa caritem khi add vo
+            await DeleteCartItem(userId, orderCM.OrderDetails);
             return Ok(order);
-
         }
 
+        [HttpGet("GetPaymentLinkInformation/{orderId}")]
+        public async Task<IActionResult> GetPaymentLinkInformation(int orderId)
+        {
+            try
+            {
+                var paymentLinkInfo = await _paymentService.GetPaymentLinkInformationAsync(orderId);
+                if (paymentLinkInfo == null)
+                {
+                    return NotFound();
+                }
+                return Ok(paymentLinkInfo);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpPost("CancelPaymentLink")]
+        public async Task<IActionResult> CancelPaymentLink([FromBody] CancelPaymentRequest request)
+        {
+            try
+            {
+                var checkOrderExist = await _orderService.GetOrderByIdFromUserAsync(request.OrderId, GetCurrentUserIdFromToken());
+                if (checkOrderExist == null){
+                    return BadRequest("You don't have permission in this function");
+                }
+                checkOrderExist.Status = (int) OrderStatus.Deleted;
+                var cancelledPaymentLinkInfo = await _paymentService.CancelPaymentLink(request.OrderId, request.Reason);
+                return Ok(cancelledPaymentLinkInfo);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         [NonAction]
         public string GenerateOrderCode()
         {
-            return $"ORD-{DateTime.Now:yyyyMMddHHmmss}-{Guid.NewGuid().ToString().Substring(0, 8)}";
+            Random random = new Random();
+            int randomDigits = random.Next(100000, 1000000);
+            return randomDigits.ToString();
         }
         [NonAction]
         protected int GetCurrentUserIdFromToken()
@@ -112,6 +121,59 @@ namespace _2Sport_BE.Controllers
             catch
             {
                 return UserId;
+            }
+        }
+        [NonAction]
+        private async Task<User> GetUserFromToken()
+        {
+            var user = await _userService.GetAsync(_ => _.Id == GetCurrentUserIdFromToken());
+            return user.FirstOrDefault();
+        }
+        [NonAction]
+        protected async Task<Order> CreateOrder(OrderCM orderCM, int paymentMethodId)
+        {
+            Order order = new Order()
+            {
+                OrderCode = GenerateOrderCode(),
+                Status = (int?)OrderStatus.Active,
+                TransportFee = orderCM.TransportFee,
+                PaymentMethodId = paymentMethodId,
+                ShipmentDetailId = orderCM.ShipmentDetailId,
+                ReceivedDate = orderCM.ReceivedDate,
+                UserId = GetCurrentUserIdFromToken(),
+                User = await GetUserFromToken()
+            };
+            decimal intoMoney = 0;
+            decimal totalPrice = 0;
+            for (int i = 0; i < orderCM.OrderDetails.Count; i++)
+            {
+                order.OrderDetails.Add(new OrderDetail
+                {
+                    OrderId = order.Id,
+                    ProductId = orderCM.OrderDetails[i].ProductId,
+                    Price = orderCM.OrderDetails[i].Price,
+                    Quantity = orderCM.OrderDetails[i].Quantity
+                });
+                totalPrice += orderCM.OrderDetails[i].Price;
+            }
+            order.TotalPrice = totalPrice;
+            order.IntoMoney = totalPrice + orderCM.TransportFee;
+            await _orderService.AddOrderAsync(order);
+            return order;
+        }
+        [NonAction]
+        protected async Task DeleteCartItem(int userId, List<OrderDetailRequest> orderDetails)
+        {
+            var cart = await _cartService.GetCartByUserId(userId);
+            if (cart != null)
+            {
+                var cartItems = cart.CartItems.ToList();
+                for(int i = 0; i< cartItems.Count; i++)
+                {
+                    if (cartItems[i].ProductId == orderDetails[i].ProductId) {
+                        await _cartItemService.DeleteCartItem(cartItems[i].Id);
+                    }          
+                }
             }
         }
     }

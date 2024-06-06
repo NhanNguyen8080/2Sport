@@ -23,11 +23,11 @@ namespace _2Shipment_BE.Controllers
 
         [HttpGet]
         [Route("list-shipment-details")]
-        public async Task<IActionResult> GetShipmentDetails(int userId)
+        public async Task<IActionResult> GetShipmentDetails()
         {
             try
             {
-                var query = await _shipmentDetailService.GetAllShipmentDetails(userId);
+                var query = await _shipmentDetailService.GetAllShipmentDetails(GetCurrentUserIdFromToken());
                 var shipments = query.Select(_ => _mapper.Map<ShipmentDetail, ShipmentDetailVM>(_)).ToList();
                 if (shipments.Count > 0)
                 {
@@ -169,6 +169,12 @@ namespace _2Shipment_BE.Controllers
             {
                 return UserId;
             }
+        }
+        [NonAction]
+        private async Task<User> GetUserFromToken()
+        {
+            var user = await _userService.GetAsync(_ => _.Id == GetCurrentUserIdFromToken());
+            return user.FirstOrDefault();
         }
     }
 }

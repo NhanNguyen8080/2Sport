@@ -30,12 +30,25 @@ namespace _2Sport_BE.Controllers
             var orders = await _orderService.GetOrdersAsync();
             return Ok(orders);
         }
+        [HttpGet]
+        [Route("history-orders")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetHistoryOrders()
+        {
+            int userId = GetCurrentUserIdFromToken();
+            if (userId == 0 || userId.ToString() == string.Empty) {
+                return BadRequest("You don't have permission");
+            }
+            var orders = await  _orderService.ListAllOrderByUseIdAsync(userId);
 
+
+            return Ok(orders);
+        }
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(int id)
+        public async Task<ActionResult<Order>> GetOrderFromUser(int id)
         {
-            var order = await _orderService.GetOrderAsync(id);
+            int userId = GetCurrentUserIdFromToken();
+            var order = await _orderService.GetOrderByIdFromUserAsync(id, userId);
 
             if (order == null)
             {
@@ -67,19 +80,19 @@ namespace _2Sport_BE.Controllers
             return Ok(orderVm);
         }
         // PUT: api/Orders/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
+        [HttpPut("update-order-status/{id}")]
+        public async Task<IActionResult> ChangeOrderStatus(int id, int status)
         {
-            if (id != order.Id)
+            if (id == null || status == null)
             {
-                return BadRequest();
+                return BadRequest("Requird parameters!");
             }
 
-            var result = await _orderService.UpdateOrderAsync(order);
+            var result = await _orderService.UpdateOrderAsync(id, status);
 
             if (!result)
             {
-                return NotFound();
+                return NotFound("Request data is invalid!");
             }
 
             return Ok("Update successfully");

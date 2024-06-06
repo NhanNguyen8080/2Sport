@@ -12,15 +12,13 @@ namespace _2Sport_BE.Repository.Models
 
         public int Id { get; set; }
         public string OrderCode { get; set; }
-        public int? OrderDetailId { get; set; }
-        public bool? Status { get; set; }
+        public int? Status { get; set; }
         public decimal? TotalPrice { get; set; }
         public decimal? TransportFee { get; set; }
         public decimal? IntoMoney { get; set; }
         public int? PaymentMethodId { get; set; }
         public int? ShipmentDetailId { get; set; }
         public DateTime? ReceivedDate { get; set; }
-        public int? TransportUnitId { get; set; }
         public int? UserId { get; set; }
 
         public virtual PaymentMethod PaymentMethod { get; set; }

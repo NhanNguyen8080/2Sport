@@ -86,21 +86,11 @@ namespace _2Sport_BE.Controllers
                 cart = new Cart
                 {
                     UserId = result.Data.UserId,
-                    CartItems = new List<CartItem>()
+                    CartItems = new List<CartItem>(),
+                    User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id ==  result.Data.UserId),
                 };
 
                 await _cartService.AddNewCart(cart);
-            }
-            else
-            {
-                result.Data.CartId = cart.Id;
-                result.Data.CartItems = cart.CartItems.Select(item => new CartItemVM
-                {
-                    Id = item.Id,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    TotalPrice = item.TotalPrice
-                }).ToList();
             }
             return Ok(result);
         }
@@ -140,58 +130,73 @@ namespace _2Sport_BE.Controllers
         }
         [HttpGet("signin-google")]
         public async Task<IActionResult> GoogleLogin()
-{
-    var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    if (response.Principal == null) return BadRequest();
-
-    var name = response.Principal.FindFirstValue(ClaimTypes.Name);
-    var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-    var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
-    var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
-
-    if (email == null)
-    {
-        return BadRequest("Error retrieving Google user information");
-    }
-
-    ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
-    var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
-    if (user != null)
-    {
-        result = await _identityService.LoginGoogleAsync(user);
-    }
-    else
-    {
-        user = new User()
         {
-            FullName = name,
-            Email = email,
-            Phone = phone,
-            CreatedDate = DateTime.Now,
-            RoleId = 4,
-            Gender = gender,
-            IsActive = true,
-        };
-        await _userService.AddAsync(user);
-        _unitOfWork.Save();
+            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (response.Principal == null) return BadRequest();
 
-        result = await _identityService.LoginGoogleAsync(user);
-    }
+            var name = response.Principal.FindFirstValue(ClaimTypes.Name);
+            var email = response.Principal.FindFirstValue(ClaimTypes.Email);
+            var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
+            var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
 
-    var token = result.Data.Token;
-    var refreshToken = result.Data.RefreshToken;
+            if (email == null)
+            {
+                return BadRequest("Error retrieving Google user information");
+            }
 
-    var script = $@"
-        <script>
-            window.opener.postMessage({{
-                token: '{token}',
-                refreshToken: '{refreshToken}'
-            }}, 'http://localhost:5173');
-            window.close();
-        </script>";
+            ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
+            var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
+            if (user != null)
+            {
+                result = await _identityService.LoginGoogleAsync(user);
+                var cart = await _cartService.GetCartByUserId(user.Id);
+                if (cart == null)
+                {
+                    cart = new Cart
+                    {
+                        UserId = user.Id,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == user.Id),
+                    };
 
-    return Content(script, "text/html");
-}
+                    await _cartService.AddNewCart(cart);
+                }
+
+                await _unitOfWork.CartRepository.InsertAsync(cart);
+            }
+            else
+            {
+                user = new User()
+                {
+                    FullName = name,
+                    Email = email,
+                    Phone = phone,
+                    CreatedDate = DateTime.Now,
+                    RoleId = 4,
+                    Gender = gender,
+                    IsActive = true,
+                };
+                await _userService.AddAsync(user);
+                _unitOfWork.Save();
+
+                result = await _identityService.LoginGoogleAsync(user);
+            }
+
+            var token = result.Data.Token;
+            var refreshToken = result.Data.RefreshToken;
+
+            
+            var script = $@"
+                <script>
+                    window.opener.postMessage({{
+                        token: '{token}',
+                        refreshToken: '{refreshToken}'
+                    }}, 'http://localhost:5173');
+                    window.close();
+                </script>";
+
+            return Content(script, "text/html");
+        }
 
         [HttpPost("sign-up")]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
@@ -213,13 +218,19 @@ namespace _2Sport_BE.Controllers
                 user.RoleId = 4;
                 user.IsActive = true;
                 await _userService.AddAsync(user);
-                var cart = new Cart
+                var cart = await _cartService.GetCartByUserId(user.Id);
+                if (cart == null)
                 {
-                    UserId = user.Id,
-                    User = user,
-                };
-                await _unitOfWork.CartRepository.InsertAsync(cart);
-				_userService.Save();
+                    cart = new Cart
+                    {
+                        UserId = user.Id,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == user.Id),
+                    };
+
+                    await _cartService.AddNewCart(cart);
+                }
+                _userService.Save();
                 return StatusCode(201, new { processStatus = "Success", userId = user.Id }); ;
             }
             catch (Exception ex)

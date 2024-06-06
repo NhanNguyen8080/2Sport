@@ -206,6 +206,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.TransportFee).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Status).HasColumnType("int");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Orders)
@@ -215,11 +216,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.ShipmentDetail)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ShipmentDetailId)
-<<<<<<< HEAD
                     .HasConstraintName("FK__Orders__Shipment__07C12930");
-=======
-                    .HasConstraintName("FK__Orders__Shipment__03F0984C");
->>>>>>> 43cc858d1ff4be91d1343020888a25ced5919028
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
@@ -235,13 +232,9 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-<<<<<<< HEAD
                     .HasConstraintName("FK__OrderDeta__Order__0A9D95DB");
                 entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
-=======
-                    .HasConstraintName("FK__OrderDeta__Order__06CD04F7");
 
->>>>>>> 43cc858d1ff4be91d1343020888a25ced5919028
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.ProductId)

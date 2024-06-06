@@ -1,8 +1,10 @@
-﻿using _2Sport_BE.Repository.Models;
+﻿using _2Sport_BE.Infrastructure.Services;
+using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace _2Sport_BE.Controllers
 {
@@ -12,10 +14,12 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IMapper _mapper;
-        public PaymentMethodController(IPaymentMethodService paymentMethodService, IMapper mapper)
+        private readonly IUserService _userService;
+        public PaymentMethodController(IPaymentMethodService paymentMethodService, IMapper mapper, IUserService userService)
         {
             _paymentMethodService = paymentMethodService;
             _mapper = mapper;
+            _userService = userService;
         }
 
         // GET: api/PaymentMethods
@@ -28,7 +32,7 @@ namespace _2Sport_BE.Controllers
 
         // GET: api/PaymentMethods/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PaymentMethod>> GetPaymentMethod(int id)
+        public async Task<ActionResult<PaymentMethod>> GetPaymentMethodByUser(int id)
         {
             var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(id);
 
@@ -83,5 +87,6 @@ namespace _2Sport_BE.Controllers
 
             return NoContent();
         }
+        
     }
 }

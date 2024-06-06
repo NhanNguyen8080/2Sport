@@ -16,9 +16,11 @@ namespace _2Sport_BE.Service.Services
     public interface IOrderService
     {
         Task<IEnumerable<Order>> GetOrdersAsync();
-        Task<Order> GetOrderAsync(int id);
+        Task<IEnumerable<Order>> ListAllOrderByUseIdAsync(int userId);
+        Task<Order> GetOrderByIdAsync(int id);
+        Task<Order> GetOrderByIdFromUserAsync(int id, int userId);
         Task<Order> AddOrderAsync(Order order);
-        Task<bool> UpdateOrderAsync(Order order);
+        Task<bool> UpdateOrderAsync(int orderId, int status);
         Task<bool> DeleteOrderAsync(int id);
     }
     public class OrderService : IOrderService
@@ -45,10 +47,17 @@ namespace _2Sport_BE.Service.Services
             return order;
         }
 
-        public async Task<bool> UpdateOrderAsync(Order order)
+        public async Task<bool> UpdateOrderAsync(int orderId, int status)
         {
-           await _unitOfWork.OrderRepository.UpdateAsync(order);
-           return true;
+            var checkExist = await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == orderId);
+            if(checkExist != null)
+            {
+                checkExist.Status = status;
+                await _unitOfWork.OrderRepository.UpdateAsync(checkExist);
+                return true;
+            }
+            return false;
+           
         }
 
         public async Task<bool> DeleteOrderAsync(int id)
@@ -63,10 +72,22 @@ namespace _2Sport_BE.Service.Services
             return true;
         }
 
-        public async Task<Order> GetOrderAsync(int id)
+        public async Task<Order> GetOrderByIdAsync(int id)
         {
             return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == id);
         }
+
+        public async Task<Order> GetOrderByIdFromUserAsync(int id, int userId)
+        {
+            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == id && _.UserId == userId);
+        }
+
+        public async Task<IEnumerable<Order>> ListAllOrderByUseIdAsync(int userId)
+        {
+            var result = await _unitOfWork.OrderRepository.GetAsync(_ => _.UserId ==  userId);
+            return result.OrderBy(_ => _.ReceivedDate);
+        }
+
     }
 
 }
