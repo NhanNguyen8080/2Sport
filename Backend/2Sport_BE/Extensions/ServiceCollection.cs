@@ -32,8 +32,9 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IPaymentService, PaymentService>();
-
-        }
+			services.AddScoped<ILikeService, LikeService>();
+			services.AddScoped<IReviewService, ReviewService>();
+		}
 
 		private static string GetConnectionStrings()
         {
