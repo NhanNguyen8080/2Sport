@@ -43,7 +43,9 @@ namespace _2Sport_BE.Helpers
 
             #region CartItem
             CreateMap<CartItem, CartItemVM>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName));
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+				.ForMember(dest => dest.MainImageName, opt => opt.MapFrom(src => src.Product.MainImageName))
+				.ForMember(dest => dest.MainImagePath, opt => opt.MapFrom(src => src.Product.MainImagePath));
             CreateMap<CartItem, CartItemCM>().ReverseMap();
             CreateMap<CartItem, CartItemUM>().ReverseMap();
 
