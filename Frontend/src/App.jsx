@@ -16,6 +16,7 @@ import Cart from './pages/Cart';
 import UserCart from './pages/UserCart';
 import { useSelector } from 'react-redux';
 import { selectUser } from './redux/slices/authSlice';
+import Dashboard from './components/Staff/Dashboard';
 
 
 function App() {
@@ -35,6 +36,8 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
         
           <Route path="*" element={<NotFoundPage />} />
+
+          <Route path="/dashboard" element={<Dashboard />} />
           
      </Routes>
      </div>
