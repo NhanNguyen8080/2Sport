@@ -14,12 +14,15 @@ namespace _2Sport_BE.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public CategoryController(ICategoryService categoryService, IUnitOfWork unitOfWork, IMapper mapper)
+		private readonly IMapper _mapper;
+        public CategoryController(ICategoryService categoryService, IUnitOfWork unitOfWork,
+									IProductService productService, IMapper mapper)
         {
             _categoryService = categoryService;
-            _unitOfWork = unitOfWork;
+            _productService = productService;
+			_unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -30,7 +33,12 @@ namespace _2Sport_BE.Controllers
             try
             {
                 var query = await _categoryService.GetAllCategories();
-                var categories = query.Select(_ => _mapper.Map<Category, CategoryVM>(_)).ToList();
+				foreach (var item in query.ToList())
+				{
+					var product = await _productService.GetProducts(_ => _.CategoryId == item.Id);
+					item.Quantity = product.ToList().Count;
+				}
+				var categories = query.Select(_ => _mapper.Map<Category, CategoryVM>(_)).ToList();
                 return Ok(new { total = categories.Count, data = categories });
             }
             catch (Exception ex)
