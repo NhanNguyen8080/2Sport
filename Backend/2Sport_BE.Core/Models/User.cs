@@ -22,6 +22,7 @@ namespace _2Sport_BE.Repository.Models
         public string? FullName { get; set; }
         public string? Gender { get; set; }
         public string? Phone { get; set; }
+        public string? Address { get; set; }
         public string? Salary { get; set; }
         public DateTime? BirthDate { get; set; }
         public DateTime CreatedDate { get; set; }

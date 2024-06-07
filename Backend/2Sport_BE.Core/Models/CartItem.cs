@@ -11,7 +11,6 @@ namespace _2Sport_BE.Repository.Models
         public decimal? TotalPrice { get; set; }
         public int? CartId { get; set; }
         public bool? Status { get; set; }
-
         public virtual Cart Cart { get; set; }
         public virtual Product Product { get; set; }
     }

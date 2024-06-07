@@ -24,5 +24,4 @@ namespace _2Sport_BE.ViewModels
     {
     }
 
-
 }

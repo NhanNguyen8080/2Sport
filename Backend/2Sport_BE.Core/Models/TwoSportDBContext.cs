@@ -206,6 +206,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.TransportFee).HasColumnType("decimal(18, 0)");
+                entity.Property(e => e.Status).HasColumnType("int");
 
                 entity.HasOne(d => d.PaymentMethod)
                     .WithMany(p => p.Orders)
@@ -215,7 +216,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.ShipmentDetail)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(d => d.ShipmentDetailId)
-                    .HasConstraintName("FK__Orders__Shipment__03F0984C");
+                    .HasConstraintName("FK__Orders__Shipment__07C12930");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
@@ -231,7 +232,8 @@ namespace _2Sport_BE.Repository.Models
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("FK__OrderDeta__Order__06CD04F7");
+                    .HasConstraintName("FK__OrderDeta__Order__0A9D95DB");
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 0)");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.OrderDetails)
@@ -401,7 +403,7 @@ namespace _2Sport_BE.Repository.Models
                 entity.Property(e => e.Salary).HasMaxLength(20);
 
                 entity.Property(e => e.UserName).HasMaxLength(255);
-
+                entity.Property(e => e.Address).HasMaxLength(255);
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
