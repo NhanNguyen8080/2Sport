@@ -1,4 +1,5 @@
-﻿using _2Sport_BE.Infrastructure.Services;
+﻿using _2Sport_BE.DataContent;
+using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Enums;
 using _2Sport_BE.Service.Services;
@@ -18,44 +19,104 @@ namespace _2Sport_BE.Controllers
         private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
         private readonly ICartService _cartService;
-        public PaymentController(IPaymentService paymentService, IOrderService orderService, IUserService userService, ICartService cartService, ICartItemService cartItemService)
+        private readonly IShipmentDetailService _shipmentDetailService;
+        private readonly IPaymentMethodService _paymentMethodService;
+
+
+        public PaymentController(
+            IPaymentService paymentService,
+            IOrderService orderService,
+            IUserService userService,
+            ICartService cartService,
+            ICartItemService cartItemService,
+            IShipmentDetailService shipmentDetailService,
+            IPaymentMethodService paymentMethodService)
         {
             _paymentService = paymentService;
             _orderService = orderService;
             _userService = userService;
             _cartService = cartService;
             _cartItemService = cartItemService;
+            _shipmentDetailService = shipmentDetailService;
+            _paymentMethodService = paymentMethodService;
         }
-        [HttpPost("payOs-payment-link")]
-        public async Task<IActionResult> CreatePayOsLink([FromBody] OrderCM orderCM)
+        [HttpPost("checkout-orders")]
+        public async Task<IActionResult> CreatePayOsLink([FromBody] OrderCM orderCM, int orderMethodId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid request data.");
             }
-
-            var order = await CreateOrder(orderCM, (int)OrderMethods.PayOS);
-            int userId = GetCurrentUserIdFromToken();
-            //Xoa caritem khi add vo
-            await DeleteCartItem(userId, orderCM.OrderDetails);
-            //Generate ra link để thanh toán
-            var paymentLink =await _paymentService.PaymentWithPayOs(order.Id);
-            return Ok(paymentLink);
-        }
-        [HttpPost("COD-payment-link")]
-        public async Task<IActionResult> CreatePaymentLink([FromBody] OrderCM orderCM)
-        {
-            if (!ModelState.IsValid)
+            var user = await GetUserFromToken();
+            Order order = null;
+            ResponseModel<OrderVM> responseModel = null;
+            OrderVM orderVM = null;
+            if (user is null)
             {
-                return BadRequest("Invalid request data.");
+                return Unauthorized("Invalid user!");
             }
-            var order = await CreateOrder(orderCM, (int)OrderMethods.COD);
-            int userId = GetCurrentUserIdFromToken();
-            //Xoa caritem khi add vo
-            await DeleteCartItem(userId, orderCM.OrderDetails);
-            return Ok(order);
-        }
+            else
+            {
+                //Delete cartItem
+                await DeleteCartItem(user.Id, orderCM.OrderDetails);
+                if (orderMethodId.ToString().Trim().Equals(OrderMethods.PayOS))
+                {
+                    order = await CreateOrder(orderCM, (int)OrderMethods.PayOS);
+                    //Generate payment link
+                    var paymentLink = await _paymentService.PaymentWithPayOs(order.Id);
+                    orderVM = new OrderVM()
+                    {
+                        FullName = order.ShipmentDetail.FullName,
+                        Address = order.ShipmentDetail.Address,
+                        PhoneNumber = order.ShipmentDetail.PhoneNumber,
+                        PaymentMethod = order.PaymentMethod.PaymentMethodName,
+                        ReceivedDate = order.ReceivedDate,
+                        TransportFee = order.TransportFee,
+                        IntoMoney = order.IntoMoney,
+                        Status = order.Status,
+                        PaymentLink = paymentLink
+                    };
+                    responseModel = new ResponseModel<OrderVM>
+                    {
+                        IsSuccess = true,
+                        Message = "Query successfully!",
+                        Data = orderVM
+                    };
+                    return Ok(responseModel);
+                }
+                else if (orderMethodId.ToString().Trim().Equals(OrderMethods.COD))
+                {
+                    order = await CreateOrder(orderCM, (int)OrderMethods.COD);
 
+                    orderVM = new OrderVM()
+                    {
+                        FullName = order.ShipmentDetail.FullName,
+                        Address = order.ShipmentDetail.Address,
+                        PhoneNumber = order.ShipmentDetail.PhoneNumber,
+                        PaymentMethod = order.PaymentMethod.PaymentMethodName,
+                        ReceivedDate = order.ReceivedDate,
+                        TransportFee = order.TransportFee,
+                        IntoMoney = order.IntoMoney,
+                        Status = order.Status
+                    };
+                    responseModel = new ResponseModel<OrderVM>
+                    {
+                         IsSuccess = true,
+                         Message = "Query successfully!",
+                         Data = orderVM
+                    };
+                    return Ok(responseModel);
+                }
+
+                responseModel = new ResponseModel<OrderVM>
+                {
+                    IsSuccess = false,
+                    Message = "Somethings is wrong!",
+                    Data = null
+                };
+                return NotFound(responseModel);
+            }   
+        }
         [HttpGet("GetPaymentLinkInformation/{orderId}")]
         public async Task<IActionResult> GetPaymentLinkInformation(int orderId)
         {
@@ -83,7 +144,7 @@ namespace _2Sport_BE.Controllers
                 if (checkOrderExist == null){
                     return BadRequest("You don't have permission in this function");
                 }
-                checkOrderExist.Status = (int) OrderStatus.Deleted;
+                checkOrderExist.Status = (int) OrderStatus.Canceled;
                 var cancelledPaymentLinkInfo = await _paymentService.CancelPaymentLink(request.OrderId, request.Reason);
                 return Ok(cancelledPaymentLinkInfo);
             }
@@ -132,16 +193,22 @@ namespace _2Sport_BE.Controllers
         [NonAction]
         protected async Task<Order> CreateOrder(OrderCM orderCM, int paymentMethodId)
         {
+            var user = await GetUserFromToken();
+            var shipmentDetail = await _shipmentDetailService.GetShipmentDetailById((int)orderCM.ShipmentDetailId);
+            var status = (int?)OrderStatus.Order_Confirmation;
+            var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(paymentMethodId);
             Order order = new Order()
             {
                 OrderCode = GenerateOrderCode(),
-                Status = (int?)OrderStatus.Active,
+                Status = status,
                 TransportFee = orderCM.TransportFee,
                 PaymentMethodId = paymentMethodId,
-                ShipmentDetailId = orderCM.ShipmentDetailId,
+                PaymentMethod = paymentMethod,
+                ShipmentDetailId = shipmentDetail.Id,
+                ShipmentDetail = shipmentDetail,
                 ReceivedDate = orderCM.ReceivedDate,
                 UserId = GetCurrentUserIdFromToken(),
-                User = await GetUserFromToken()
+                User = user
             };
             decimal intoMoney = 0;
             decimal totalPrice = 0;

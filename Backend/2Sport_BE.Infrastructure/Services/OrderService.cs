@@ -16,9 +16,10 @@ namespace _2Sport_BE.Service.Services
     public interface IOrderService
     {
         Task<IEnumerable<Order>> GetOrdersAsync();
-        Task<IEnumerable<Order>> ListAllOrderByUseIdAsync(int userId);
+        Task<List<Order>> ListAllOrderByUseIdAsync(int userId);
         Task<Order> GetOrderByIdAsync(int id);
-        Task<Order> GetOrderByIdFromUserAsync(int id, int userId);
+        Task<Order> GetOrderByIdFromUserAsync(int orderId, int userId);
+        Task<List<Order>> GetOrderByStatus(int status);
         Task<Order> AddOrderAsync(Order order);
         Task<bool> UpdateOrderAsync(int orderId, int status);
         Task<bool> DeleteOrderAsync(int id);
@@ -35,10 +36,27 @@ namespace _2Sport_BE.Service.Services
             _configuration = configuration;
             _unitOfWork = unitOfWork;
         }
-
+        //cai nay chua biet
+        public async Task<Order> GetOrderByIdAsync(int id)
+        {
+            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == id);
+        }
+        //For admin
+        public async Task<List<Order>> GetOrderByStatus(int status)
+        {
+            var result = await _unitOfWork.OrderRepository.GetAsync(_ => _.Status == status);
+            return result.ToList();
+        }
+        //For admin
         public async Task<IEnumerable<Order>> GetOrdersAsync()
         {
             return await _unitOfWork.OrderRepository.GetAllAsync();
+        }
+        //For user
+        public async Task<List<Order>> ListAllOrderByUseIdAsync(int userId)
+        {
+            var result = await _unitOfWork.OrderRepository.GetAsync(_ => _.UserId == userId, "OrderDetails");
+            return result.OrderBy(_ => _.ReceivedDate).ToList();
         }
 
         public async Task<Order> AddOrderAsync(Order order)
@@ -57,7 +75,6 @@ namespace _2Sport_BE.Service.Services
                 return true;
             }
             return false;
-           
         }
 
         public async Task<bool> DeleteOrderAsync(int id)
@@ -72,22 +89,10 @@ namespace _2Sport_BE.Service.Services
             return true;
         }
 
-        public async Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order> GetOrderByIdFromUserAsync(int orderId, int userId)
         {
-            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == id);
+            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == orderId && _.UserId == userId);
         }
-
-        public async Task<Order> GetOrderByIdFromUserAsync(int id, int userId)
-        {
-            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == id && _.UserId == userId);
-        }
-
-        public async Task<IEnumerable<Order>> ListAllOrderByUseIdAsync(int userId)
-        {
-            var result = await _unitOfWork.OrderRepository.GetAsync(_ => _.UserId ==  userId);
-            return result.OrderBy(_ => _.ReceivedDate);
-        }
-
     }
 
 }
