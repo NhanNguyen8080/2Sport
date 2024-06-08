@@ -8,8 +8,8 @@ const productPersistConfig = {
 };
 
 const initialState = {
-    products: [], // should be an array to match the expected structure
-    total: 0, // include total to match the structure of the response
+    products: [],
+    total: 0, 
 };
 
 const productSlice = createSlice({

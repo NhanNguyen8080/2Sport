@@ -16,6 +16,8 @@ import Cart from './pages/Cart';
 import UserCart from './pages/UserCart';
 import { useSelector } from 'react-redux';
 import { selectUser } from './redux/slices/authSlice';
+import UserShipment from './components/User/UserShipment';
+import UserRoutes from './routes/UserRoutes';
 
 
 function App() {
@@ -27,12 +29,12 @@ function App() {
       {/* <BreadcrumbsDefault/> */}
      <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/manage-account" element={<ManageAccount />} />
-          <Route path="/product" element={<ProductPage />} />
+          <Route path="/manage-account/*" element={<UserRoutes />} />
           <Route path="/productv2" element={<Productv2Page />} />
-          <Route path="/*" element={<ProductRoutes />} />
+          <Route path="/product/*" element={<ProductRoutes />} />
           <Route path="/cart" element={user ? <UserCart/> : <Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/shipment" element={<UserShipment />} />
         
           <Route path="*" element={<NotFoundPage />} />
           

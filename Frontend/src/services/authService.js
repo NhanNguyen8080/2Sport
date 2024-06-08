@@ -1,6 +1,6 @@
-import { signIn } from '../api/apiAuth';
-import {jwtDecode} from 'jwt-decode';
-import { login } from '../redux/slices/authSlice';
+import { signIn, signOut } from '../api/apiAuth';
+import { jwtDecode } from 'jwt-decode';
+import { login, logout } from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
 import { signUp } from '../api/apiAuth';
 
@@ -24,6 +24,16 @@ export const signUpUser = async (userData) => {
   try {
     const response = await signUp(userData);
     return response.data;
+  } catch (error) {
+    console.error('Error during sign-up:', error);
+    throw error;
+  }
+};
+
+export const signOutUser = async (data) => {
+  try {
+    const response = await signOut(data);
+    return response;
   } catch (error) {
     console.error('Error during sign-up:', error);
     throw error;

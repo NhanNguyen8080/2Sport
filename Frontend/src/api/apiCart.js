@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7276/api/Cart';
+const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Cart';
 
 export const addToCartAPI = (productId, quantity, token) => {
 
