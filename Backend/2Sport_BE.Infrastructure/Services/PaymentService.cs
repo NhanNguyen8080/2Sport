@@ -67,6 +67,11 @@ namespace _2Sport_BE.Service.Services
                     ItemData item = new ItemData(name, soluong, thanhtien);
                     orders.Add(item);
                 }
+                if (order.TransportFee > 0)
+                {
+                    ItemData item = new ItemData("Chi phi van chuyen", 1,(int) order.TransportFee);
+                    orders.Add(item);
+                }
                 string content = $"Thanh toan hoa don {order.OrderCode}";
                 int expiredAt = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (60 * 5));
                 PaymentData data = new PaymentData(Int32.Parse(order.OrderCode), Int32.Parse(order.IntoMoney.ToString()), content, orders, "http://localhost:5173", "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=thanh%20toan%20thanh%20cong&op=translate", null, user.FullName, user.Email, user.Phone, user.Address, expiredAt);

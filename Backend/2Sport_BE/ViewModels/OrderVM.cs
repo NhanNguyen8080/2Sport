@@ -18,9 +18,7 @@
         public int? Status { get; set; }
         public decimal? IntoMoney { get; set; }
         public string? PaymentMethod { get; set; }
-        public string? FullName { get; set; }
-        public string? Address { get; set; }
-        public string? PhoneNumber { get; set; }
+        public int? ShipmentDetailId { get; set; }
         public string? PaymentLink { get; set; }
     }
     public class OrderDetailRequest
