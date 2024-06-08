@@ -80,17 +80,20 @@ namespace _2Sport_BE.Controllers
             var password = HashPassword(loginModel.Password);
             loginModel.Password = password;
             var result = await _identityService.LoginAsync(loginModel);
-            var cart = await _cartService.GetCartByUserId((int)result.Data.UserId);
-            if (cart == null)
+            if (result.IsSuccess)
             {
-                cart = new Cart
+                var cart = await _cartService.GetCartByUserId((int)result.Data.UserId);
+                if (cart == null)
                 {
-                    UserId = result.Data.UserId,
-                    CartItems = new List<CartItem>(),
-                    User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id ==  result.Data.UserId),
-                };
+                    cart = new Cart
+                    {
+                        UserId = result.Data.UserId,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == result.Data.UserId),
+                    };
 
-                await _cartService.AddNewCart(cart);
+                    await _cartService.AddNewCart(cart);
+                }
             }
             return Ok(result);
         }
@@ -113,10 +116,7 @@ namespace _2Sport_BE.Controllers
             }
             else
             {
-                token.Token = null;
-                token.ExpiryDate = DateTime.Now;
-                token.Used = true;
-                await _refreshTokenService.UpdateToken(token);
+                await _refreshTokenService.RemoveToken(token);
                 _unitOfWork.Save();
                 return Ok("Query Successfully");
             }
@@ -246,8 +246,21 @@ namespace _2Sport_BE.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordVM model)
         {
-            return Ok();
-
+            var user = await GetUserFromToken();
+            if(user is null)
+            {
+                return Unauthorized("Invalid user");
+            }
+            else
+            {
+                if (!user.Password.Equals(HashPassword(model.OldPassword)))
+                {
+                    return BadRequest("Old passwords do not match");
+                }
+                user.Password = HashPassword(model.NewPassword);
+                _unitOfWork.Save();
+                return Ok("Password changed successfully");
+            } 
         }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotVM forgotVM)
@@ -261,7 +274,6 @@ namespace _2Sport_BE.Controllers
                 if(check != null)
                 {
                     var newPassword = GenerateRandomString(6);
-                    //Đổi mk user
                     check.Password = HashPassword(newPassword);
                     _unitOfWork.Save();
                     //Send mail to get a new password
@@ -322,6 +334,32 @@ namespace _2Sport_BE.Controllers
             }
 
             return result.ToString();
+        }
+
+        [NonAction]
+        private async Task<User> GetUserFromToken()
+        {
+            int UserId = 0;
+            try
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var identity = HttpContext.User.Identity as ClaimsIdentity;
+                    if (identity != null)
+                    {
+                        IEnumerable<Claim> claims = identity.Claims;
+                        string strUserId = identity.FindFirst("UserId").Value;
+                        int.TryParse(strUserId, out UserId);
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            var user = await _userService.GetAsync(_ => _.Id == UserId);
+            return user.FirstOrDefault();
         }
     }
 }

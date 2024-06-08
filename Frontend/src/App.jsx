@@ -37,6 +37,8 @@ function App() {
           <Route path="/shipment" element={<UserShipment />} />
         
           <Route path="*" element={<NotFoundPage />} />
+
+          <Route path="/dashboard" element={<Dashboard />} />
           
      </Routes>
      </div>

@@ -1,9 +1,11 @@
-﻿using _2Sport_BE.Infrastructure.Services;
+﻿using _2Sport_BE.DataContent;
+using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace _2Shipment_BE.Controllers
@@ -25,15 +27,20 @@ namespace _2Shipment_BE.Controllers
         [Route("list-shipment-details")]
         public async Task<IActionResult> GetShipmentDetails()
         {
+            var userId = GetCurrentUserIdFromToken();
+            if(userId is 0 || userId.ToString().IsNullOrEmpty())
+            {
+                return Unauthorized("Invalid user");
+            }
             try
             {
-                var query = await _shipmentDetailService.GetAllShipmentDetails(GetCurrentUserIdFromToken());
+                var query = await _shipmentDetailService.GetAllShipmentDetails(userId);
                 var shipments = query.Select(_ => _mapper.Map<ShipmentDetail, ShipmentDetailVM>(_)).ToList();
                 if (shipments.Count > 0)
                 {
                 return Ok(shipments);
                 }
-                return NoContent();
+                return NotFound("Your shipment detail are empty!");
             }
             catch (Exception ex)
             {
@@ -41,7 +48,7 @@ namespace _2Shipment_BE.Controllers
             }
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("add-many-shipment-details")]
         public async Task<IActionResult> AddShipments(List<ShipmentDetail> newShipments)
         {
@@ -54,7 +61,7 @@ namespace _2Shipment_BE.Controllers
             {
                 return BadRequest(ex);
             }
-        }
+        }*/
         [HttpPost]
         [Route("add-shipment-detail")]
         public async Task<IActionResult> AddShipment([FromBody]ShipmentDetailCM shipmentDetailCM)
@@ -66,7 +73,7 @@ namespace _2Shipment_BE.Controllers
             var userId = GetCurrentUserIdFromToken();
             if(userId == null)
             {
-                return BadRequest("Invalid user");
+                return Unauthorized("Invalid user");
             }
             try
             {
@@ -75,19 +82,27 @@ namespace _2Shipment_BE.Controllers
                     PhoneNumber = shipmentDetailCM.PhoneNumber,
                     Address = shipmentDetailCM.Address,
                     FullName = shipmentDetailCM.FullName,
-                    UserId = userId
+                    UserId = userId,
+                    User = await GetUserFromToken()
                 };
                 await _shipmentDetailService.AddShipmentDetail(newShipmentDetail);
 
                 ShipmentDetailVM detailVM = new ShipmentDetailVM()
                 {
+                    UserId = userId,
                     FullName = shipmentDetailCM.FullName,
                     Address = shipmentDetailCM.Address,
                     PhoneNumber = shipmentDetailCM.PhoneNumber,
-                    UserId = userId
-                   
                 };
-                return Ok("Query successfully!");
+
+                ResponseModel<ShipmentDetailVM> response = new ResponseModel<ShipmentDetailVM>()
+                {
+                    IsSuccess = true,
+                    Message = "Query successful!",
+                    Data = detailVM
+                };
+                
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -100,12 +115,12 @@ namespace _2Shipment_BE.Controllers
         {
             try
             {
-                var checkExist = await _shipmentDetailService.GetShipmentDetailById(id);
                 var userId = GetCurrentUserIdFromToken();
-                if (userId == null || checkExist == null)
+                if (userId == null)
                 {
-                    return BadRequest("Invalid request data or user!");
+                    return Unauthorized("Invalid user");
                 }
+                var checkExist = await _shipmentDetailService.GetShipmentDetailById(id);
                 if (checkExist != null)
                 {
                     checkExist.FullName = shipmentDetailUM.FullName;
@@ -116,15 +131,24 @@ namespace _2Shipment_BE.Controllers
                     ShipmentDetailVM detailVM = new ShipmentDetailVM()
                     {
                         Id = checkExist.Id,
+                        UserId = userId,
                         FullName = shipmentDetailUM.FullName,
                         Address = shipmentDetailUM.Address,
                         PhoneNumber = shipmentDetailUM.PhoneNumber,
-                        UserId = userId
                     };
-                    return Ok(detailVM);
-                }
 
-                return NoContent();
+                    ResponseModel<ShipmentDetailVM> response = new ResponseModel<ShipmentDetailVM>()
+                    {
+                        IsSuccess = true,
+                        Message = "Query successful!",
+                        Data = detailVM
+                    };
+                    return Ok(response);
+                }
+                else
+                {
+                    return NotFound($"Not found with id = ${id}");
+                }
             }
             catch (Exception ex)
             {
@@ -136,6 +160,11 @@ namespace _2Shipment_BE.Controllers
         [Route("delete-shipment-detail")]
         public async Task<IActionResult> DeleteShipment(int id)
         {
+            var userId = GetCurrentUserIdFromToken();
+            if (userId == null)
+            {
+                return Unauthorized("Invalid user");
+            }
             try
             {
                 await _shipmentDetailService.DeleteShipmentDetailById(id);

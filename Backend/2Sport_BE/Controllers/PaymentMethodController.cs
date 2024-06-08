@@ -21,30 +21,42 @@ namespace _2Sport_BE.Controllers
             _mapper = mapper;
             _userService = userService;
         }
+        /*[HttpGet("{id}")]
+       public async Task<ActionResult<PaymentMethod>> GetPaymentMethodByUser(int id)
+       {
+           var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(id);
 
-        // GET: api/PaymentMethods
+           if (paymentMethod == null)
+           {
+               return NotFound("Payment method is not valid");
+           }
+
+           return paymentMethod;
+       }*/
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PaymentMethod>>> GetPaymentMethods()
+        public async Task<IActionResult> GetPaymentMethods()
         {
             var paymentMethods = await _paymentMethodService.GetPaymentMethodsAsync();
+            if(paymentMethods.Count() == 0)
+            {
+                return NotFound("Cannot find payment method!");
+            }
             return Ok(paymentMethods);
         }
-
-        // GET: api/PaymentMethods/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PaymentMethod>> GetPaymentMethodByUser(int id)
+        [HttpPost]
+        public async Task<IActionResult> PostPaymentMethod([FromBody] PaymentMethodCM paymentMethodCM)
         {
-            var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(id);
-
-            if (paymentMethod == null)
+            var paymentMethod = new PaymentMethod()
             {
-                return NotFound();
+                PaymentMethodName = paymentMethodCM.Name
+            };
+            var createdPaymentMethod = await _paymentMethodService.AddPaymentMethodAsync(paymentMethod);
+            if(createdPaymentMethod == null)
+            {
+                return BadRequest("Cannot insert!");
             }
-
-            return paymentMethod;
+            return Ok(createdPaymentMethod);
         }
-
-        // PUT: api/PaymentMethods/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPaymentMethod(int id, PaymentMethod paymentMethod)
         {
@@ -62,31 +74,16 @@ namespace _2Sport_BE.Controllers
 
             return NoContent();
         }
-
-        // POST: api/PaymentMethods
-        [HttpPost]
-        public async Task<ActionResult<PaymentMethod>> PostPaymentMethod([FromBody] PaymentMethodCM paymentMethodCM)
-        {
-            var paymentMethod = new PaymentMethod()
-            {
-                PaymentMethodName = paymentMethodCM.Name
-            };
-            var createdPaymentMethod = await _paymentMethodService.AddPaymentMethodAsync(paymentMethod);
-            return CreatedAtAction("GetPaymentMethod", new { id = createdPaymentMethod.Id }, createdPaymentMethod);
-        }
-
-        // DELETE: api/PaymentMethods/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePaymentMethod(int id)
         {
             var result = await _paymentMethodService.DeletePaymentMethodAsync(id);
             if (!result)
             {
-                return NotFound();
+                return NotFound($"Payment method is not valid with ${id}");
             }
 
-            return NoContent();
+            return Ok("Deleted successfully!");
         }
-        
     }
 }

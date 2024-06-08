@@ -56,10 +56,10 @@ namespace _2Sport_BE.ViewModels
     public class ChangePasswordVM
     {
         [Required]
-        [JsonProperty("userName")]
+        [JsonProperty("oldPassword")]
         public string OldPassword { get; set; }
         [Required]
-        [JsonProperty("email")]
+        [JsonProperty("newPassword")]
         public string NewPassword { get; set; }
     }
 }

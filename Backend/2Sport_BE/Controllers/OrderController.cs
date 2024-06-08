@@ -1,4 +1,5 @@
-﻿using _2Sport_BE.Infrastructure.Services;
+﻿using _2Sport_BE.DataContent;
+using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
@@ -32,31 +33,33 @@ namespace _2Sport_BE.Controllers
         }
         [HttpGet]
         [Route("history-orders")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetHistoryOrders()
+        public async Task<IActionResult> GetHistoryOrders()
         {
             int userId = GetCurrentUserIdFromToken();
+            ResponseModel<List<Order>> response = new ResponseModel<List<Order>>();
             if (userId == 0 || userId.ToString() == string.Empty) {
-                return BadRequest("You don't have permission");
+                response.IsSuccess = false;
+                response.Message = "You don't have permission";
+                return BadRequest(response);
             }
             var orders = await  _orderService.ListAllOrderByUseIdAsync(userId);
-
-
-            return Ok(orders);
-        }
-        // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderFromUser(int id)
-        {
-            int userId = GetCurrentUserIdFromToken();
-            var order = await _orderService.GetOrderByIdFromUserAsync(id, userId);
-
-            if (order == null)
+            if (orders.Count() > 0)
             {
-                return NotFound();
-            }
+                response.IsSuccess = true;
+                response.Message = "Query successfully!";
+                response.Data = orders.ToList();
 
-            return order;
+                return Ok(response);
+            }
+            else
+            {
+                response.IsSuccess = true;
+                response.Message = "Orders are not found!";
+                response.Data = null;
+                return NotFound(response);
+            }
         }
+
         // PUT: api/Orders/5
         [HttpPost("create-order")]
         public async Task<IActionResult> PostOrder([FromBody] OrderCM orderCM)
@@ -92,13 +95,13 @@ namespace _2Sport_BE.Controllers
 
             if (!result)
             {
-                return NotFound("Request data is invalid!");
+                return NotFound("Change status is false!");
             }
 
             return Ok("Update successfully");
         }
         // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
+        /*[HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var result = await _orderService.DeleteOrderAsync(id);
@@ -108,7 +111,7 @@ namespace _2Sport_BE.Controllers
             }
 
             return Ok("Delete successfully");
-        }
+        }*/
         [NonAction]
         protected int GetCurrentUserIdFromToken()
         {
