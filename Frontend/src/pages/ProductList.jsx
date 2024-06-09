@@ -7,7 +7,7 @@ import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 
-const ProductList = ({ sortBy }) => {
+const ProductList = ({ filters }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
@@ -16,20 +16,20 @@ const ProductList = ({ sortBy }) => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (sortBy) {
-          productsData = await fetchProductsSorted(sortBy);
+        if (filters) {
+          productsData = await fetchProductsSorted(filters);
         } else {
           productsData = await fetchProducts();
         }
 
-        const productsArray = sortBy ? productsData : productsData.products;
+        const productsArray = filters ? productsData : productsData.products;
         dispatch(setProducts({ data: { products: productsArray, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     getProducts();
-  }, [sortBy, dispatch]);
+  }, [filters, dispatch]);
 
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem('token');

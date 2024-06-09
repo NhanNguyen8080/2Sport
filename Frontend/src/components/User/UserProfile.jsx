@@ -13,7 +13,7 @@ const UserProfile = ({ onEditClick }) => {
       <div className="space-y-4">
         <div>
           <label className="block text-gray-700">Username:</label>
-          <p>{user.Username}</p>
+          <p>{user.UserName}</p>
         </div>
         <div>
           <label className="block text-gray-700">Fullname:</label>

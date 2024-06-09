@@ -24,7 +24,7 @@ export default function UserDropdown() {
     const dispatch = useDispatch();
 
     const handleManageAccount = () => {
-        navigate("/manage-account");
+        navigate("/manage-account/profile");
     }
 
     const handleLogout = () => {
