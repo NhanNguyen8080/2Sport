@@ -33,7 +33,8 @@ namespace _2Sport_BE.Controllers
             _refreshTokenService = refreshTokenService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllUserList(DefaultSearch defaultSearch, string fullName, string username)
+        [Route("get-all-users")]
+        public async Task<IActionResult> GetAllUser(string? fullName, string? username)
         {
             try
             {
@@ -49,15 +50,30 @@ namespace _2Sport_BE.Controllers
                     query = query.Where(x => x.UserName.ToLower().Contains(fullName));
                 }
 
-                
+                var result = _mapper.Map<List<User>, List<UserVM>>(query.ToList());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            } 
+        }
+        [HttpGet]
+        [Route("get-users-by-role")]
+        public async Task<IActionResult> GetUsesByRole(int roleId)
+        {
+            try
+            {
+                var query = await _userService.GetAsync(_ => _.RoleId == roleId);
+                var result = _mapper.Map<List<User>, List<UserVM>>(query.ToList());
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
         }
-        
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserDetail(int userId)
         {

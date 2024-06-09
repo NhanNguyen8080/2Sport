@@ -209,7 +209,7 @@ namespace _2Sport_BE.Controllers
                 }
                 if (await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email.ToLower() == userCM.Email.ToLower()) != null)
                 {
-                    return BadRequest(new { processStatus = "Email is duplicated" });
+                    return StatusCode(500, new { processStatus = "Already have an account!" });
                 }
 
                 var user = _mapper.Map<UserCM, User>(userCM); 
@@ -253,19 +253,24 @@ namespace _2Sport_BE.Controllers
             try
             {
                 var role = await _unitOfWork.RoleRepository.GetObjectAsync(_ => _.Id == roleId);
-                User staff = new User()
+                var user = await _userService.GetAsync(_ => _.Email == userCM.Email);
+                if(user == null)
                 {
-                    UserName = userCM.Username,
-                    Email = userCM.Email,
-                    CreatedDate = DateTime.Now,
-                    Password = HashPassword(userCM.Password),
-                    FullName = userCM.FullName,
-                    RoleId = roleId,
-                    Role = role,
-                    IsActive = true
-                };
-                await _userService.AddAsync(staff);
-                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
+                    User staff = new User()
+                    {
+                        UserName = userCM.Username,
+                        Email = userCM.Email,
+                        CreatedDate = DateTime.Now,
+                        Password = HashPassword(userCM.Password),
+                        FullName = userCM.FullName,
+                        RoleId = roleId,
+                        Role = role,
+                        IsActive = true
+                    };
+                    await _userService.AddAsync(staff);
+                    return StatusCode(201, new { processStatus = "Success", userId = staff.Id });
+                }
+                return StatusCode(500, new { processStatus = $"Already have an account!" });
             }
             catch (Exception ex)
             {
