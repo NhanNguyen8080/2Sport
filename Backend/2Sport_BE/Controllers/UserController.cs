@@ -72,30 +72,7 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(e);
             }
         }
-        [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUser([FromBody] User staff)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                await _userService.AddAsync(staff);
-                _userService.Save();
-                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
-            }
-            catch (Exception ex)
-            {
-                //Duplicate
-                if (ex is DbUpdateException dbUpdateEx)
-                {
-                    return BadRequest(new { processStatus = "Duplicate" });
-                }
-                return BadRequest(ex);
-            }
-
-        }
+        
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
         {

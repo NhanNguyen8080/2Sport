@@ -18,6 +18,7 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using _2Sport_BE.Services;
+using _2Sport_BE.Service.Enums;
 
 namespace _2Sport_BE.Controllers
 {
@@ -73,6 +74,7 @@ namespace _2Sport_BE.Controllers
                 return BadRequest();
             }
         }
+        
         [Route("sign-in")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] UserLogin loginModel)
@@ -161,8 +163,6 @@ namespace _2Sport_BE.Controllers
 
                     await _cartService.AddNewCart(cart);
                 }
-
-                await _unitOfWork.CartRepository.InsertAsync(cart);
             }
             else
             {
@@ -215,7 +215,7 @@ namespace _2Sport_BE.Controllers
                 var user = _mapper.Map<UserCM, User>(userCM); 
                 user.Password = HashPassword(userCM.Password);
                 user.CreatedDate = DateTime.Now;
-                user.RoleId = 4;
+                user.RoleId = (int) UserRole.Customer;
                 user.IsActive = true;
                 await _userService.AddAsync(user);
                 var cart = await _cartService.GetCartByUserId(user.Id);
@@ -238,6 +238,41 @@ namespace _2Sport_BE.Controllers
                 if (ex is DbUpdateException dbUpdateEx)
                 {
                     return BadRequest(new { processStatus = "User is duplicated" });
+                }
+                return BadRequest(ex);
+            }
+
+        }
+        [HttpPost("create-staff")]
+        public async Task<IActionResult> CreateStaff([FromBody] UserCM userCM, int roleId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var role = await _unitOfWork.RoleRepository.GetObjectAsync(_ => _.Id == roleId);
+                User staff = new User()
+                {
+                    UserName = userCM.Username,
+                    Email = userCM.Email,
+                    CreatedDate = DateTime.Now,
+                    Password = HashPassword(userCM.Password),
+                    FullName = userCM.FullName,
+                    RoleId = roleId,
+                    Role = role,
+                    IsActive = true
+                };
+                await _userService.AddAsync(staff);
+                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
+            }
+            catch (Exception ex)
+            {
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
                 }
                 return BadRequest(ex);
             }
