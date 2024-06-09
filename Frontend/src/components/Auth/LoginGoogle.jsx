@@ -8,10 +8,10 @@ import { jwtDecode } from "jwt-decode";
 export default function LoginGoogle({ setIsSignInOpen }) {
   const dispatch = useDispatch();
   const handleSubmitButton = () => {
-    const newTab = window.open('https://localhost:7276/api/Auth/oauth-login', '_blank');
+    const newTab = window.open('https://twosportapi.azurewebsites.net/api/Auth/oauth-login', '_blank');
 
     window.addEventListener('message', (event) => {
-      if (event.origin === 'https://localhost:7276') {
+      if (event.origin === 'https://twosportapi.azurewebsites.net/') {
         const { token, refreshToken } = event.data;
         console.log(token, refreshToken);
         if (token && refreshToken) {

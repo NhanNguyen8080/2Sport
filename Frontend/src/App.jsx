@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { selectUser } from './redux/slices/authSlice';
 import UserShipment from './components/User/UserShipment';
 import UserRoutes from './routes/UserRoutes';
+import Dashboard from './components/Staff/Dashboard';
 
 
 function App() {

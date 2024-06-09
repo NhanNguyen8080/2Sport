@@ -22,10 +22,16 @@ const shipmentSlice = createSlice({
         selectShipments: (state, action) => {
             state.selectedShipments = action.payload;
         },
+        updateShipment: (state, action) => {
+            const index = state.shipment.findIndex(shipment => shipment.id === action.payload.id);
+            if (index !== -1) {
+                state.shipment[index] = action.payload;
+            }
+        },
     },
 });
 
-export const { setShipment, selectShipments } = shipmentSlice.actions;
+export const { setShipment, selectShipments, updateShipment } = shipmentSlice.actions;
 
 export const selectShipment = (state) => state.shipment?.shipment || [];
 export const selectedShipment = (state) => state.shipment.selectedShipments;
