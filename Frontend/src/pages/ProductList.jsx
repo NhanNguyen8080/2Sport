@@ -44,8 +44,8 @@ const ProductList = ({ sortBy }) => {
         toast.error('Error adding product to cart');
       }
     } else {
-      dispatch(addCart(product));
       toast.success(product.productName + " is added to cart");
+      dispatch(addCart(product));
     }
   };
 

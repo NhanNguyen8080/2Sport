@@ -70,9 +70,9 @@ namespace _2Sport_BE.Service.Services
 
         public async Task<CartItem> AddCartItem(Cart cart, CartItem cartItem)
         {
-            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId ||
+            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId &&
                                                                         _.Status == true)).FirstOrDefault();
-            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId || _.Status == true))
+            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId && _.Status == true))
                                                    .FirstOrDefault();
             if (currentItem != null)
             {
@@ -96,6 +96,7 @@ namespace _2Sport_BE.Service.Services
                 cartItem.ProductId = product.Id;
                 var totalPrice = product.Price * cartItem.Quantity;
                 cartItem.TotalPrice = totalPrice;
+                cartItem.Status = true;
                 try
                 {
                     await _cartItemRepository.InsertAsync(cartItem);
@@ -114,7 +115,8 @@ namespace _2Sport_BE.Service.Services
             var cart = queryCart.FirstOrDefault();
             if (cart != null)
             {
-                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id || _.Status == true,
+                var testCartItems = await _cartItemRepository.GetAllAsync();
+                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id && _.Status == true,
                                                                     null, "", pageIndex, pageSize);
                 return cartItems.AsQueryable();
             }
@@ -126,7 +128,7 @@ namespace _2Sport_BE.Service.Services
 
 		public async Task<CartItem> GetCartItemById(int cartItemId)
 		{
-            var queryCart = (await _cartItemRepository.GetAsync(_ => _.Status == true || _.Id == cartItemId)).FirstOrDefault();
+            var queryCart = (await _cartItemRepository.GetAsync(_ => _.Status == true && _.Id == cartItemId)).FirstOrDefault();
 			return queryCart;
 		}
 

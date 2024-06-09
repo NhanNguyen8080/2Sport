@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { selectCartItems, removeFromCart, decreaseQuantity, addCart } from '../redux/slices/cartSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -46,17 +48,19 @@ const Cart = () => {
   }, 0);
 
   const handleCheckout = () => {
-    const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
-    console.log(selectedProducts);
+    if (selectedItems.length === 0) {
+      toast.error("Please select at least one item to checkout.");
+      return;
+    }
 
-    navigate({
-      pathname: '/checkout',
-      state: { selectedProducts }
-    });
+    const selectedProducts = cartItems.filter(item => selectedItems.includes(item.id));
+
+    navigate('/checkout', { state: { selectedProducts } });
   };
 
   return (
     <div className="container mx-auto px-20 py-5">
+      <ToastContainer />
       <div className="flex justify-between items-center mb-4">
         <h1 className="font-rubikmonoone text-orange-500 text-2xl">Shopping Cart</h1>
         <span className="font-rubikmonoone text-orange-500 text-xl">{totalItems} Items</span>

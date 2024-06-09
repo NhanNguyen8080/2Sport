@@ -12,6 +12,7 @@ namespace _2Sport_BE.Service.Services
     {
         Task<RefreshToken> GetTokenDetail(int userId);
         Task UpdateToken(RefreshToken refreshToken);
+        Task RemoveToken(RefreshToken refreshToken);
     }
     public class RefreshTokenService : IRefreshTokenService
     {
@@ -25,6 +26,11 @@ namespace _2Sport_BE.Service.Services
             var detail = await  _unitOfWork.RefreshTokenRepository.GetAsync(_ => _.UserId == userId && _.Used == false);
 
             return detail.FirstOrDefault();
+        }
+
+        public async Task RemoveToken(RefreshToken refreshToken)
+        {
+            await _unitOfWork.RefreshTokenRepository.DeleteAsync(refreshToken);
         }
 
         public async Task UpdateToken(RefreshToken refreshToken)

@@ -94,7 +94,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-    builder.AllowAnyOrigin()
+    builder.WithOrigins("*")
             .AllowAnyMethod()
             .AllowAnyHeader()
          );

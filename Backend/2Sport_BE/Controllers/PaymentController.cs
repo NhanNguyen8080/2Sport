@@ -1,4 +1,6 @@
-﻿using _2Sport_BE.Infrastructure.Services;
+﻿using _2Sport_BE.DataContent;
+using _2Sport_BE.Infrastructure.Services;
+using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Enums;
 using _2Sport_BE.Service.Services;
@@ -15,45 +17,100 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly IOrderService _orderService;
+        private readonly IOrderDetailService _orderDetailService;
         private readonly IUserService _userService;
         private readonly ICartItemService _cartItemService;
         private readonly ICartService _cartService;
-        public PaymentController(IPaymentService paymentService, IOrderService orderService, IUserService userService, ICartService cartService, ICartItemService cartItemService)
+        private readonly IShipmentDetailService _shipmentDetailService;
+        private readonly IPaymentMethodService _paymentMethodService;
+        private readonly IProductService _productService;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public PaymentController(
+            IPaymentService paymentService,
+            IOrderService orderService,
+            IUserService userService,
+            ICartService cartService,
+            ICartItemService cartItemService,
+            IShipmentDetailService shipmentDetailService,
+            IPaymentMethodService paymentMethodService,
+            IProductService productService,
+            IOrderDetailService orderDetailService,
+            IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
             _orderService = orderService;
             _userService = userService;
             _cartService = cartService;
             _cartItemService = cartItemService;
+            _shipmentDetailService = shipmentDetailService;
+            _paymentMethodService = paymentMethodService;
+            _productService = productService;
+            _orderDetailService = orderDetailService;
+            _unitOfWork = unitOfWork;
         }
-        [HttpPost("payOs-payment-link")]
-        public async Task<IActionResult> CreatePayOsLink([FromBody] OrderCM orderCM)
+        [HttpPost("checkout-orders")]
+        public async Task<IActionResult> CreatePayOsLink([FromBody] OrderCM orderCM, int orderMethodId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid request data.");
             }
 
-            var order = await CreateOrder(orderCM, (int)OrderMethods.PayOS);
-            int userId = GetCurrentUserIdFromToken();
-            //Xoa caritem khi add vo
-            await DeleteCartItem(userId, orderCM.OrderDetails);
-            //Generate ra link để thanh toán
-            var paymentLink =await _paymentService.PaymentWithPayOs(order.Id);
-            return Ok(paymentLink);
-        }
-        [HttpPost("COD-payment-link")]
-        public async Task<IActionResult> CreatePaymentLink([FromBody] OrderCM orderCM)
-        {
-            if (!ModelState.IsValid)
+            var user = await GetUserFromToken();
+            if (user is null)
             {
-                return BadRequest("Invalid request data.");
+                return Unauthorized("Invalid user!");
             }
-            var order = await CreateOrder(orderCM, (int)OrderMethods.COD);
-            int userId = GetCurrentUserIdFromToken();
-            //Xoa caritem khi add vo
-            await DeleteCartItem(userId, orderCM.OrderDetails);
-            return Ok(order);
+
+            var cart = await _cartService.GetCartByUserId(user.Id);
+            if (cart == null || !cart.CartItems.Any())
+            {
+                return NotFound("Your Cart is empty");
+            }
+
+            Order order = null;
+            if (orderMethodId == (int)OrderMethods.PayOS || orderMethodId == (int)OrderMethods.COD)
+            {
+                order = await CreateOrder(orderCM, orderMethodId);
+                if (order == null)
+                {
+                    return StatusCode(500, "Order creation failed.");
+                }
+
+                var paymentLink = orderMethodId == (int)OrderMethods.PayOS
+                                  ? await _paymentService.PaymentWithPayOs(order.Id)
+                                  : null;
+
+                var check = await DeleteCartItem(user.Id, orderCM.OrderDetails);
+                if (!check)
+                {
+                    return StatusCode(500, "Failed to delete cart items.");
+                }
+
+                var orderVM = new OrderVM()
+                {
+                    ShipmentDetailId = orderCM.ShipmentDetailId,
+                    PaymentMethod = order.PaymentMethod.PaymentMethodName,
+                    ReceivedDate = order.ReceivedDate,
+                    TransportFee = order.TransportFee,
+                    IntoMoney = order.IntoMoney,
+                    Status = order.Status,
+                    PaymentLink = paymentLink,
+                    OrderDetails = orderCM.OrderDetails
+                    
+                };
+
+                var responseModel = new ResponseModel<OrderVM>
+                {
+                    IsSuccess = true,
+                    Message = "Query successfully!",
+                    Data = orderVM
+                };
+                return Ok(responseModel);
+            }
+
+            return BadRequest("Invalid order method.");
         }
 
         [HttpGet("GetPaymentLinkInformation/{orderId}")]
@@ -83,7 +140,7 @@ namespace _2Sport_BE.Controllers
                 if (checkOrderExist == null){
                     return BadRequest("You don't have permission in this function");
                 }
-                checkOrderExist.Status = (int) OrderStatus.Deleted;
+                checkOrderExist.Status = (int) OrderStatus.Canceled;
                 var cancelledPaymentLinkInfo = await _paymentService.CancelPaymentLink(request.OrderId, request.Reason);
                 return Ok(cancelledPaymentLinkInfo);
             }
@@ -132,49 +189,103 @@ namespace _2Sport_BE.Controllers
         [NonAction]
         protected async Task<Order> CreateOrder(OrderCM orderCM, int paymentMethodId)
         {
-            Order order = new Order()
+            // Lấy thông tin người dùng từ token
+            var user = await GetUserFromToken();
+            if (user == null)
+            {
+                throw new Exception("User not found");
+            }
+
+            // Lấy phương thức thanh toán
+            var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(paymentMethodId);
+            if (paymentMethod == null)
+            {
+                throw new Exception("Payment method not found");
+            }
+
+            // Tạo đối tượng Order mới
+            var order = new Order
             {
                 OrderCode = GenerateOrderCode(),
-                Status = (int?)OrderStatus.Active,
+                Status = (int?)OrderStatus.Order_Confirmation,
                 TransportFee = orderCM.TransportFee,
                 PaymentMethodId = paymentMethodId,
-                ShipmentDetailId = orderCM.ShipmentDetailId,
+                PaymentMethod = paymentMethod,
+                ShipmentDetailId = (int)orderCM.ShipmentDetailId,
                 ReceivedDate = orderCM.ReceivedDate,
                 UserId = GetCurrentUserIdFromToken(),
-                User = await GetUserFromToken()
+                User = user,
+                OrderDetails = new List<OrderDetail>()
             };
-            decimal intoMoney = 0;
+
             decimal totalPrice = 0;
-            for (int i = 0; i < orderCM.OrderDetails.Count; i++)
+
+            // Duyệt qua các chi tiết đơn hàng
+            foreach (var item in orderCM.OrderDetails)
             {
-                order.OrderDetails.Add(new OrderDetail
+                var product = await _productService.GetProductById((int)item.ProductId);
+                if (product != null)
                 {
-                    OrderId = order.Id,
-                    ProductId = orderCM.OrderDetails[i].ProductId,
-                    Price = orderCM.OrderDetails[i].Price,
-                    Quantity = orderCM.OrderDetails[i].Quantity
-                });
-                totalPrice += orderCM.OrderDetails[i].Price;
+                    var orderDetail = new OrderDetail
+                    {
+                        ProductId = product.Id,
+                        Product = product,
+                        Price = item.Price,
+                        Quantity = item.Quantity,
+                    };
+
+                    order.OrderDetails.Add(orderDetail);
+                    totalPrice += (decimal) (product.Price * item.Quantity);
+                }
+                else
+                {
+                    // Xử lý trường hợp sản phẩm không tồn tại
+                    throw new Exception($"Product with ID {item.ProductId} not found");
+                }
             }
+
             order.TotalPrice = totalPrice;
             order.IntoMoney = totalPrice + orderCM.TransportFee;
+
+            // Thêm đơn hàng vào cơ sở dữ liệu
             await _orderService.AddOrderAsync(order);
+
             return order;
         }
         [NonAction]
-        protected async Task DeleteCartItem(int userId, List<OrderDetailRequest> orderDetails)
+        protected async Task<bool> DeleteCartItem(int userId, List<OrderDetailRequest> orderDetails)
         {
             var cart = await _cartService.GetCartByUserId(userId);
-            if (cart != null)
+            if (cart != null && cart.CartItems.Any())
             {
-                var cartItems = cart.CartItems.ToList();
-                for(int i = 0; i< cartItems.Count; i++)
+                foreach (var product in orderDetails)
                 {
-                    if (cartItems[i].ProductId == orderDetails[i].ProductId) {
-                        await _cartItemService.DeleteCartItem(cartItems[i].Id);
-                    }          
+                    var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == product.ProductId && ci.Status == true);
+                    if (cartItem != null)
+                    {
+                        if (cartItem.Quantity > product.Quantity)
+                        {
+                            var quantity = cartItem.Quantity - product.Quantity;
+                            await _cartItemService.UpdateQuantityOfCartItem(cartItem.Id, (int)quantity);
+                        }
+                        else if (cartItem.Quantity < product.Quantity)
+                        {
+                            return false; // Quantity in orderDetails exceeds quantity in cart
+                        }
+                        else // quantity ==
+                        {
+                            await _cartItemService.DeleteCartItem(cartItem.Id);
+                        }
+                    }
+                    else
+                    {
+                        return false; // Product in orderDetails not found in cart
+                    }
                 }
+                return true; // All items processed successfully
             }
+            return false; // Cart is null or empty
         }
+
     }
 }

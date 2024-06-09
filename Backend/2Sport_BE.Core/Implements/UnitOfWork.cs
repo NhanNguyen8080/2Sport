@@ -22,6 +22,7 @@ namespace _2Sport_BE.Repository.Implements
         private IGenericRepository<OrderDetail> _orderDetailRepository;
         private IGenericRepository<PaymentMethod> _paymentMethodRepository;
         private IGenericRepository<Product> _productRepository;
+        private IGenericRepository<Classification> _classificationRepository;
         private IGenericRepository<Review> _reviewRepository;
         private IGenericRepository<Role> _roleRepository;
         private IGenericRepository<ShipmentDetail> _shipmentDetailRepository;
@@ -171,6 +172,18 @@ namespace _2Sport_BE.Repository.Implements
                     _productRepository = new GenericRepository<Product>(_dbContext);
                 }
                 return _productRepository;
+            }
+        }
+
+        public IGenericRepository<Classification> ClassificationRepository
+        {
+            get
+            {
+                if (_classificationRepository == null)
+                {
+                    _classificationRepository = new GenericRepository<Classification>(_dbContext);
+                }
+                return _classificationRepository;
             }
         }
 
