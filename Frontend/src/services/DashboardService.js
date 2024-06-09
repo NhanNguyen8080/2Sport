@@ -1,17 +1,14 @@
-import axios from 'axios';
+import { fetchOrders as apiFetchOrders } from '../api/apiDashboard';
+import { toast } from "react-toastify";
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Order';
-
-export const fetchOrders = (token) => {
-  return axios.get(API_BASE_URL, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    }
-  })
-  .then(response => response.data)
-  .catch(error => {
+export const fetchOrders = async (token) => {
+  try {
+    const orders = await apiFetchOrders(token);
+    toast.success("Orders fetched successfully");
+    return orders;
+  } catch (error) {
     console.error('Error fetching orders:', error);
+    toast.error("Error fetching orders: " + error.message);
     throw error;
-  });
+  }
 };
