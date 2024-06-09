@@ -19,10 +19,7 @@ import { selectUser } from './redux/slices/authSlice';
 import UserShipment from './components/User/UserShipment';
 import UserRoutes from './routes/UserRoutes';
 import Dashboard from './components/Staff/Dashboard';
-<<<<<<< Updated upstream
-=======
 import ManageUser from './components/Admin/ManageUser';
->>>>>>> Stashed changes
 
 
 function App() {
