@@ -32,6 +32,13 @@ namespace _2Sport_BE.Controllers
             return Ok(orders);
         }
         [HttpGet]
+        [Route("get-orders-with-status")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int status)
+        {
+            var orders = await _orderService.GetOrderByStatus(status);
+            return Ok(orders);
+        }
+        [HttpGet]
         [Route("history-orders")]
         public async Task<IActionResult> GetHistoryOrders()
         {
