@@ -79,7 +79,9 @@ namespace _2Sport_BE.Controllers
                     product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
                 var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
                 foreach (var product in result)
                 {
@@ -99,7 +101,7 @@ namespace _2Sport_BE.Controllers
         [HttpGet]
         [Route("filter-sort-products")]
         public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, string? size, decimal minPrice, decimal maxPrice,
-                                                        int sportId, int brandId, int categoryId)
+                                                        int sportId, int brandId, int categoryId, int classificationId)
         {
             try
             {
@@ -116,9 +118,13 @@ namespace _2Sport_BE.Controllers
                 {
                     query = query.Where(_ => _.CategoryId == categoryId);
                 }
+                if (classificationId != 0)
+                {
+                    query = query.Where(_ => _.ClassificationId == classificationId);
+                }
                 if (!String.IsNullOrEmpty(size))
                 {
-                    query = query.Where(_ => _.Size.Equals(size));
+                    query = query.Where(_ => _.Size.ToLower().Equals(size.ToLower()) || _.Size.ToLower().Equals("free"));
                 }
                 if (minPrice > 0 || maxPrice > 0)
                 {
@@ -141,7 +147,9 @@ namespace _2Sport_BE.Controllers
 					product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
 
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
                                   .Select(_ => _mapper.Map<Product, ProductVM>(_))
@@ -182,7 +190,9 @@ namespace _2Sport_BE.Controllers
 					product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
 
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
 								  .Select(_ => _mapper.Map<Product, ProductVM>(_))
@@ -226,6 +236,7 @@ namespace _2Sport_BE.Controllers
                     updatedProduct.CategoryId = productUM.CategoryId;
                     updatedProduct.BrandId = productUM.BrandId;
                     updatedProduct.SportId = productUM.SportId;
+                    updatedProduct.ClassificationId = productUM.ClassificationId;
                     await _productService.UpdateProduct(updatedProduct);
                     return Ok(updatedProduct);
                 } else
@@ -246,11 +257,7 @@ namespace _2Sport_BE.Controllers
             {
                 var addedProducts = _mapper.Map<List<Product>>(productList);
 				await _productService.AddProducts(addedProducts);
-                if (await _unitOfWork.SaveChanges())
-                {
-                    return Ok("Add products successfully!");
-                }
-                return BadRequest("Add products failed");
+                return Ok("Add products successfully!");
                 
 			} catch (Exception e)
             {
