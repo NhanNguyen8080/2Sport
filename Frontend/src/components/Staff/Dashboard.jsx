@@ -28,21 +28,23 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersData = await fetchOrders();
-        setOrders(Array.isArray(ordersData) ? ordersData : []);
-        const total = ordersData.reduce((acc, order) => acc + order.totalPrice, 0);
-        setTotalAmount(total);
+        const token = localStorage.getItem("token");
+        const ordersData = await fetchOrders(token);
+        setOrders(ordersData);
+        console.log("ordersData", ordersData);
+        // const total = ordersData.reduce((acc, order) => acc + order.totalPrice, 0);
+        // setTotalAmount(total);
 
-        const activeOrders = ordersData.filter(order => order.status === "Active");
-        const completedOrders = ordersData.filter(order => order.status === "Completed");
-        const activeTotal = activeOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        const completedTotal = completedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        setActiveAmount(activeTotal);
-        setCompletedAmount(completedTotal);
-        setActiveLength(activeOrders.length);
-        setCompletedLength(completedOrders.length);
+        // const activeOrders = ordersData.filter(order => order.status === "Active");
+        // const completedOrders = ordersData.filter(order => order.status === "Completed");
+        // const activeTotal = activeOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+        // const completedTotal = completedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+        // setActiveAmount(activeTotal);
+        // setCompletedAmount(completedTotal);
+        // setActiveLength(activeOrders.length);
+        // setCompletedLength(completedOrders.length);
       } catch (error) {
-        console.error("Failed to fetch orders", error);
+        console.log(error);
         setOrders([]);
       }
     };
@@ -69,69 +71,68 @@ export default function Dashboard() {
           <a href="#">Dashboard</a>
         </Breadcrumbs>
       </div>
-      
+
       <div className="flex justify-around items-center space-x-4 mx-10">
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Total Orders: {orders.length}</h3>
+            <h3 className="text-lg font-semibold text-black">Total Orders:</h3>
           </div>
           <div className="flex items-center justify-start mb-2">
             <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
               <FontAwesomeIcon icon={faEllipsisVertical} />
             </div>
             <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold">{totalAmount}</p>
+              <p className="text-xl font-bold"></p>
             </div>
           </div>
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Active Orders: {activeLength}</h3>
+            <h3 className="text-lg font-semibold text-black">Active Orders:</h3>
           </div>
           <div className="flex items-center justify-start mb-2">
             <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
               <FontAwesomeIcon icon={faEllipsisVertical} />
             </div>
             <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold">{activeAmount}</p>
+              <p className="text-xl font-bold"></p>
             </div>
           </div>
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Completed Orders: {completedLength}</h3>
+            <h3 className="text-lg font-semibold text-black">
+              Completed Orders:
+            </h3>
           </div>
           <div className="flex items-center justify-start mb-2">
             <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
               <FontAwesomeIcon icon={faEllipsisVertical} />
             </div>
             <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold">{completedAmount}</p>
+              <p className="text-xl font-bold"></p>
             </div>
           </div>
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Return Orders: {activeLength}</h3> 
+            <h3 className="text-lg font-semibold text-black">Return Orders:</h3>
           </div>
           <div className="flex items-center justify-start mb-2">
             <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
               <FontAwesomeIcon icon={faEllipsisVertical} />
             </div>
             <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold">{activeAmount}</p> 
+              <p className="text-xl font-bold"></p>
             </div>
           </div>
         </Card>
       </div>
-      
 
       <Card className="h-full w-[95.7%] mx-10 my-10">
         <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
           Recent Orders
         </Typography>
-
-        
 
         <CardBody className="overflow-scroll px-0">
           <table className="w-full min-w-max table-auto text-left">
@@ -154,7 +155,7 @@ export default function Dashboard() {
                     }
                   />
                 </th>
-                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                {/* <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
                   <Typography
                     variant="large"
                     color="blue-gray"
@@ -162,7 +163,7 @@ export default function Dashboard() {
                   >
                     Product
                   </Typography>
-                </th>
+                </th> */}
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
                   <Typography
                     variant="large"
@@ -205,7 +206,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Amount
+                    TotalPrice
                   </Typography>
                 </th>
               </tr>
@@ -230,7 +231,7 @@ export default function Dashboard() {
                         onChange={() => onSelectChange(order.id)}
                       />
                     </td>
-                    <td className={classes}>
+                    {/* <td className={classes}>
                       <Typography
                         variant="small"
                         color="blue-gray"
@@ -238,7 +239,7 @@ export default function Dashboard() {
                       >
                         {order.product}
                       </Typography>
-                    </td>
+                    </td> */}
                     <td className={classes}>
                       <Typography
                         variant="small"
@@ -259,18 +260,18 @@ export default function Dashboard() {
                     </td>
                     <td className={classes}>
                       <div className="flex items-center">
-                        <Avatar
+                        {/* <Avatar
                           size="sm"
-                          src={order.shipmentDetail.user.avatarUrl}
+                          src={order}
                           className="rounded-full mr-2 w-8 h-8"
-                          alt={order.shipmentDetail.fullName}
-                        />
+                          alt={order}
+                        /> */}
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.shipmentDetail.fullName}
+                          {order.user}
                         </Typography>
                       </div>
                     </td>
@@ -310,9 +311,6 @@ export default function Dashboard() {
           </table>
         </CardBody>
       </Card>
-
-      
     </>
   );
 }
-
