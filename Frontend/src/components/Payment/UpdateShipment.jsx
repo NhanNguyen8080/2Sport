@@ -45,7 +45,7 @@ export default function UpdateShipment({ shipment }) {
     <>
       <div>
         <button
-          className="border p-2 bg-orange-500 text-white"
+          className="rounded-lg p-2 text-orange-500 hover:bg-orange-500 hover:text-white"
           type="button"
           onClick={openModal}
         >

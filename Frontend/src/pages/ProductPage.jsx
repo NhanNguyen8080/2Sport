@@ -4,26 +4,20 @@ import {
   faTableCellsLarge,
   faBars,
   faXmark
-} from '@fortawesome/free-solid-svg-icons';
+}
+  from '@fortawesome/free-solid-svg-icons';
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
 import ProductList from "./ProductList";
 import { fetchBrands } from '../services/brandService';
 import { fetchCategories } from '../services/categoryService';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectProducts } from '../redux/slices/productSlice';
 
 function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [filters, setFilters] = useState({
-    sortBy: '',
-    size: [],
-    minPrice: 0,
-    maxPrice: 5000000,
-    brandId: [],
-    categoryId: [],
-    classificationId: []
-  });
+  const [sortBy, setSortBy] = useState('');
   const products = useSelector(selectProducts);
 
   useEffect(() => {
@@ -53,55 +47,11 @@ function ProductPage() {
   }, []);
 
   const handleSortChange = (e) => {
-    setFilters((prevFilters) => ({ ...prevFilters, sortBy: e.target.value }));
-  };
-
-  const handleSizeChange = (size) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      size: prevFilters.size.includes(size)
-        ? prevFilters.size.filter((s) => s !== size)
-        : [...prevFilters.size, size]
-    }));
-  };
-
-  const handleBrandChange = (brandId) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      brandId: prevFilters.brandId.includes(brandId)
-        ? prevFilters.brandId.filter((id) => id !== brandId)
-        : [...prevFilters.brandId, brandId]
-    }));
-  };
-
-  const handleCategoryChange = (categoryId) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      categoryId: prevFilters.categoryId.includes(categoryId)
-        ? prevFilters.categoryId.filter((id) => id !== categoryId)
-        : [...prevFilters.categoryId, categoryId]
-    }));
-  };
-
-  const handleClassificationChange = (classificationId) => {
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      classificationId: prevFilters.classificationId.includes(classificationId)
-        ? prevFilters.classificationId.filter((id) => id !== classificationId)
-        : [...prevFilters.classificationId, classificationId]
-    }));
+    setSortBy(e.target.value);
   };
 
   const handleClearFilters = () => {
-    setFilters({
-      sortBy: '',
-      size: [],
-      minPrice: 0,
-      maxPrice: 1000,
-      brandId: [],
-      categoryId: [],
-      classificationId: []
-    });
+    console.log("All filters cleared");
   };
 
   return (
@@ -113,17 +63,17 @@ function ProductPage() {
               <div className=" mb-4 font-bold text-3xl">
                 Products
               </div>
-              <div>
+              <div className=" relative p-4">
                 <div>
-                  <input type="checkbox" onChange={() => handleClassificationChange(1)} />
-                  <label>new products</label>
+                  <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
+                  <label className="ml-2 text-black">New</label>
                 </div>
                 <div>
-                  <input type="checkbox" onChange={() => handleClassificationChange(2)} />
-                  <label>2hand products</label>
+                  <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
+                  <label className="ml-2 text-black">2hand</label>
                 </div>
               </div>
-              
+
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div className="Products text-black font-bold">Categories</div>
               <div className=" relative p-4">
@@ -134,16 +84,16 @@ function ProductPage() {
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
                         value={category.categoryName}
-                        onChange={() => handleCategoryChange(category.id)}
                       />
                       <span className="ml-2 text-black">{category.categoryName}</span>
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-              <div className="Products text-black font-bold">Brand</div>
+
+              <div className=" text-black font-bold">Brands</div>
               <div className=" relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
@@ -151,92 +101,97 @@ function ProductPage() {
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
-                        value={brand.brandName}
-                        onChange={() => handleBrandChange(brand.id)}
+                        value={brand.value}
                       />
                       <span className="ml-2 text-black">{brand.brandName} ({brand.quantity})</span>
                     </label>
                   ))}
                 </div>
               </div>
-              
+
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-              <div className="Products text-black font-bold">Price</div>
-              <div className="p-4">
-                <PriceRangeSlider
-                  min={filters.minPrice}
-                  max={filters.maxPrice}
-                  onMinChange={(value) => setFilters((prevFilters) => ({ ...prevFilters, minPrice: value }))}
-                  onMaxChange={(value) => setFilters((prevFilters) => ({ ...prevFilters, maxPrice: value }))}
-                />
-              </div>
-              
-              <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-              <div className="Products text-black font-bold">Size</div>
+
+              <div className=" text-black font-bold">Size</div>
+
               <div className="relative p-4">
-                <div>
-                  <label>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleSizeChange(1)}
-                    />
-                    <span>S</span>
-                  </label>
-                </div>
-                <div>
-                  <label>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleSizeChange(2)}
-                    />
-                    <span>M</span>
-                  </label>
-                </div>
-                <div>
-                  <label>
-                    <input
-                      type="checkbox"
-                      onChange={() => handleSizeChange(3)}
-                    />
-                    <span>L</span>
-                  </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {["XS", "S", "M", "L", "XL", "2XL"].map((size) => (
+                    <button
+                      key={size}
+                      className="bg-transparent border border-black text-black font-bold py-2 px-4 rounded"
+                    >
+                      {size}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </div>
-            <div className="flex justify-between mt-4">
-              <button onClick={handleClearFilters}>
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
+              <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div>
-                <button className="p-2 border rounded-lg">Save Filter</button>
+                <div className=" text-black font-bold">Price</div>
+                <PriceRangeSlider />
+                <div className="h-px bg-gray-300 my-5 mx-auto"></div>
+
+                <div className="flex items-center justify-center mt-4 w-fit">
+                  <button
+                    onClick={handleClearFilters}
+                    className="flex items-center text-black font-bold underline"
+                  >
+                    <FontAwesomeIcon icon={faXmark} />
+                    CLEAR ALL FILTER
+                  </button>
+                </div>
+              </div>
+
+              <div className="relative inline-block mt-6">
+                <img src="/assets/images/product/hero.png" alt="Hero" />
+                <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center p-[10px]">
+                  <span className="text-white font-bold text-xl font-poppins">
+                    Get Yours
+                  </span>
+                  <br />
+                  <span className="text-white font-bold text-3xl uppercase font-poppins">
+                    Best Gear
+                  </span>
+                  <br />
+                </div>
+
+                <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 p-2">
+                  <span className="text-black font-bold">Shop Now</span>
+                </div>
               </div>
             </div>
           </div>
-          <div className="col-span-3">
-            <div className="w-full">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 items-center">
-                <div className="w-full col-span-1 lg:col-span-1">
-                  <label htmlFor="sort-select" className="block text-sm font-medium text-gray-700">Sort by:</label>
+          <div className="w-full lg:col-span-3">
+            <div className="py-6">
+              <div className="flex justify-between items-center border-b pb-4 mb-4">
+                <div className="text-sm text-gray-600">
+                  Showing of {products.total} results
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2 text-sm text-gray-600">Sort by</span>
                   <select
-                    id="sort-select"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    value={sortBy}
                     onChange={handleSortChange}
                   >
-                    <option value="lowest-price">Price: Lowest to Highest</option>
-                    <option value="highest-price">Price: Highest to Lowest</option>
-                    <option value="new-arrivals">New Arrivals</option>
+                    <option value="">None</option>
+                    <option value="listedprice">Price</option>
                   </select>
-                </div>
-                <div className="w-full col-span-1 lg:col-span-3 flex justify-end">
-                  <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center mr-2">
-                    <FontAwesomeIcon icon={faTableCellsLarge} />
-                  </button>
-                  <button className="w-8 h-8 border border-gray-400 rounded-full flex items-center justify-center">
-                    <FontAwesomeIcon icon={faBars} />
-                  </button>
+                  <div className="ml-4 flex items-center space-x-2">
+                    <button>
+                      <FontAwesomeIcon icon={faTableCellsLarge} />
+                    </button>
+                    <Link to="/productv2">
+                      <button>
+                        <FontAwesomeIcon icon={faBars} />
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               </div>
-              <ProductList filters={filters} />
+            </div>
+            <div className="">
+              <ProductList sortBy={sortBy} />
             </div>
           </div>
         </div>

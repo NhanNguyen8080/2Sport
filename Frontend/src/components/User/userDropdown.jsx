@@ -34,6 +34,10 @@ export default function UserDropdown() {
         navigate("/");
     };
 
+    function closeDropModal() {
+        setIsOpen(false)
+    }
+
     return (
         <motion.nav
             initial={false}

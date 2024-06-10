@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 import { Input, Button } from "@material-tailwind/react";
 
 export default function AddShipment({ onSubmit, onCancel, initialData, setUserData }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({ ...initialData });
 
   useEffect(() => {
@@ -27,8 +27,20 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
     onCancel();
   };
 
+  function openModal() {
+    setIsOpen(true);
+  }
+
   return (
-    <>
+    <><div>
+      <button
+        className="rounded-lg px-3 py-2 bg-orange-500 text-white"
+        type="button"
+        onClick={openModal}
+      >
+        + Add new
+      </button>
+    </div>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <div className="fixed inset-0 overflow-y-auto">

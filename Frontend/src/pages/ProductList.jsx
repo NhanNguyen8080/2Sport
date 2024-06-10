@@ -6,6 +6,7 @@ import { addToCart } from '../services/cartService';
 import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
+import { Rating } from "@material-tailwind/react";
 
 const ProductList = ({ sortBy }) => {
   const dispatch = useDispatch();
@@ -53,9 +54,11 @@ const ProductList = ({ sortBy }) => {
     <div className="">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products?.map(product => (
-          <div key={product.id} className="bg-white hover:drop-shadow-lg">
+          <div key={product.id} className="bg-white hover:drop-shadow-lg p-2 rounded-lg">
             <div className="relative">
-              <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-48 object-cover mb-4" />
+              <div className="bg-zinc-400 bg-opacity-65 h-full">
+                <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-48 object-cover mb-4" />
+              </div>
               <button
                 className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-gray-900 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-2"
                 onClick={() => handleAddToCart(product)}
@@ -64,13 +67,16 @@ const ProductList = ({ sortBy }) => {
               </button>
             </div>
             <Link to={`/product/${product.id}`}>
-              <h2 className="text-xl font-semibold mb-2">{product.productName}</h2>
+              <h2 className="text-xl font-semibold ">{product.productName}</h2>
               <p className="text-gray-700 mb-2">{product.brandName}</p>
-              <p className="text-gray-700 mb-2">{product.price} VND</p>
-              <p className="text-gray-700 mb-2">{product.likes} </p>
               {product.reviews?.$values.map(review => (
-                <p key={review.id} className="text-gray-700 mb-2">{review.star}</p>
+                <div>
+                  <Rating unratedColor="amber" ratedColor="amber" key={review.id} className="text-yellow-500 mb-2" value={review.star} readonly />
+                </div>
               ))}
+              <p className="text-gray-700 mb-2">{product.price} VND</p>
+              {/* <p className="text-gray-700 mb-2">{product.likes} </p> */}
+
             </Link>
           </div>
         ))}

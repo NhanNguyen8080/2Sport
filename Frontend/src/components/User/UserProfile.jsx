@@ -19,22 +19,22 @@ const UserProfile = ({ onEditClick }) => {
           <label className="block text-gray-700">Fullname:</label>
           <p>{user.FullName}</p>
         </div>
-        <div>
+        {/* <div>
           <label className="block text-gray-700">Gender:</label>
           <p>{user.Gender}</p>
-        </div>
+        </div> */}
         <div>
           <label className="block text-gray-700">Email:</label>
           <p>{user.Email}</p>
         </div>
-        <div>
+        {/* <div>
           <label className="block text-gray-700">Phone:</label>
           <p>{user.Phone}</p>
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <label className="block text-gray-700">Address:</label>
           <p>{user.Address}</p>
-        </div>
+        </div> */}
         <div className="flex justify-end space-x-4">
           <Button
             color="orange"
