@@ -13,6 +13,7 @@ import {
   faEllipsisVertical,
   faArrowUp,
   faCalendar,
+  faBagShopping
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchOrders } from "../../services/DashboardService";
 
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const [orders, setOrders] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
   const [activeAmount, setActiveAmount] = useState(0);
   const [completedAmount, setCompletedAmount] = useState(0);
   const [activeLength, setActiveLength] = useState(0);
@@ -28,21 +30,15 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const ordersData = await fetchOrders(token);
+        const ordersData = await fetchOrders();
         setOrders(ordersData);
         console.log("ordersData", ordersData);
-        // const total = ordersData.reduce((acc, order) => acc + order.totalPrice, 0);
-        // setTotalAmount(total);
 
-        // const activeOrders = ordersData.filter(order => order.status === "Active");
-        // const completedOrders = ordersData.filter(order => order.status === "Completed");
-        // const activeTotal = activeOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        // const completedTotal = completedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        // setActiveAmount(activeTotal);
-        // setCompletedAmount(completedTotal);
-        // setActiveLength(activeOrders.length);
-        // setCompletedLength(completedOrders.length);
+        // Calculate totals
+        const totalOrdersCount = ordersData.length;
+        const totalAmountSum = ordersData.reduce((acc, order) => acc + parseFloat(order.amount), 0);
+        setTotalOrders(totalOrdersCount);
+        setTotalAmount(totalAmountSum);
       } catch (error) {
         console.log(error);
         setOrders([]);
@@ -75,25 +71,24 @@ export default function Dashboard() {
       <div className="flex justify-around items-center space-x-4 mx-10">
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Total Orders:</h3>
+            <h3 className="text-lg font-semibold text-black">Total Orders <p className="text-lg">({totalOrders})</p></h3>
+            <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
+          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
+            <p className="text-xl font-bold">{totalAmount.toFixed(2)}</p>
           </div>
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold text-black">Active Orders:</h3>
+            <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
+          <div className="flex items-center justify-start mb-2">
+          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
+            <p className="text-xl font-bold"></p>
+          </div>
             <div className="flex justify-between items-center w-full">
               <p className="text-xl font-bold"></p>
             </div>
@@ -104,11 +99,13 @@ export default function Dashboard() {
             <h3 className="text-lg font-semibold text-black">
               Completed Orders:
             </h3>
+            <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
+          <div className="flex items-center justify-start mb-2">
+          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
+            <p className="text-xl font-bold"></p>
+          </div>
             <div className="flex justify-between items-center w-full">
               <p className="text-xl font-bold"></p>
             </div>
@@ -117,11 +114,13 @@ export default function Dashboard() {
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold text-black">Return Orders:</h3>
+            <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
+          <div className="flex items-center justify-start mb-2">
+          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
+            <p className="text-xl font-bold"></p>
+          </div>
             <div className="flex justify-between items-center w-full">
               <p className="text-xl font-bold"></p>
             </div>
@@ -155,15 +154,6 @@ export default function Dashboard() {
                     }
                   />
                 </th>
-                {/* <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                  <Typography
-                    variant="large"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Product
-                  </Typography>
-                </th> */}
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
                   <Typography
                     variant="large"
@@ -231,15 +221,6 @@ export default function Dashboard() {
                         onChange={() => onSelectChange(order.id)}
                       />
                     </td>
-                    {/* <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {order.product}
-                      </Typography>
-                    </td> */}
                     <td className={classes}>
                       <Typography
                         variant="small"
@@ -260,12 +241,6 @@ export default function Dashboard() {
                     </td>
                     <td className={classes}>
                       <div className="flex items-center">
-                        {/* <Avatar
-                          size="sm"
-                          src={order}
-                          className="rounded-full mr-2 w-8 h-8"
-                          alt={order}
-                        /> */}
                         <Typography
                           variant="small"
                           color="blue-gray"
