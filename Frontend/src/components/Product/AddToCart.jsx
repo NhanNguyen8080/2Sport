@@ -12,7 +12,7 @@ const AddToCart = () => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 mt-6">
+    <div className="flex flex-col space-y-4 mt-6">
       <div className="flex items-center">
         <button
           className="px-2 py-1 text-gray-700 hover:text-black focus:outline-none"
@@ -28,7 +28,7 @@ const AddToCart = () => {
           +
         </button>
       </div>
-      <div className="flex items-center justify-center space-x-4">
+      <div className="flex  space-x-4">
         <button className="px-6 py-2 bg-orange-500 text-white rounded shadow hover:bg-orange-700 focus:outline-none">
           ADD TO CART
         </button>

@@ -7,12 +7,31 @@ import {
 import { Dialog, Transition } from "@headlessui/react";
 import "react-toastify/dist/ReactToastify.css";
 import UpdateShipment from "./UpdateShipment";
+import AddShipment from "./AddShipment";
+import { addUserShipmentDetail } from "../../services/shipmentService";
 
 export default function ShipmentList() {
   const dispatch = useDispatch();
   const shipments = useSelector(selectShipment);
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  
+  const handleSaveClick = async (data) => {
+    try {
+      const response = await addUserShipmentDetail(token, data);
+
+      if (response.status === 200) {
+        alert("Shipment details saved successfully.");
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+      console.error("Error saving shipment details:", error);
+    }
+  };
+
+  const handleCancel = () => {
+  };
 
   const handleSelectShipment = (shipment) => {
     dispatch(selectShipments(shipment));
@@ -86,9 +105,9 @@ export default function ShipmentList() {
                             name="selectedShipment"
                             onChange={() => handleSelectShipment(shipment)}
                             checked={selectedShipment?.id === shipment.id}
-                            className="mr-4"
+                            className=""
                           />
-                          <div className="flex-1">
+                          <div className=" w-3/5">
                             <div className="flex items-center">
                               <label className="pr-2 font-medium text-gray-800">
                                 {shipment.fullName}
@@ -99,11 +118,15 @@ export default function ShipmentList() {
                             </div>
                             <p className="text-gray-600">{shipment.address}</p>
                           </div>
-                          <button className="flex items-center border p-4 mx-10 bg-orange-500 text-white">
-                            <UpdateShipment shipment={shipment} />
-                          </button>
+                          <UpdateShipment shipment={shipment} />
                         </div>
                       ))}
+                      <AddShipment
+                        onSubmit={handleSaveClick}
+                        onCancel={handleCancel}
+                        // initialData={userData}
+                        // setUserData={setUserData}
+                      />
                     </div>
                   )}
                 </Dialog.Panel>

@@ -10,6 +10,7 @@ import {
 } from "../../redux/slices/shipmentSlice";
 import UpdateShipment from "../Payment/UpdateShipment";
 import DeleteShipment from "../Payment/DeleteShipment";
+import AddShipment from "../Payment/AddShipment";
 
 const UserShipment = () => {
   const navigate = useNavigate();
@@ -38,8 +39,9 @@ const UserShipment = () => {
         <p>Your address book is empty</p>
       ) : (
         <div>
-          <div>
-            <h2 className="font-rubikmonoone">My address</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-rubikmonoone text-2xl">My address</h2>
+            <AddShipment/>
           </div>
           {shipments.map((shipment) => (
             <div

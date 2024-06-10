@@ -37,7 +37,7 @@ const PaymentMethod = ({ selectedOption, handleOptionChange }) => {
             </label>
             {selectedOption === "2" && (
               <p className="mt-4 text-black bg-gray-300 p-2 rounded text-wrap">
-                Use the banking App to scan the QR Code and automatically confirm payment in 10 seconds. Please press "Complete order" to make the transfer payment in the next step.
+                Use the banking App to scan the QR Code and automatically confirm payment in 5 minutes. Please press "Complete order" to make the transfer payment in the next step.
               </p>
             )}
           </div>

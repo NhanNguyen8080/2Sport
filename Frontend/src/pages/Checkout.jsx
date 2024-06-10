@@ -64,10 +64,10 @@ const Checkout = () => {
   const calculateTransportFee = (distance) => {
     if (distance < 5) {
       return 0;
-    } else if (distance <= 10) {
-      return 15000;
     } else if (totalPrice >= 200000) {
       return 0;
+    } else if (distance <= 10) {
+      return 15000;
     } else {
       return 15000 + Math.ceil((distance - 10) / 5) * 5000;
     }
@@ -106,7 +106,7 @@ const Checkout = () => {
             </p>
           </div>
         ) : (
-          <div className="overflow-auto h-[500px]">
+          <div className="overflow-auto h-3/4">
             <div className="grid grid-cols-1 gap-4">
               {selectedProducts.map((item) => (
                 <div
@@ -128,7 +128,6 @@ const Checkout = () => {
                       <h3 className="text-lg font-semibold w-60">
                         {item.productName}
                       </h3>
-                      <p className="text-sm text-gray-500">Size S, Black</p>
                     </div>
                     <p className="text-lg text-black">{item.totalPrice} VND</p>
                   </div>
@@ -158,7 +157,7 @@ const Checkout = () => {
             </div>
           </div>
         )}
-        <div className="flex justify-center items-center mt-4">
+        <div className="flex justify-center items-center">
           <Button
             className="text-white bg-orange-500 w-40 py-3 rounded"
             onClick={handleCheckout}

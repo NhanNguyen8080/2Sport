@@ -73,10 +73,11 @@ const DeliveryAddress = ({
           <SignInModal className="text-blue-500" />
         </div>
       ) : (
-        <>
+        shipments.length > 0 ? (
+          <>
+          <ShipmentList />
           {shipment && (
             <div className="w-fit bg-white border border-gray-200 rounded-lg shadow-md p-6 my-4 space-y-2 ">
-              <ShipmentList />
               <h4 className="text-lg font-semibold mb-4">Selected Shipment:</h4>
               <p className="text-gray-700">
                 <span className="font-semibold">Full Name:</span>{" "}
@@ -92,7 +93,15 @@ const DeliveryAddress = ({
               </p>
             </div>
           )}
-        </>
+          </>
+        ) : (
+          <AddShipment
+            onSubmit={handleSaveClick}
+            onCancel={handleCancel}
+            initialData={userData}
+            setUserData={setUserData}
+          />
+        )
       )}
 
       {userData.address && (
