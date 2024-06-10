@@ -26,6 +26,9 @@ export default function Dashboard() {
   const [completedAmount, setCompletedAmount] = useState(0);
   const [activeLength, setActiveLength] = useState(0);
   const [completedLength, setCompletedLength] = useState(0);
+  const formatPrice = (value) => {
+    return new Intl.NumberFormat('en-US', { minimumFractionDigits: 0 }).format(value) + ' VND';
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,7 +79,7 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center justify-start mb-2">
           <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
-            <p className="text-xl font-bold">{totalAmount.toFixed(2)}</p>
+            <p className="text-xl font-bold">{formatPrice(totalAmount.toFixed(2))}</p>
           </div>
         </Card>
         <Card className="shadow-md p-4 w-full">
