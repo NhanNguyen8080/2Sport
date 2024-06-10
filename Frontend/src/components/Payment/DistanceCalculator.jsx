@@ -22,7 +22,7 @@ const DistanceCalculator = ({ userAddress, onDistanceCalculated }) => {
   };
 
   const geocodeAddress = async (address) => {
-    const apiKey = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+    const apiKey = "sk.eyJ1IjoiYWlvbmlhYWEiLCJhIjoiY2x4NmFidXgzMDY4ZzJsc2dxOHI4YnE1aiJ9.BXzZ-TxzkyadTw7uEuDwTQ";
     const geocodingClient = mbxGeocoding({ accessToken: apiKey });
     try {
       const response = await geocodingClient.forwardGeocode({
