@@ -126,9 +126,9 @@ namespace _2Sport_BE.Controllers
                 {
                     query = query.Where(_ => _.Size.ToLower().Equals(size.ToLower()) || _.Size.ToLower().Equals("free"));
                 }
-                if (minPrice > 0 || maxPrice > 0)
+                if (minPrice >= 0 && maxPrice > 0)
                 {
-                    if (minPrice > 0 && maxPrice > 0 && minPrice < maxPrice)
+                    if (minPrice < maxPrice)
                     {
                         query = query.Where(_ => _.Price > minPrice && _.Price < maxPrice);
                     }

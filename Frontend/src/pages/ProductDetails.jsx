@@ -1,7 +1,8 @@
-// src/components/ProductDetail.js
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchProductById } from '../services/productService';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProductById } from "../services/productService";
+// import { Rating } from "@material-tailwind/react";
+import AddToCart from "../components/Product/AddToCart";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -33,14 +34,43 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="product-detail">
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
       {product && (
-        <>
-          <img src={product.mainImagePath} alt={product.mainImageName} />
-          <h1>{product.productName}</h1>
-          <div  dangerouslySetInnerHTML={{ __html: product.description }} />
-          <p>Price: {product.price} VND</p>
-        </>
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-1/2 flex justify-center items-center">
+            <img
+              src={product.mainImagePath}
+              alt={product.mainImageName}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+          <div className="md:w-1/2">
+            <h4 className="text-lg text-orange-500">{product.brandName}</h4>
+            <h2 className="text-3xl font-bold text-black mt-2">
+              {product.productName}
+            </h2>
+            {/* <div className="flex items-center mt-4">
+              <Rating value={product.rating} readOnly />
+              <span className="text-gray-600 ml-2">(15)</span>
+            </div> */}
+            <p className="text-gray-600 my-4">{product.description}</p>
+            <div className="flex justify-center items-center mt-6 space-x-20">
+              <div className="space-y-2">
+                <h4 className="text-lg font-bold text-black">Size</h4>
+                <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                  <option>{product.size}</option>
+                </select>
+              </div>
+              <div className="text-left">
+                <h4 className="text-lg font-bold text-black mb-2">Price</h4>
+                <span className="text-2xl font-semibold text-orange-500 mt-10">
+                  {product.price} VND
+                </span>
+              </div>
+            </div>
+            <AddToCart />
+          </div>
+        </div>
       )}
     </div>
   );
