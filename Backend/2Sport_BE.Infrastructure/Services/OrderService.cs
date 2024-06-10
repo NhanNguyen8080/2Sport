@@ -23,6 +23,10 @@ namespace _2Sport_BE.Service.Services
         Task<Order> AddOrderAsync(Order order);
         Task<bool> UpdateOrderAsync(int orderId, int status);
         Task<bool> DeleteOrderAsync(int id);
+
+        Task<List<Order>> GetOrdersByMonth(int month);
+
+        Task<List<Order>> GetOrdersByMonthAndStatus(int month, int status);
     }
     public class OrderService : IOrderService
     {
@@ -36,6 +40,27 @@ namespace _2Sport_BE.Service.Services
             _configuration = configuration;
             _unitOfWork = unitOfWork;
         }
+        public async Task<List<Order>> GetOrdersByMonth(int month)
+        {
+
+            var ordersInMonth = await _unitOfWork.OrderRepository.GetAsync(_ => _.ReceivedDate.Value.Month == month);
+            return ordersInMonth.ToList();
+        }
+        public async Task<decimal> GetOrdersRevenueByMonth(int month)
+        {
+            
+            var ordersInMonth = await _unitOfWork.OrderRepository.GetAsync(_ => _.ReceivedDate.Value.Month == month);
+
+            var totalOrdersInMonth = ordersInMonth.ToList().Sum(_ => _.IntoMoney);
+
+            return (decimal)totalOrdersInMonth;
+        }
+        public async Task<List<Order>> GetOrdersByMonthAndStatus(int month, int status)
+        {
+            var ordersInMonth = await _unitOfWork.OrderRepository.GetAsync(_ => _.ReceivedDate.Value.Month == month && _.Status == status);
+            return ordersInMonth.ToList();
+        }
+
         //cai nay chua biet
         public async Task<Order> GetOrderByIdAsync(int id)
         {

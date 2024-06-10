@@ -1,10 +1,12 @@
 ﻿using _2Sport_BE.DataContent;
 using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Models;
+using _2Sport_BE.Service.Enums;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace _2Sport_BE.Controllers
@@ -26,17 +28,115 @@ namespace _2Sport_BE.Controllers
 
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        [Route("get-all-orders")]
+        public async Task<IActionResult> GetOrders()
         {
             var orders = await _orderService.GetOrdersAsync();
-            return Ok(orders);
+            var list = orders.ToList();
+            List<OrderInfo> ordersInfo = new List<OrderInfo>();
+
+            foreach (var order in list)
+            {
+                if (order != null)
+                {
+                    var user = await _userService.FindAsync((int)order.UserId);
+                    if (user != null)
+                    {
+                        OrderInfo orderInfo = new OrderInfo()
+                        {
+                            CreateDate = order.ReceivedDate.HasValue ? order.ReceivedDate.Value.ToString("MM/dd/yyyy") : null,
+                            Amount = order.IntoMoney.ToString(),
+                            CustomerName = user.FullName,
+                            OrderCode = order.OrderCode,
+                            Status = Enum.GetName(typeof(OrderStatus), order.Status)?.Replace('_', ' ')
+                        };
+                        ordersInfo.Add(orderInfo);
+                    }
+                }
+            }
+            return Ok(ordersInfo);
         }
         [HttpGet]
-        [Route("get-orders-with-status")]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders(int status)
+        [Route("get-orders-sales-by-status")]
+        public async Task<IActionResult> GetSalesOrdersByStatus(int month,int status)
         {
-            var orders = await _orderService.GetOrderByStatus(status);
-            return Ok(orders);
+            try
+            {
+                List<Order> orders = await _orderService.GetOrdersByMonthAndStatus(month, status);
+                List<Order> ordersLastMonth = await _orderService.GetOrdersByMonthAndStatus(month - 1, status);
+                decimal totalRevenueInMonth = (decimal)orders.Sum(_ => _.IntoMoney);
+                int ordersInMonth = orders.Count();
+                int ordersInLastMonth = ordersLastMonth.Count();
+                bool isIncrease;
+                double orderGrowthRatio = PercentageChange(ordersInMonth, ordersInLastMonth, out isIncrease);
+
+                OrdersSales ordersSales = new OrdersSales
+                {
+                    TotalOrders = ordersInMonth,
+                    TotalIntoMoney = totalRevenueInMonth,
+                    orderGrowthRatio = orderGrowthRatio,
+                    IsIncrease = isIncrease
+                };
+                ResponseModel<OrdersSales> response = new ResponseModel<OrdersSales>
+                {
+                    IsSuccess = true,
+                    Message = "Query Successfully",
+                    Data = ordersSales
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                ResponseModel<OrdersSales> response = new ResponseModel<OrdersSales>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong: " + ex.Message,
+                    Data = null
+                };
+                return BadRequest(response);
+            }
+        }
+        [HttpGet]
+        [Route("get-orders-sales")]
+        public async Task<IActionResult> GetSalesOrders(int month)
+        {
+            try
+            {
+                List<Order> orders = await _orderService.GetOrdersByMonth(month);
+                List<Order> ordersLastMonth = await _orderService.GetOrdersByMonth(month - 1);
+                decimal totalRevenueInMonth =(decimal) orders.Sum(_ => _.IntoMoney);
+                int ordersInMonth = orders.Count();
+                int ordersInLastMonth = ordersLastMonth.Count();
+                bool isIncrease;
+                double orderGrowthRatio = PercentageChange(ordersInMonth, ordersInLastMonth, out isIncrease);
+
+                OrdersSales ordersSales = new OrdersSales
+                {
+                    TotalOrders = orders.Count(),
+                    TotalIntoMoney = (decimal)orders.Sum(_ => _.IntoMoney),
+                    orderGrowthRatio = orderGrowthRatio,
+                    IsIncrease = isIncrease
+                };
+                ResponseModel<OrdersSales> response = new ResponseModel<OrdersSales>
+                {
+                    IsSuccess = true,
+                    Message = "Query Successfully",
+                    Data = ordersSales
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                ResponseModel<OrdersSales> response = new ResponseModel<OrdersSales>
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong: " + ex.Message,
+                    Data = null
+                };
+                return BadRequest(response);
+            }
         }
         [HttpGet]
         [Route("history-orders")]
@@ -143,5 +243,19 @@ namespace _2Sport_BE.Controllers
                 return UserId;
             }
         }
+        [NonAction]
+        private double PercentageChange(int current, int previous, out bool isIncrease)
+        {
+            if (previous == 0)
+            {
+                isIncrease = current > 0; // Trả về true nếu có tăng trưởng, ngược lại là false
+                return current == 0 ? 0 : 100;
+            }
+
+            double change = ((double)(current - previous) / previous) * 100;
+            isIncrease = change >= 0; // Trả về true nếu có tăng trưởng, ngược lại là false
+            return change;
+        }
+
     }
 }

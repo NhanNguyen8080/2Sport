@@ -32,4 +32,19 @@
         public int OrderId { get; set; }
         public string Reason { get; set; }
     }
+    public class OrdersSales
+    {
+        public int TotalOrders { get; set; }
+        public decimal? TotalIntoMoney { get; set; }
+        public double orderGrowthRatio { get; set; }
+        public bool IsIncrease { get; set; }
+    }
+    public class OrderInfo
+    {
+        public string? OrderCode { get; set; }
+        public string? CreateDate { get; set; }
+        public string? CustomerName { get; set; }
+        public string? Status { get; set; }
+        public string? Amount {  get; set; }
+    }
 }
