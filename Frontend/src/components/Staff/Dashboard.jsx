@@ -255,7 +255,7 @@ export default function Dashboard() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {new Date(order.receivedDate).toLocaleDateString()}
+                        {new Date(order.createDate).toLocaleDateString()}
                       </Typography>
                     </td>
                     <td className={classes}>
@@ -271,7 +271,7 @@ export default function Dashboard() {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.user}
+                          {order.customerName}
                         </Typography>
                       </div>
                     </td>
@@ -279,9 +279,9 @@ export default function Dashboard() {
                       <div className="flex items-center">
                         <span
                           className={`inline-block w-2 h-2 mr-2 rounded-full ${
-                            order.status === "Delivered"
+                            order.status === "Order Confirmation"
                               ? "bg-green-500"
-                              : order.status === "Cancelled"
+                              : order.status === "Canceled"
                               ? "bg-red-500"
                               : "bg-gray-500"
                           }`}
@@ -301,7 +301,7 @@ export default function Dashboard() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {order.totalPrice}
+                        {order.amount}
                       </Typography>
                     </td>
                   </tr>

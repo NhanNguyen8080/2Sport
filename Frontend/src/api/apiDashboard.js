@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Order';
+const API_BASE_URL = 'https://localhost:7276/api/Order/get-all-orders';
 
 export const fetchOrders = async (token) => {
   try {
@@ -17,9 +17,9 @@ export const fetchOrders = async (token) => {
   }
 };
 
-// export const getRecentOrder = async () => {
+// export const getTotalOrder = async () => {
 //   try {
-//     const url = `https://localhost:7276/api/Order/get-orders-with-status?status=1`;
+//     const url = `https://localhost:7276/api/Order/get-orders-sales?month=month`;
 //     const response = await axios.get(url);
 //     return response.data;
 //   } catch (error) {
