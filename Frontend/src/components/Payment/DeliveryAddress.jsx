@@ -1,17 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Input, Button } from "@material-tailwind/react";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import SignInModal from "../Auth/SignInModal";
 import ShipmentList from "./ShipmentList";
-import { selectedShipment } from "../../redux/slices/shipmentSlice";
+import { selectedShipment, selectShipment } from "../../redux/slices/shipmentSlice";
 import { selectUser } from "../../redux/slices/authSlice";
+import DistanceCalculator from "./DistanceCalculator";
+import AddShipment from "./AddShipment";
+import { useNavigate } from 'react-router-dom';
+import { addUserShipmentDetail } from "../../services/shipmentService";
 
-const DeliveryAddress = ({ userData, setUserData, setIsEditing }) => {
+const DeliveryAddress = ({ userData, setUserData, setIsEditing, setDistance }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useSelector(selectUser);
+  const shipments = useSelector(selectShipment);
   const shipment = useSelector(selectedShipment);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (shipment) {
@@ -28,19 +33,10 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing }) => {
     setUserData({ ...userData, [name]: value });
   };
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = async (data) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post('https://twosportapi.azurewebsites.net/add-shipment-detail', {
-        fullName: userData.fullName,
-        address: userData.address,
-        phoneNumber: userData.phoneNumber,
-      }, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await addUserShipmentDetail(token, data);
 
       if (response.status === 200) {
         setIsSubmitting(false);
@@ -50,8 +46,11 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing }) => {
     } catch (error) {
       setIsSubmitting(false);
       console.error('Error saving shipment details:', error);
-      alert("An error occurred while saving shipment details.");
     }
+  };
+
+  const handleCancel = () => {
+    navigate('/cart');
   };
 
   return (
@@ -59,52 +58,35 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing }) => {
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold">Delivery Address</h3>
       </div>
+      
       {!user ? (
         <div className="flex items-center">
           <p className="text-xl pr-5">Already have an account?</p>
           <SignInModal className="text-blue-500" />
         </div>
-      ):( <ShipmentList />)}
-      <div className="flex flex-col pt-4 flex-1">
-        <Input
-          className="text-black w-full"
-          size="lg"
-          placeholder="Full name"
-          value={userData.fullName}
-          onChange={handleInputChange}
-          name="fullName"
+      ) : (
+        <>
+          <ShipmentList />
+          {shipment && (
+            <div>
+              <h4>Selected Shipment:</h4>
+              <p>Full Name: {shipment.fullName}</p>
+              <p>Address: {shipment.address}</p>
+              <p>Phone Number: {shipment.phoneNumber}</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {userData.address && (
+        <DistanceCalculator
+          userAddress={userData.address}
+          onDistanceCalculated={(distance) => {
+            console.log("Calculated Distance:", distance);
+            setDistance(distance);
+          }}
         />
-      </div>
-      <div className="flex flex-row pt-4 space-x-2 w-full">
-        <Input
-          className="text-black w-[450px]"
-          size="lg"
-          placeholder="Phone number"
-          type="tel"
-          value={userData.phoneNumber}
-          onChange={handleInputChange}
-          name="phoneNumber"
-        />
-      </div>
-      <div className="flex flex-col pt-4 flex-1">
-        <Input
-          className="text-black w-full"
-          size="lg"
-          placeholder="Address"
-          value={userData.address}
-          onChange={handleInputChange}
-          name="address"
-        />
-      </div>
-      <div className="flex justify-end pt-4">
-        <Button
-          className="bg-[#FA7D0B] text-white w-20"
-          onClick={handleSaveClick}
-          disabled={isSubmitting}
-        >
-          Save
-        </Button>
-      </div>
+      )}
     </div>
   );
 };

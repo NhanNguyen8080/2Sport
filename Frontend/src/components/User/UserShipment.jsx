@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { getUserShipmentDetails } from '../../services/shipmentService';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectShipment, setShipment } from '../../redux/slices/shipmentSlice';
+import { selectShipment, selectShipments, setShipment } from '../../redux/slices/shipmentSlice';
+import UpdateShipment from '../Payment/UpdateShipment';
+import DeleteShipment from '../Payment/DeleteShipment';
 
 const UserShipment = () => {
   const navigate = useNavigate();
@@ -32,10 +34,21 @@ const UserShipment = () => {
         <p>Your address book is empty</p>
       ) : (
         <div>
+          <div>
+            <h2 className="font-rubikmonoone">My address</h2>
+          </div>
           {shipments.map((shipment) => (
-            <div key={shipment.id}>
-              <div>
-                {shipment.fullName}
+            <div className="p-4 border-b flex justify-between" key={shipment.id} >
+              <div >
+                <div className="flex">
+                  <label className="pr-2">{shipment.fullName}</label>
+                  <p className="border-l-2 pl-2">{shipment.phoneNumber}</p>
+                </div>
+                <p>{shipment.address}</p>
+              </div>
+              <div className="flex">
+                <UpdateShipment shipment={shipment} />
+                <DeleteShipment id={shipment.id} />
               </div>
             </div>
           ))}

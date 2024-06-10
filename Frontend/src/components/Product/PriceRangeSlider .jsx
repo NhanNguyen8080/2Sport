@@ -1,82 +1,43 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-const PriceRangeSlider = () => {
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(1000);
+const PriceRangeSlider = ({ min, max, onMinChange, onMaxChange }) => {
+  const [minValue, setMinValue] = useState(min);
+  const [maxValue, setMaxValue] = useState(max);
 
   const handleMinChange = (e) => {
-    const value = Math.max(0, Math.min(Number(e.target.value), maxValue - 1));
+    const value = Number(e.target.value);
     setMinValue(value);
+    onMinChange(value);
   };
 
   const handleMaxChange = (e) => {
-    const value = Math.min(
-      1000,
-      Math.max(Number(e.target.value), minValue + 1)
-    );
+    const value = Number(e.target.value);
     setMaxValue(value);
-  };
-
-  const handleMinSlide = (e) => {
-    setMinValue(Math.min(Number(e.target.value), maxValue - 1));
-  };
-
-  const handleMaxSlide = (e) => {
-    setMaxValue(Math.max(Number(e.target.value), minValue + 1));
+    onMaxChange(value);
   };
 
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <div className="flex justify-between mb-4">
-        <div className="flex items-center">
-          <span className="mr-2">$</span>
-          <input
-            type="number"
-            className="border p-2 w-24"
-            value={minValue}
-            onChange={handleMinChange}
-            min="0"
-            max="999"
-          />
-        </div>
-        <div className="flex items-center">
-          <span className="mr-2">$</span>
-          <input
-            type="number"
-            className="border p-2 w-24"
-            value={maxValue}
-            onChange={handleMaxChange}
-            min="1"
-            max="1000"
-          />
-        </div>
+    <div className=" items-center justify-center mt-2 w-fit">
+      <div className='flex'>
+      <input
+        type="range"
+        min="0"
+        max="2499999"
+        value={minValue}
+        onChange={handleMinChange}
+        className="w-1/2"
+      />
+      <input
+        type="range"
+        min="2500000"
+        max="5000000"
+        value={maxValue}
+        onChange={handleMaxChange}
+        className="w-1/2"
+      />
       </div>
-      <div className="relative w-full">
-        <input
-          type="range"
-          min="0"
-          max="1000"
-          value={minValue}
-          onChange={handleMinSlide}
-          className="absolute pointer-events-none w-full h-2 opacity-0"
-        />
-        <input
-          type="range"
-          min="0"
-          max="1000"
-          value={maxValue}
-          onChange={handleMaxSlide}
-          className="absolute pointer-events-none w-full h-2 opacity-0"
-        />
-        <div className="relative z-10 h-2 bg-gray-300 rounded-full">
-          <div
-            className="absolute h-2 bg-orange-500 rounded-full"
-            style={{
-              left: `${(minValue / 1000) * 100}%`,
-              right: `${100 - (maxValue / 1000) * 100}%`,
-            }}
-          ></div>
-        </div>
+      <div className="text-black font-bold">
+        {minValue} - {maxValue}VND
       </div>
     </div>
   );

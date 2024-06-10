@@ -18,6 +18,8 @@ import { useSelector } from 'react-redux';
 import { selectUser } from './redux/slices/authSlice';
 import UserShipment from './components/User/UserShipment';
 import UserRoutes from './routes/UserRoutes';
+import Dashboard from './components/Staff/Dashboard';
+import ManageUser from './components/Admin/ManageUser';
 
 
 function App() {
@@ -39,6 +41,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
 
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/manage-user" element={<ManageUser />} />
           
      </Routes>
      </div>

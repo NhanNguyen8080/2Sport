@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
 import {
   Card,
@@ -14,38 +13,21 @@ import {
   faArrowUp,
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
-import { fetchOrders } from "../../services/DashboardService";
+import { fetchAllUsers } from "../../services/ManageUserService";
 
-export default function Dashboard() {
-  const [orders, setOrders] = useState([]);
+export default function ManageUser() {
+  const [users, setUsers] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [activeAmount, setActiveAmount] = useState(0);
-  const [completedAmount, setCompletedAmount] = useState(0);
-  const [activeLength, setActiveLength] = useState(0);
-  const [completedLength, setCompletedLength] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const ordersData = await fetchOrders(token);
-        setOrders(ordersData);
-        console.log("ordersData", ordersData);
-        // const total = ordersData.reduce((acc, order) => acc + order.totalPrice, 0);
-        // setTotalAmount(total);
-
-        // const activeOrders = ordersData.filter(order => order.status === "Active");
-        // const completedOrders = ordersData.filter(order => order.status === "Completed");
-        // const activeTotal = activeOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        // const completedTotal = completedOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-        // setActiveAmount(activeTotal);
-        // setCompletedAmount(completedTotal);
-        // setActiveLength(activeOrders.length);
-        // setCompletedLength(completedOrders.length);
+        const usersData = await fetchAllUsers();
+        setUsers(usersData);
+        console.log(usersData);
       } catch (error) {
         console.log(error);
-        setOrders([]);
+        setUsers([]);
       }
     };
 
@@ -62,76 +44,9 @@ export default function Dashboard() {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mx-10 mt-4">Dashboard</h2>
-      <div className="flex justify-between items-center mx-10 my-4">
-        <Breadcrumbs className="flex-grow">
-          <a href="#" className="opacity-60">
-            Home
-          </a>
-          <a href="#">Dashboard</a>
-        </Breadcrumbs>
-      </div>
-
-      <div className="flex justify-around items-center space-x-4 mx-10">
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Total Orders:</h3>
-          </div>
-          <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Active Orders:</h3>
-          </div>
-          <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">
-              Completed Orders:
-            </h3>
-          </div>
-          <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Return Orders:</h3>
-          </div>
-          <div className="flex items-center justify-start mb-2">
-            <div className="bg-orange-500 text-white p-4 rounded-lg mr-2">
-              <FontAwesomeIcon icon={faEllipsisVertical} />
-            </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-      </div>
-
       <Card className="h-full w-[95.7%] mx-10 my-10">
         <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
-          Recent Orders
+          User
         </Typography>
 
         <CardBody className="overflow-scroll px-0">
@@ -143,34 +58,25 @@ export default function Dashboard() {
                     color="blue"
                     onChange={(e) => {
                       if (e.target.checked) {
-                        setSelectedRowKeys(orders.map((row) => row.id));
+                        setSelectedRowKeys(users.map((row) => row.id));
                       } else {
                         setSelectedRowKeys([]);
                       }
                     }}
-                    checked={selectedRowKeys.length === orders.length}
+                    checked={selectedRowKeys.length === users.length}
                     indeterminate={
                       selectedRowKeys.length > 0 &&
-                      selectedRowKeys.length < orders.length
+                      selectedRowKeys.length < users.length
                     }
                   />
                 </th>
-                {/* <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                  <Typography
-                    variant="large"
-                    color="blue-gray"
-                    className="font-normal leading-none opacity-70"
-                  >
-                    Product
-                  </Typography>
-                </th> */}
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
                   <Typography
                     variant="large"
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Order ID
+                    UserName
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -179,7 +85,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Date
+                    FullName
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -188,7 +94,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Customer
+                    Email
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -197,7 +103,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Status
+                    RoleName
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -206,47 +112,71 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    TotalPrice
+                    Gender
+                  </Typography>
+                </th>
+                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                  <Typography
+                    variant="large"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    Phone
+                  </Typography>
+                </th>
+                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                  <Typography
+                    variant="large"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    birthDate
+                  </Typography>
+                </th>
+                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                  <Typography
+                    variant="large"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    createdDate
+                  </Typography>
+                </th>
+                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                  <Typography
+                    variant="large"
+                    color="blue-gray"
+                    className="font-normal leading-none opacity-70"
+                  >
+                    lastUpdate
                   </Typography>
                 </th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order, index) => {
-                const isLast = index === orders.length - 1;
+              {users.map((user, index) => {
+                const isLast = index === users.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
-                const isSelected = selectedRowKeys.includes(order.id);
+                const isSelected = selectedRowKeys.includes(user.id);
 
                 return (
-                  <tr
-                    key={order.id}
-                    className={isSelected ? "bg-blue-100" : ""}
-                  >
+                  <tr key={user.id} className={isSelected ? "bg-blue-100" : ""}>
                     <td className={classes}>
                       <Checkbox
                         color="blue"
                         checked={isSelected}
-                        onChange={() => onSelectChange(order.id)}
+                        onChange={() => onSelectChange(user.id)}
                       />
                     </td>
-                    {/* <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {order.product}
-                      </Typography>
-                    </td> */}
                     <td className={classes}>
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {order.orderCode}
+                        {user.userName}
                       </Typography>
                     </td>
                     <td className={classes}>
@@ -255,43 +185,52 @@ export default function Dashboard() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {new Date(order.receivedDate).toLocaleDateString()}
+                        {user.fullName}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {user.email}
                       </Typography>
                     </td>
                     <td className={classes}>
                       <div className="flex items-center">
                         {/* <Avatar
                           size="sm"
-                          src={order}
+                          src={user.shipmentDetail.user.avatarUrl}
                           className="rounded-full mr-2 w-8 h-8"
-                          alt={order}
+                          alt={user.shipmentDetail.fullName}
                         /> */}
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.user}
+                          {user.roleName}
                         </Typography>
                       </div>
                     </td>
                     <td className={classes}>
                       <div className="flex items-center">
-                        <span
+                        {/* <span
                           className={`inline-block w-2 h-2 mr-2 rounded-full ${
-                            order.status === "Delivered"
+                            user.status === "Delivered"
                               ? "bg-green-500"
-                              : order.status === "Cancelled"
+                              : user.status === "Cancelled"
                               ? "bg-red-500"
                               : "bg-gray-500"
                           }`}
-                        ></span>
+                        ></span> */}
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.status}
+                          {user.gender}
                         </Typography>
                       </div>
                     </td>
@@ -301,7 +240,34 @@ export default function Dashboard() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {order.totalPrice}
+                        {user.phone}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {new Date(user.birthDate).toLocaleDateString()}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {new Date(user.createdDate).toLocaleDateString()}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {new Date(user.lastUpdate).toLocaleDateString()}
                       </Typography>
                     </td>
                   </tr>

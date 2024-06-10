@@ -48,9 +48,7 @@ const Logout = () => {
 
         try {
             const response = await signOutUser(data);
-            console.log('Response:', response.data);
-            localStorage.removeItem('token');
-            localStorage.removeItem('refreshToken');
+            // console.log('Response:', response.data);
             toast.success("You have signed out successfully");
             navigate('/');
             dispatch(logout());
