@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7276/api/User/get-all-users';
+const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/User/get-all-users';
 
 export const fetchAllUsers = async (token) => {
   try {
