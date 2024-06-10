@@ -1,8 +1,8 @@
-// src/components/ProductDetail.js
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchProductById } from '../services/productService';
-import { Rating } from "@material-tailwind/react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchProductById } from "../services/productService";
+// import { Rating } from "@material-tailwind/react";
+import AddToCart from "../components/Product/AddToCart";
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -34,38 +34,46 @@ const ProductDetails = () => {
   }
 
   return (
-    <>
-      <div className="product-detail">
-        {product && (
-          <div className="px-5 flex flex-row justify-center items-center gap-5">
-            <div className="product-details basis-1/2">
-              <h4 className="text-lg text-orange-500">SHOES</h4>
-              <h2 className="text-2xl font-bold text-black ">{product.productName}</h2>
-              <div className="flex text-orange-500 mt-2">
-                {product.price}VND
-                <p className="text-gray-600 my-4 py-2.5">
-                  <div dangerouslySetInnerHTML={{ __html: product.description }} />
-                </p>
-                <Rating />
-                <span className="text-gray-600 ml-2">(15)</span>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {product && (
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-1/2 flex justify-center items-center">
+            <img
+              src={product.mainImagePath}
+              alt={product.mainImageName}
+              className="w-full h-auto object-cover rounded-lg"
+            />
+          </div>
+          <div className="md:w-1/2">
+            <h4 className="text-lg text-orange-500">{product.brandName}</h4>
+            <h2 className="text-3xl font-bold text-black mt-2">
+              {product.productName}
+            </h2>
+            {/* <div className="flex items-center mt-4">
+              <Rating value={product.rating} readOnly />
+              <span className="text-gray-600 ml-2">(15)</span>
+            </div> */}
+            <p className="text-gray-600 my-4">{product.description}</p>
+            <div className="flex justify-center items-center mt-6 space-x-20">
+              <div className="space-y-2">
+                <h4 className="text-lg font-bold text-black">Size</h4>
+                <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                  <option>{product.size}</option>
+                </select>
+              </div>
+              <div className="text-left">
+                <h4 className="text-lg font-bold text-black mb-2">Price</h4>
+                <span className="text-2xl font-semibold text-orange-500 mt-10">
+                  {product.price} VND
+                </span>
               </div>
             </div>
-            <p>Price: {product.price} VND</p>
-            <h4 className="text-lg font-bold text-black">Size</h4>
-            <div className="inline-block relative w-20 my-2 mx-4">
-              <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-                <option>39</option>
-                <option>40</option>
-              </select>
-            </div>
-            <div className="product-images basis-1/2 flex flex-row">
-              <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-96 object-cover mb-4" />
-            </div>
-            </div>
-        )}
+            <AddToCart />
           </div>
-          </>
-      );
+        </div>
+      )}
+    </div>
+  );
 };
 
-      export default ProductDetails;
+export default ProductDetails;

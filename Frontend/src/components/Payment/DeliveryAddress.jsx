@@ -3,19 +3,27 @@ import { Input, Button } from "@material-tailwind/react";
 import { useDispatch, useSelector } from "react-redux";
 import SignInModal from "../Auth/SignInModal";
 import ShipmentList from "./ShipmentList";
-import { selectedShipment, selectShipment } from "../../redux/slices/shipmentSlice";
+import {
+  selectedShipment,
+  selectShipment,
+} from "../../redux/slices/shipmentSlice";
 import { selectUser } from "../../redux/slices/authSlice";
 import DistanceCalculator from "./DistanceCalculator";
 import AddShipment from "./AddShipment";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { addUserShipmentDetail } from "../../services/shipmentService";
 
-const DeliveryAddress = ({ userData, setUserData, setIsEditing, setDistance }) => {
+const DeliveryAddress = ({
+  userData,
+  setUserData,
+  setIsEditing,
+  setDistance,
+}) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useSelector(selectUser);
   const shipments = useSelector(selectShipment);
   const shipment = useSelector(selectedShipment);
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,12 +53,12 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing, setDistance }) =
       }
     } catch (error) {
       setIsSubmitting(false);
-      console.error('Error saving shipment details:', error);
+      console.error("Error saving shipment details:", error);
     }
   };
 
   const handleCancel = () => {
-    navigate('/cart');
+    navigate("/cart");
   };
 
   return (
@@ -58,7 +66,7 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing, setDistance }) =
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold">Delivery Address</h3>
       </div>
-      
+
       {!user ? (
         <div className="flex items-center">
           <p className="text-xl pr-5">Already have an account?</p>
@@ -66,13 +74,22 @@ const DeliveryAddress = ({ userData, setUserData, setIsEditing, setDistance }) =
         </div>
       ) : (
         <>
-          <ShipmentList />
           {shipment && (
-            <div>
-              <h4>Selected Shipment:</h4>
-              <p>Full Name: {shipment.fullName}</p>
-              <p>Address: {shipment.address}</p>
-              <p>Phone Number: {shipment.phoneNumber}</p>
+            <div className="w-fit bg-white border border-gray-200 rounded-lg shadow-md p-6 my-4 space-y-2 ">
+              <ShipmentList />
+              <h4 className="text-lg font-semibold mb-4">Selected Shipment:</h4>
+              <p className="text-gray-700">
+                <span className="font-semibold">Full Name:</span>{" "}
+                {shipment.fullName}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Address:</span>{" "}
+                {shipment.address}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Phone Number:</span>{" "}
+                {shipment.phoneNumber}
+              </p>
             </div>
           )}
         </>
