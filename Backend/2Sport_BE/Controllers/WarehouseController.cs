@@ -23,6 +23,8 @@ namespace _2Sport_BE.Controllers
                                    ISupplierService supplierService,
                                    IMapper mapper)
         {
+            _productService = productService;
+            _supplierService = supplierService;
             _warehouseService = warehouseService;
             _mapper = mapper;
         }
