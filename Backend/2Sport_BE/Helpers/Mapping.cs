@@ -79,6 +79,30 @@ namespace _2Sport_BE.Helpers
 
             #endregion
 
+            #region Supplier
+            CreateMap<Supplier, SupplierVM>().ReverseMap();
+            CreateMap<SupplierCM, Supplier>().ReverseMap();
+            CreateMap<SupplierUM, Supplier>().ReverseMap();
+            #endregion
+
+
+            #region Import
+            CreateMap<ImportHistory, ImportVM>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.SupplierName))
+                .ReverseMap();
+            CreateMap<ImportCM, ImportHistory>().ReverseMap();
+            CreateMap<ImportUM, ImportHistory>().ReverseMap();
+            #endregion
+
+            #region Warehouse
+            CreateMap<Warehouse, WarehouseVM>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ReverseMap();
+            CreateMap<WarehouseCM, Warehouse>().ReverseMap();
+            CreateMap<WarehouseUM, Warehouse>().ReverseMap();
+            #endregion
+
         }
 
 

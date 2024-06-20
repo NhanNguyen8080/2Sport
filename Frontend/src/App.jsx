@@ -20,6 +20,9 @@ import UserShipment from './components/User/UserShipment';
 import UserRoutes from './routes/UserRoutes';
 import Dashboard from './components/Staff/Dashboard';
 import ManageUser from './components/Admin/ManageUser';
+import ContactUs from './pages/ContactUs';
+import AboutUs from './pages/AboutUs';
+
 
 
 function App() {
@@ -42,6 +45,8 @@ function App() {
 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/manage-user" element={<ManageUser />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/about-us" element={<AboutUs />} />
           
      </Routes>
      </div>
