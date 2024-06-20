@@ -89,8 +89,8 @@ function Header() {
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
                             <Link to="/">{t("header.blog")}</Link>
-                            <Link to="/">{t("header.about")}</Link>
-                            <Link to="/">{t("header.contact")}</Link>
+                            <Link to="/about-us">{t("header.about")}</Link>
+                            <Link to="/contact-us">{t("header.contact")}</Link>
                         </div>
                         <div className="flex space-x-4  ">
                             <SignInModal />
