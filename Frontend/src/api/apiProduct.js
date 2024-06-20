@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Product';
+const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
 
 export const getProductList = (sortBy = '') => {
   const url = `${API_BASE_URL}/list-products`;

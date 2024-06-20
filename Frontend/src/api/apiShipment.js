@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net';
+const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net';
 
 export const getShipmentDetails = ( token) => {
 

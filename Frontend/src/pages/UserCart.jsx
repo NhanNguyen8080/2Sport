@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { getUserCart } from '../services/cartService';
+import { getUserCart, reduceCartItem, removeCartItem } from '../services/cartService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,11 +10,11 @@ const UserCart = ({ sortBy }) => {
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const getCart = async () => {
       try {
-        const token = localStorage.getItem('token');
         if (token) {
           const cartData = await getUserCart(sortBy, token);
           setCartData(cartData);
@@ -25,14 +25,33 @@ const UserCart = ({ sortBy }) => {
     };
 
     getCart();
-  }, [sortBy]);
+  }, [sortBy, token]);
 
-  const handleRemoveFromCart = (productId) => {
-    // Implement remove from cart logic
+  const handleRemoveFromCart = async (itemId) => {
+    try {
+      const response = await removeCartItem(itemId, token);
+      console.log(response);
+  
+      // Update the cartData state by removing the item
+      setCartData(prevCartData => prevCartData.filter(item => item.id !== itemId));
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+    }
   };
+  
 
-  const handleQuantityChange = (product, change) => {
-    // Implement quantity change logic
+  const handleReduceQuantity = async (id) => {
+    try {
+      const response = await reduceCartItem(id, token);
+      
+      setCartData(prevCartData =>
+        prevCartData.map(item =>
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+      );
+    } catch (error) {
+      console.error('Error reducing cart item:', error);
+    }
   };
 
   const handleSelectItem = (productId) => {
@@ -111,7 +130,7 @@ const UserCart = ({ sortBy }) => {
                 <div className="w-2/12 text-center flex items-center justify-center">
                   <button
                     className="px-2 py-1 border"
-                    onClick={() => handleQuantityChange(item, 'decrease')}
+                    onClick={() => handleReduceQuantity(item.id)}
                   >
                     -
                   </button>

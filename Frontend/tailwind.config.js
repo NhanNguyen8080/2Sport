@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
       fontFamily: {
         rubikmonoone: ['"Rubik Mono One"', 'monospace'],
         poppins: ['Poppins', 'sans-serif'],

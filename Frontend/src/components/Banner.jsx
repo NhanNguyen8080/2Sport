@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 function Banner() {
     const { t, i18n } = useTranslation("translation");
@@ -22,7 +23,9 @@ function Banner() {
                         >
                             <p className={language === 'eng' ? 'font-rubikmonoone text-7xl text-wrap' : 'font-alfa text-7xl text-wrap'} >{t("banner.title")}</p> 
                             <p className="pt-10 pb-10 font-poppins text-xl text-wrap w-3/4">{t("banner.subtitle")}</p>
+                            <Link to="/product" >
                             <button className="bg-orange-500 font-poppins font-semibold text-white text-xl py-3 px-10 w-fit">{t("banner.btn")}</button>
+                            </Link>
                         </motion.div>
                         {/* photo */}
                         <motion.div

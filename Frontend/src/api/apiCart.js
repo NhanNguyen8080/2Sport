@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Cart';
+const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Cart';
 
 export const addToCartAPI = (productId, quantity, token) => {
 
@@ -40,6 +40,28 @@ export const getCartItems = (id) => {
   return axios.get(url, {
     headers: {
       'accept': '*/*'
+    }
+  });
+};
+
+export const reduceCartItemAPI = (id, token) => {
+  const url = `${API_BASE_URL}/reduce-cart/${id}`;
+  return axios.put(url, {}, {
+    headers: {
+      'accept': '*/*',
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
+export const remmoveCartItemAPI = (id, token) => {
+  const url = `${API_BASE_URL}/delete-cart-item/${id}`;
+  return axios.delete(url, {
+    headers: {
+      'accept': '*/*',
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     }
   });
 };

@@ -67,7 +67,7 @@ export default function Brands() {
         <div className="flex flex-col items-center justify-center px-20">
             <p className="font-rubikmonoone text-orange-500 text-3xl pt-2">BRANDS</p>
             <ParallaxText baseVelocity={-5}>
-                <div className="grid grid-cols-9 gap-5 px-3 items-center">
+                <div className="grid grid-cols-16 gap-5 px-3 items-center">
                     {brands.map(brand => (
                         brand.logo ? <img key={brand.id} src={brand.logo} alt={brand.brandName} /> : null
                     ))}

@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTableCellsLarge,
   faBars,
-  faXmark
+  faXmark,
+  faMagnifyingGlass
 }
   from '@fortawesome/free-solid-svg-icons';
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
@@ -57,12 +58,23 @@ function ProductPage() {
   return (
     <div className="">
       <div className="w-full px-20">
+        <div className="flex justify-between items-center">
+        <div className=" mb-4 font-rubikmonoone text-xl">
+          Products
+        </div>
+        {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
+          <input
+            className="flex-grow bg-transparent outline-none placeholder-gray-400"
+            placeholder="Enter your search keywords here"
+            type="text"
+          />
+          <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
+        </div> */}
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
             <div className=" w-full">
-              <div className=" mb-4 font-bold text-3xl">
-                Products
-              </div>
+
               <div className=" relative p-4">
                 <div>
                   <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
@@ -95,6 +107,7 @@ function ProductPage() {
 
               <div className=" text-black font-bold">Brands</div>
               <div className=" relative p-4">
+
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
                     <label key={index} className="inline-flex items-center">

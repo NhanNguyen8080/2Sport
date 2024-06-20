@@ -2,7 +2,7 @@ import axios from 'axios';
 import {jwtDecode } from 'jwt-decode';
 
 
-const API_BASE_URL = 'https://twosportapi.azurewebsites.net/api/Auth';
+const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Auth';
 
 export const signIn = (userName, password) => {
   return axios.post(`${API_BASE_URL}/sign-in`, {

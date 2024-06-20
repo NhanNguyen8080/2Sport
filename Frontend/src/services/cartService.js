@@ -1,4 +1,4 @@
-import { addToCartAPI, getCartAPI } from '../api/apiCart';
+import { addToCartAPI, getCartAPI, reduceCartItemAPI, remmoveCartItemAPI } from '../api/apiCart';
 import { toast } from "react-toastify";
 
 export const addToCart = async (productId, quantity, token) => {
@@ -18,6 +18,28 @@ export const getUserCart = async (sortBy = '', token) => {
   try {
     const response = await getCartAPI(sortBy, token);
     return response.data.data.$values;
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    toast.error('Error fetching cart');
+    throw error;
+  }
+};
+
+export const reduceCartItem = async (id, token) => {
+  try {
+    const response = await reduceCartItemAPI(id, token);
+    return response;
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    toast.error('Error fetching cart');
+    throw error;
+  }
+};
+
+export const removeCartItem = async (id, token) => {
+  try {
+    const response = await remmoveCartItemAPI(id, token);
+    return response;
   } catch (error) {
     console.error('Error fetching cart:', error);
     toast.error('Error fetching cart');
