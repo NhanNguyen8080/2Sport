@@ -73,8 +73,8 @@ const Checkout = () => {
     }
   };
 
-  const transportFee = 30000;
-    // distance !== null ? calculateTransportFee(distance) : "Calculating...";
+   const transportFee = 
+    distance !== null ? calculateTransportFee(distance) : "Calculating...";
 
   if (orderSuccess) {
     return <OrderSuccess orderCode={orderCode} />;

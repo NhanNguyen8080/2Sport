@@ -9,3 +9,15 @@ export const fetchOrdersAPI = () => {
     }
   });
 };
+
+export const fetchOrdersbyStatusAPI = (month, status) => {
+  return axios.delete(`${API_BASE_URL}/get-orders-sales-by-status`, {
+    headers: {
+      'Accept': '*/*',
+    },
+    params: {
+      month: month,
+      status: status
+    }
+  });
+};

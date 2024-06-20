@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Input, Button } from "@material-tailwind/react";
+import AddressForm from '../AddressForm';
 
 export default function AddShipment({ onSubmit, onCancel, initialData, setUserData }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,14 +66,15 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
                     onChange={handleInputChange}
                     name="phoneNumber"
                   />
-                  <Input
+                  {/* <Input
                     className="text-black w-full mt-4"
                     size="lg"
                     placeholder="Address"
                     value={formData.address}
                     onChange={handleInputChange}
                     name="address"
-                  />
+                  /> */}
+                  <AddressForm/>
                 </div>
                 <div className="mt-6 flex justify-end">
                   <Button

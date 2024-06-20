@@ -4,7 +4,7 @@ import { faTruck, faThumbsUp, faCreditCard } from '@fortawesome/free-solid-svg-i
 
 const WebServices = () => {
   return (
-    <div className="flex flex-col items-center px-20 pb-32">
+    <div className="flex flex-col items-center px-20 pb-32 pt-5">
       <div className=" bg-zinc-700 text-white items-center  w-full flex justify-around pb-20 pt-5 relative">
         <h2 className="font-rubikmonoone text-4xl pl-4 border-l-4 border-orange-500">WE ARE <br/>DIFFERENT</h2>
         <p className="font-poppins">Discover our qualities that <br/>makes us different than other marketplace.</p>

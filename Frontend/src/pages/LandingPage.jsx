@@ -3,6 +3,7 @@ import Banner from "../components/Banner";
 import Brands from "../components/Brands";
 import Ads from "../components/Ads";
 import WebServices from "../components/WebServices";
+import FeatureProductSlide from "../components/Product/FeatureProductSlide";
 
 function LandingPage() {
 
@@ -11,6 +12,7 @@ function LandingPage() {
             <Banner />
             <Brands />
             <Ads />
+            <FeatureProductSlide />
             <WebServices/>
         </>
     );
