@@ -170,7 +170,49 @@ namespace _2Sport_BE.Controllers
             }
         }
 
-		[HttpGet]
+        [HttpGet]
+        [Route("sort-products-by-like")]
+        public async Task<IActionResult> SortProductsByLike([FromQuery] int pageIndex, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var query = await _productService.GetProducts(_ => _.Status == true, "", pageIndex, pageSize);
+                var products = query.ToList();
+                foreach (var product in products)
+                {
+                    var brand = await _brandService.GetBrandById(product.BrandId);
+                    product.Brand = brand.FirstOrDefault();
+                    var category = await _categoryService.GetCategoryById(product.CategoryId);
+                    product.Category = category;
+                    var sport = await _sportService.GetSportById(product.SportId);
+                    product.Sport = sport;
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+
+                }
+
+                var result = query.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList().AsQueryable();
+
+                foreach (var product in result)
+                {
+                    var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+                    product.Reviews = reviews.ToList();
+                    var numOfLikes = await _likeService.CountLikeOfProduct(product.Id);
+                    product.Likes = numOfLikes;
+                }
+
+                var finalResult = result.Sort("likes", false).ToList();
+
+                return Ok(new { total = finalResult.Count, data = finalResult });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
+        [HttpGet]
 		[Route("search-products")]
 		public async Task<IActionResult> SearchProducts([FromQuery] string keywords, [FromQuery] DefaultSearch defaultSearch)
 		{
@@ -264,6 +306,21 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(e);
             }
             
+        }
+
+        [HttpDelete]
+        [Route("delete-product/{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                await _productService.DeleteProductById(id);
+                _unitOfWork.Save();
+                return Ok("Delete product successfully!");
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

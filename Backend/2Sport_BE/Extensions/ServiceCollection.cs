@@ -34,9 +34,12 @@ namespace _2Sport_BE.Extensions
             services.AddScoped<IPaymentService, PaymentService>();
 			services.AddScoped<ILikeService, LikeService>();
 			services.AddScoped<IReviewService, ReviewService>();
-		}
+			services.AddScoped<ISupplierService, SupplierService>();
+			services.AddScoped<IImportHistoryService, ImportHistoryService>();
+			services.AddScoped<IWarehouseService, WarehouseService>();
+        }
 
-		private static string GetConnectionStrings()
+        private static string GetConnectionStrings()
         {
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
