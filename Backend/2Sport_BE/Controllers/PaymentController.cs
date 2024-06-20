@@ -24,6 +24,7 @@ namespace _2Sport_BE.Controllers
         private readonly IShipmentDetailService _shipmentDetailService;
         private readonly IPaymentMethodService _paymentMethodService;
         private readonly IProductService _productService;
+        private readonly IWarehouseService _warehouseService;
         private readonly IUnitOfWork _unitOfWork;
 
         public PaymentController(
@@ -36,6 +37,7 @@ namespace _2Sport_BE.Controllers
             IPaymentMethodService paymentMethodService,
             IProductService productService,
             IOrderDetailService orderDetailService,
+            IWarehouseService warehouseService,
             IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
@@ -47,6 +49,7 @@ namespace _2Sport_BE.Controllers
             _paymentMethodService = paymentMethodService;
             _productService = productService;
             _orderDetailService = orderDetailService;
+            _warehouseService = warehouseService;
             _unitOfWork = unitOfWork;
         }
         [HttpPost("checkout-orders")]
@@ -258,33 +261,38 @@ namespace _2Sport_BE.Controllers
             var cart = await _cartService.GetCartByUserId(userId);
             if (cart != null && cart.CartItems.Any())
             {
-                foreach (var product in orderDetails)
+                foreach (var orderDetail in orderDetails)
                 {
-                    var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == product.ProductId && ci.Status == true);
+                    var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == orderDetail.ProductId && ci.Status == true);
+                    var wareHouse =(Warehouse) await _warehouseService.GetWarehouseByProductId(orderDetail.ProductId);
                     if (cartItem != null)
                     {
-                        if (cartItem.Quantity > product.Quantity)
+                        if (cartItem.Quantity > orderDetail.Quantity)
                         {
-                            var quantity = cartItem.Quantity - product.Quantity;
+                            var quantity = cartItem.Quantity - orderDetail.Quantity;
                             await _cartItemService.UpdateQuantityOfCartItem(cartItem.Id, (int)quantity);
+                            wareHouse.Quantity = wareHouse.Quantity - orderDetail.Quantity;
+                            await _warehouseService.UpdateWarehouseAsync(wareHouse);
+                            _unitOfWork.Save();
                         }
-                        else if (cartItem.Quantity < product.Quantity)
+                        else if (cartItem.Quantity < orderDetail.Quantity)
                         {
-                            return false; // Quantity in orderDetails exceeds quantity in cart
+                            return false;
                         }
-                        else // quantity ==
+                        else
                         {
                             await _cartItemService.DeleteCartItem(cartItem.Id);
                         }
+
                     }
                     else
                     {
-                        return false; // Product in orderDetails not found in cart
+                        return false;
                     }
                 }
-                return true; // All items processed successfully
+                return true;
             }
-            return false; // Cart is null or empty
+            return false;
         }
 
     }
