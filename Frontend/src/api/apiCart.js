@@ -1,10 +1,11 @@
 import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Cart';
 
 export const addToCartAPI = (productId, quantity, token) => {
 
-  return axios.post(`${API_BASE_URL}/add-to-cart`, {
+  return axiosInstance.post(`${API_BASE_URL}/add-to-cart`, {
     productId,
     quantity,
   }, {
@@ -16,7 +17,7 @@ export const addToCartAPI = (productId, quantity, token) => {
   });
 };
 
-export const getCartAPI = (sortBy = '', token) => {
+export const getCartAPI = (sortBy = '') => {
   const url = `${API_BASE_URL}/get-cart`;
   const data = {
     perPage: 2,
@@ -24,16 +25,14 @@ export const getCartAPI = (sortBy = '', token) => {
     sortBy: sortBy,
     isAscending: true
   };
-  return axios.get(url, {
+  return axiosInstance.get(url, {
     headers: {
       'Accept': '*/*',
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     },
     data: JSON.stringify(data)
   });
 };
-
 
 export const getCartItems = (id) => {
   const url = `${API_BASE_URL}/get-cart-item/${id}`;
@@ -46,7 +45,7 @@ export const getCartItems = (id) => {
 
 export const reduceCartItemAPI = (id, token) => {
   const url = `${API_BASE_URL}/reduce-cart/${id}`;
-  return axios.put(url, {}, {
+  return axiosInstance.put(url, {}, {
     headers: {
       'accept': '*/*',
       'Authorization': `Bearer ${token}`,
@@ -57,7 +56,7 @@ export const reduceCartItemAPI = (id, token) => {
 
 export const remmoveCartItemAPI = (id, token) => {
   const url = `${API_BASE_URL}/delete-cart-item/${id}`;
-  return axios.delete(url, {
+  return axiosInstance.delete(url, {
     headers: {
       'accept': '*/*',
       'Authorization': `Bearer ${token}`,

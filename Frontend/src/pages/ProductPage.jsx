@@ -59,10 +59,8 @@ function ProductPage() {
     <div className="">
       <div className="w-full px-20">
         <div className="flex justify-between items-center">
-        <div className=" mb-4 font-rubikmonoone text-xl">
-          Products
-        </div>
-        {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
+
+          {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
           <input
             className="flex-grow bg-transparent outline-none placeholder-gray-400"
             placeholder="Enter your search keywords here"
@@ -74,8 +72,10 @@ function ProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
             <div className=" w-full">
-
-              <div className=" relative p-4">
+              <div className=" mb-4 font-rubikmonoone text-xl">
+                Products
+              </div>
+              {/* <div className=" relative p-4">
                 <div>
                   <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
                   <label className="ml-2 text-black">New</label>
@@ -84,9 +84,9 @@ function ProductPage() {
                   <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
                   <label className="ml-2 text-black">2hand</label>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="h-px bg-gray-300 my-5 mx-auto"></div>
+              {/* <div className="h-px bg-gray-300 my-5 mx-auto"></div> */}
               <div className="Products text-black font-bold">Categories</div>
               <div className=" relative p-4">
                 <div className="grid grid-cols-1 gap-2">
@@ -178,7 +178,7 @@ function ProductPage() {
             <div className="py-6">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div className="text-sm text-gray-600">
-                  Showing of {products.total} results
+                  {/* Showing {products.length} of {products.total} results */}
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2 text-sm text-gray-600">Sort by</span>

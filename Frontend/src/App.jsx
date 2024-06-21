@@ -22,6 +22,8 @@ import Dashboard from './components/Staff/Dashboard';
 import ManageUser from './components/Admin/ManageUser';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
+import OrderSuccess from './components/Payment/OrderSuccess';
+import OrderCancel from './components/Payment/OrderCancel';
 
 
 
@@ -47,6 +49,8 @@ function App() {
           <Route path="/manage-user" element={<ManageUser />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/order_success" element={<OrderSuccess />} />
+          <Route path="/order_cancel" element={<OrderCancel />} />
           
      </Routes>
      </div>

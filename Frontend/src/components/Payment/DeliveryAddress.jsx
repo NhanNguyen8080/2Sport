@@ -6,12 +6,13 @@ import ShipmentList from "./ShipmentList";
 import {
   selectedShipment,
   selectShipment,
+  setShipment,
 } from "../../redux/slices/shipmentSlice";
 import { selectUser } from "../../redux/slices/authSlice";
 import DistanceCalculator from "./DistanceCalculator";
 import AddShipment from "./AddShipment";
 import { useNavigate } from "react-router-dom";
-import { addUserShipmentDetail } from "../../services/shipmentService";
+import { addUserShipmentDetail, getUserShipmentDetails } from "../../services/shipmentService";
 
 const DeliveryAddress = ({
   userData,
@@ -25,6 +26,22 @@ const DeliveryAddress = ({
   const shipment = useSelector(selectedShipment);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchShipments = async () => {
+      try {
+        if (token && shipments.length === 0) {
+          const shipmentData = await getUserShipmentDetails(token);
+          dispatch(setShipment(shipmentData.$values));
+        }
+      } catch (error) {
+        console.error("Error fetching shipment:", error);
+      }
+    };
+
+    fetchShipments();
+  }, [token, dispatch, shipments.length]);
 
   useEffect(() => {
     if (shipment) {
@@ -75,24 +92,24 @@ const DeliveryAddress = ({
       ) : (
         shipments.length > 0 ? (
           <>
-          <ShipmentList />
-          {shipment && (
-            <div className="w-fit bg-white border border-gray-200 rounded-lg shadow-md p-6 my-4 space-y-2 ">
-              <h4 className="text-lg font-semibold mb-4">Selected Shipment:</h4>
-              <p className="text-gray-700">
-                <span className="font-semibold">Full Name:</span>{" "}
-                {shipment.fullName}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Address:</span>{" "}
-                {shipment.address}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Phone Number:</span>{" "}
-                {shipment.phoneNumber}
-              </p>
-            </div>
-          )}
+            <ShipmentList />
+            {shipment && (
+              <div className="w-fit bg-white border border-gray-200 rounded-lg shadow-md p-6 my-4 space-y-2 ">
+                <h4 className="text-lg font-semibold mb-4">Selected Shipment:</h4>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Full Name:</span>{" "}
+                  {shipment.fullName}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Address:</span>{" "}
+                  {shipment.address}
+                </p>
+                <p className="text-gray-700">
+                  <span className="font-semibold">Phone Number:</span>{" "}
+                  {shipment.phoneNumber}
+                </p>
+              </div>
+            )}
           </>
         ) : (
           <AddShipment

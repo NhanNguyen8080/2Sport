@@ -13,7 +13,6 @@ export default function DeleteShipment({ id, token }) {
 
   return (
     <>
-      <div>
         <button
           type="button"
           onClick={handleDeleteShipment}
@@ -21,7 +20,6 @@ export default function DeleteShipment({ id, token }) {
         >
           Delete
         </button>
-      </div>
     </>
   );
 }

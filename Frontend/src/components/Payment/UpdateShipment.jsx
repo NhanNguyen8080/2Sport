@@ -8,6 +8,7 @@ import AddressForm from "../AddressForm";
 export default function UpdateShipment({ shipment, onClose }) {
   const [isOpen, setIsOpen] = useState(true);
   const [formData, setFormData] = useState({ ...shipment });
+  const [address, setAddress] = useState("");
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
 
@@ -20,7 +21,7 @@ export default function UpdateShipment({ shipment, onClose }) {
       const updatedShipment = await updateUserShipmentDetail(
         shipment.id,
         token,
-        formData
+        { ...formData, address } // Include the address in the update payload
       );
       dispatch(updateShipment(updatedShipment));
       setIsOpen(false);
@@ -34,6 +35,10 @@ export default function UpdateShipment({ shipment, onClose }) {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
     console.log(formData);
+  };
+
+  const handleAddressChange = (newAddress) => {
+    setAddress(newAddress);
   };
 
   function closeModal() {
@@ -100,14 +105,7 @@ export default function UpdateShipment({ shipment, onClose }) {
                     <label className="block text-sm font-medium text-gray-700">
                       Address
                     </label>
-                    {/* <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="mt-1 block w-full border rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-                    /> */}
-                    <AddressForm/>
+                    <AddressForm onAddressChange={handleAddressChange} />
                   </div>
                   <div className="mt-6 flex justify-end">
                     <button

@@ -2,14 +2,9 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
 
-export const getProductList = (sortBy = '') => {
+export const getProductList = (perPage, currentPage, sortBy = '', isAscending = true) => {
   const url = `${API_BASE_URL}/list-products`;
-  const params = {};
-  if (sortBy) {
-    params.sortBy = sortBy;
-  } else {
-    params.sortBy = '""'; 
-  }
+  const params = { perPage, currentPage, sortBy, isAscending };
   return axios.get(url, {
     params,
     headers: {
@@ -17,6 +12,16 @@ export const getProductList = (sortBy = '') => {
     }
   });
 };
+
+export const getTotalProducts = () => {
+  const url = `${API_BASE_URL}/list-products`;
+  return axios.get(url, {
+    headers: {
+      'accept': '*/*'
+    }
+  });
+};
+
 
 export const getProductById = (id) => {
   const url = `${API_BASE_URL}/get-product/${id}`;

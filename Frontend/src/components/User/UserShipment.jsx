@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { getUserShipmentDetails } from "../../services/shipmentService";
@@ -16,6 +16,8 @@ const UserShipment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const shipments = useSelector(selectShipment);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [currentShipment, setCurrentShipment] = useState(null);
 
   useEffect(() => {
     const getShipment = async () => {
@@ -33,6 +35,16 @@ const UserShipment = () => {
     getShipment();
   }, [dispatch]);
 
+  const openUpdateModal = (shipment) => {
+    setCurrentShipment(shipment);
+    setIsUpdateModalOpen(true);
+    setIsShipmentListOpen(false);
+  };
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+    setIsShipmentListOpen(true);
+  };
+
   return (
     <div className="container mx-auto px-20 py-5">
       {shipments.length === 0 ? (
@@ -41,7 +53,7 @@ const UserShipment = () => {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="font-rubikmonoone text-2xl">My address</h2>
-            <AddShipment/>
+            <AddShipment />
           </div>
           {shipments.map((shipment) => (
             <div
@@ -56,12 +68,21 @@ const UserShipment = () => {
                 <p>{shipment.address}</p>
               </div>
               <div className="flex space-x-4">
-                <UpdateShipment shipment={shipment} />
+                <button
+                  className="rounded-lg p-2 text-orange-500 hover:bg-orange-500 hover:text-white"
+                  type="button"
+                  onClick={() => openUpdateModal(shipment)}
+                >
+                  Update
+                </button>
                 <DeleteShipment id={shipment.id} />
               </div>
             </div>
           ))}
         </div>
+      )}
+      {isUpdateModalOpen && (
+        <UpdateShipment shipment={currentShipment} onClose={closeUpdateModal} />
       )}
     </div>
   );

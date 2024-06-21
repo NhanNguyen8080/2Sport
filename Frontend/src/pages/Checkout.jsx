@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
 import DeliveryAddress from "../components/Payment/DeliveryAddress";
 import PaymentMethod from "../components/Payment/PaymentMethod";
@@ -10,6 +10,7 @@ import { selectedShipment } from "../redux/slices/shipmentSlice";
 
 const Checkout = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const shipment = useSelector(selectedShipment);
   const { selectedProducts } = location.state || { selectedProducts: [] };
   const [distance, setDistance] = useState(null);
@@ -77,7 +78,7 @@ const Checkout = () => {
     distance !== null ? calculateTransportFee(distance) : "Calculating...";
 
   if (orderSuccess) {
-    return <OrderSuccess orderCode={orderCode} />;
+    navigate('/order_success')
   }
 
   return (

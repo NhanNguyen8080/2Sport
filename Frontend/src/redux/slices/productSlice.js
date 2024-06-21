@@ -17,14 +17,16 @@ const productSlice = createSlice({
     initialState,
     reducers: {
         setProducts: (state, action) => {
-            const { products, total } = action.payload.data;
+            const { products } = action.payload.data;
             state.products = products;
-            state.total = total;
+        },
+        setTotalProducts: (state, action) => {
+            state.total = action.payload;
         },
     },
 });
 
-export const { setProducts } = productSlice.actions;
+export const { setProducts, setTotalProducts } = productSlice.actions;
 
 export const selectProducts = (state) => state.product;
 

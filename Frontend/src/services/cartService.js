@@ -14,13 +14,13 @@ export const addToCart = async (productId, quantity, token) => {
   }
 };
 
-export const getUserCart = async (sortBy = '', token) => {
+export const getUserCart = async (sortBy = '') => {
   try {
-    const response = await getCartAPI(sortBy, token);
+    const response = await getCartAPI(sortBy);
     return response.data.data.$values;
   } catch (error) {
-    console.error('Error fetching cart:', error);
-    toast.error('Error fetching cart');
+    // console.error('Error fetching cart:', error);
+    // toast.error('Error fetching cart');
     throw error;
   }
 };

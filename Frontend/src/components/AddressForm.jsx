@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const AddressForm = () => {
+const AddressForm = ({ onAddressChange }) => {
     const [formData, setFormData] = useState({
         city: "",
         district: "",
@@ -51,6 +51,7 @@ const AddressForm = () => {
     };
 
     useEffect(() => {
+        onAddressChange(getAddressString());
         console.log(getAddressString());
     }, [formData]);
 

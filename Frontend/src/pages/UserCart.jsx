@@ -15,17 +15,15 @@ const UserCart = ({ sortBy }) => {
   useEffect(() => {
     const getCart = async () => {
       try {
-        if (token) {
-          const cartData = await getUserCart(sortBy, token);
-          setCartData(cartData);
-        }
+        const cartData = await getUserCart(sortBy);
+        setCartData(cartData);
       } catch (error) {
-        console.error('Error fetching cart:', error);
+        // console.error('Error fetching cart:', error);
       }
     };
 
     getCart();
-  }, [sortBy, token]);
+  }, [sortBy]);
 
   const handleRemoveFromCart = async (itemId) => {
     try {
