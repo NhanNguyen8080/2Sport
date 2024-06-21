@@ -1,8 +1,10 @@
+import { faFacebook, faInstagram } from "@fortawesome/free-brands-svg-icons";
 import {
-  faFacebook,
-  faInstagram
-} from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope, faLocationDot, faMapLocationDot, faPhone } from "@fortawesome/free-solid-svg-icons";
+  faEnvelope,
+  faLocationDot,
+  faMapLocationDot,
+  faPhone,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@material-tailwind/react";
 import React from "react";
@@ -14,7 +16,10 @@ function Footer() {
       <div className="bg-footer bg-cover bg-center flex justify-center items-center">
         <h1 className="text-3xl py-20 text-white font-rubikmonoone drop-shadow-md">
           Follow us on
-          <Link to="/" className="underline underline-offset-2 pl-8">
+          <Link
+            to="https://fb.com/profile.php?id=61560697567321"
+            className="underline underline-offset-2 pl-8"
+          >
             Facebook
           </Link>
         </h1>
@@ -42,7 +47,9 @@ function Footer() {
                 placeholder="Enter your email address ..."
                 type="text"
               />
-              <button className="bg-orange-500 px-12 py-4 font-poppins">SUBSCRIBE</button>
+              <button className="bg-orange-500 px-12 py-4 font-poppins">
+                SUBSCRIBE
+              </button>
             </div>
           </div>
         </div>
@@ -50,9 +57,7 @@ function Footer() {
         <div className="w-1/2">
           <div className="grid grid-cols-1 md:grid-cols-3">
             <div className="space-y-2 text-white">
-              <Typography
-                className="text-white mb-4 font-rubikmonoone"
-              >
+              <Typography className="text-white mb-4 font-rubikmonoone">
                 Company
               </Typography>
               <Typography className=" ">About Us</Typography>
@@ -63,10 +68,7 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white ">
-              <Typography
-                
-                className="text-white font-rubikmonoone"
-              >
+              <Typography className="text-white font-rubikmonoone">
                 Products
               </Typography>
               <Typography className=" ">Men's Section</Typography>
@@ -78,9 +80,7 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white ">
-              <Typography
-                className="text-white font-rubikmonoone"
-              >
+              <Typography className="text-white font-rubikmonoone">
                 Support
               </Typography>
               <Typography className=" ">Order Tracking</Typography>
@@ -108,9 +108,7 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white">
-              <Typography
-                className="text-white font-rubikmonoone"
-              >
+              <Typography className="text-white font-rubikmonoone">
                 Contact
               </Typography>
               <Typography className="">
