@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchProducts } from '../services/productService';
+import { fetchProducts, fetchProductsSorted } from '../services/productService';
 import { addToCart } from '../services/cartService';
 import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
@@ -10,22 +10,27 @@ import { Rating } from "@material-tailwind/react";
 
 const ProductList = ({ sortBy }) => {
   const dispatch = useDispatch();
-  const { products, total } = useSelector(selectProducts) || { products: [], total: 0 };
+  const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(15); 
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const { products: productsArray, total } = await fetchProducts(perPage, currentPage, sortBy);
-        dispatch(setProducts({ data: { products: productsArray, total } }));
+        let productsData;
+        if (sortBy) {
+          productsData = await fetchProductsSorted(sortBy);
+        } else {
+          productsData = await fetchProducts();
+        }
+
+        const productsArray = sortBy ? productsData : productsData.products;
+        dispatch(setProducts({ data: { products: productsArray, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     getProducts();
-  }, [sortBy, currentPage, dispatch, perPage]);
+  }, [sortBy, dispatch]);
 
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem('token');
@@ -40,36 +45,20 @@ const ProductList = ({ sortBy }) => {
         toast.error('Error adding product to cart');
       }
     } else {
-      alert(product.productName + " is added")
       toast.success(product.productName + " is added to cart");
       dispatch(addCart(product));
-    }
-  };
-console.log(currentPage * perPage);
-  const handleNextPage = () => {
-    if ((currentPage * perPage) < total) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
     }
   };
 
   return (
     <div className="">
-      <div className="text-sm text-gray-600">
-        Showing {products.length} of {total} results
-      </div>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products?.map(product => (
           <div key={product.id} className="bg-white hover:drop-shadow-lg p-2 rounded-lg">
             <div className="relative">
               <Link to={`/product/${product.id}`}>
                 <div className="bg-zinc-400 bg-opacity-65 h-full">
-                  <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-full object-cover" />
+                  <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-48 object-cover mb-4" />
                 </div>
               </Link>
               <button
@@ -91,22 +80,6 @@ console.log(currentPage * perPage);
             </Link>
           </div>
         ))}
-      </div>
-      <div className="flex justify-center mt-4">
-        <button 
-          className="px-4 py-2 mx-1 bg-gray-300 rounded" 
-          onClick={handlePrevPage} 
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <button 
-          className="px-4 py-2 mx-1 bg-gray-300 rounded" 
-          onClick={handleNextPage} 
-          disabled={(currentPage * perPage) >= total}
-        >
-          Next
-        </button>
       </div>
     </div>
   );

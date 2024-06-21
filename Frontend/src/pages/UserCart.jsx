@@ -5,6 +5,7 @@ import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { getUserCart, reduceCartItem, removeCartItem } from '../services/cartService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Dialog } from '@headlessui/react';
 
 const UserCart = ({ sortBy }) => {
   const [cartData, setCartData] = useState([]);
@@ -47,11 +48,16 @@ const UserCart = ({ sortBy }) => {
           item.id === id ? { ...item, quantity: item.quantity - 1 } : item
         )
       );
+      const updatedItem = cartData.find(item => item.id === id);
+      if (updatedItem && updatedItem.quantity === 0) {
+        alert('Quantity reduced to 0. Please remove the item if you no longer want it.');
+      }
     } catch (error) {
       console.error('Error reducing cart item:', error);
     }
   };
-
+  
+  
   const handleSelectItem = (productId) => {
     setSelectedItems(prevSelected =>
       prevSelected.includes(productId)
@@ -140,7 +146,7 @@ const UserCart = ({ sortBy }) => {
                     +
                   </button>
                 </div>
-                <div className="w-1/12 text-center">{item.totalPrice / item.quantity} VND</div>
+                <div className="w-1/12 text-center">{item.totalPrice/item.quantity} VND</div>
                 <div className="w-2/12 text-center">{item.totalPrice} VND</div>
                 <div className="w-1/12 text-center">
                   <button

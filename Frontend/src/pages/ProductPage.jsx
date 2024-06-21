@@ -178,7 +178,7 @@ function ProductPage() {
             <div className="py-6">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div className="text-sm text-gray-600">
-                  {/* Showing {products.length} of {products.total} results */}
+                  Showing {products.total} results
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2 text-sm text-gray-600">Sort by</span>
