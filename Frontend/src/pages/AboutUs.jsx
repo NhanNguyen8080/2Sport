@@ -1,16 +1,75 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faCircle } from "@fortawesome/free-solid-svg-icons";
-import React from "react";
+import {
+  faStar,
+  faCircle,
+  faArrowLeft,
+  faArrowRight,
+} from "@fortawesome/free-solid-svg-icons";
+import React, { useState } from "react";
 import {
   faFacebook,
   faInstagram,
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
-import CountUp from 'react-countup';
+import CountUp from "react-countup";
 
 const startCounting = true;
 
+const members = [
+  {
+    name: "Nguyễn Quốc Nhân",
+    specialisations: "leader, dev",
+    image: "/assets/images/aboutus/Avarta1.png",
+  },
+  {
+    name: "Nguyễn Tuấn Vũ",
+    specialisations: "dev",
+    image: "/assets/images/aboutus/Avarta2.png",
+  },
+  {
+    name: "Dương Thị Trúc Linh",
+    specialisations: "dev",
+    image: "/assets/images/aboutus/Avatar3.png",
+  },
+  {
+    name: "Hà Thị Phương Thảo",
+    specialisations: "dev",
+    image: "/assets/images/aboutus/Avarta1.png",
+  },
+  {
+    name: "Võ Nguyễn Hoàng Quân",
+    specialisations: "marketing",
+    image: "/assets/images/aboutus/Avarta2.png",
+  },
+  {
+    name: "Võ Hoài Nhật",
+    specialisations: "marketing",
+    image: "/assets/images/aboutus/Avatar3.png",
+  },
+  {
+    name: "Hà Anh Tài",
+    specialisations: "marketing",
+    image: "/assets/images/aboutus/Avarta1.png",
+  },
+  {
+    name: "Lê Thanh Minh Nhật",
+    specialisations: "marketing",
+    image: "/assets/images/aboutus/Avarta2.png",
+  },
+];
+
 const AboutUs = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex < members.length - 3 ? prevIndex + 1 : 0
+    );
+  };
   return (
     <div className="relative mb-[4%]">
       <div className="flex justify-center items-center relative">
@@ -23,7 +82,7 @@ const AboutUs = () => {
           Score Big Savings, Play Even Harder: Unleash Your Sporting Spirit with
           Affordable Second-Hand Finds!
         </h1>
-        <div className="flex w-3/4 justify-around bg-white border-zinc-600 border-2 absolute mt-[30%] drop-shadow-lg py-10">
+        {/* <div className="flex w-3/4 justify-around bg-white border-zinc-600 border-2 absolute mt-[30%] drop-shadow-lg py-10">
       <div className="text-center">
         <h3 className="mt-4 text-[50px] font-bold">
           {startCounting && <CountUp end={50} duration={7} />}+
@@ -51,7 +110,7 @@ const AboutUs = () => {
         </h3>
         <p className="mt-2 text-gray-400 text-xl">Instagram followers</p>
       </div>
-    </div>
+    </div> */}
       </div>
 
       <div className="mt-44 mx-[20%] flex">
@@ -105,125 +164,106 @@ const AboutUs = () => {
           <div className="bg-[#B8DDEB] p-[10%]">
             <h1 className="font-bold text-[25px] text-black">VISION</h1>
             <p className="text-[15px] text-black mt-2">
-              <FontAwesomeIcon icon={faCircle} className="text-black text-[10px] mr-1" />
+              <FontAwesomeIcon
+                icon={faCircle}
+                className="text-black text-[10px] mr-1"
+              />
               "Becoming the largest secondhand sportswear retailer in Vietnam".
             </p>
             <p className="text-[15px] text-black mt-2">
-              <FontAwesomeIcon icon={faCircle} className="text-black text-[10px] mr-1" />
-              Become the country's leading unit in the field of secondhand sportswear retail, helping to improve public health and protect the environment.
+              <FontAwesomeIcon
+                icon={faCircle}
+                className="text-black text-[10px] mr-1"
+              />
+              Become the country's leading unit in the field of secondhand
+              sportswear retail, helping to improve public health and protect
+              the environment.
             </p>
             <p className="text-[15px] text-black mt-2">
-              <FontAwesomeIcon icon={faCircle} className="text-black text-[10px] mr-1" />
-              Bringing high quality products, suitable to the needs of Vietnamese people.
+              <FontAwesomeIcon
+                icon={faCircle}
+                className="text-black text-[10px] mr-1"
+              />
+              Bringing high quality products, suitable to the needs of
+              Vietnamese people.
             </p>
             <p className="text-[15px] text-black mt-2 mb-3">
-              <FontAwesomeIcon icon={faCircle} className="text-black text-[10px] mr-1" />
+              <FontAwesomeIcon
+                icon={faCircle}
+                className="text-black text-[10px] mr-1"
+              />
               Build a wide store system throughout 64 provinces and cities.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col justify-center mt-14 items-center mb-10 text-2xl font-bold mx-[20%]">
-        <h2 className="text-[#524FF5] font-bold justify-center">OUR MEMBERS</h2>
-        <h1 className="text-[35px] font-bold text-black mt-5">
+      <div className="flex flex-col justify-center items-center text-2xl font-bold mt-20">
+        <h2 className="text-[#524FF5] justify-center font-bold">OUR MEMBERS</h2>
+        <h1 className="text-[35px] font-bold text-black mt-5 mb-5">
           Bring best to you
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 gap-x-8 mt-10">
-          <div>
-            <img
-              src="/assets/images/aboutus/Avarta1.png"
-              alt="contactUs"
-              className=""
-            />
-            <div className="bg-[#1B2129] flex flex-col justify-between px-5">
-              <div className=" text-xl font-thin justify-between flex mt-5">
-                <h2 className="text-white">Amanda</h2>
-                <div className="flex items-center ml-[50%]">
-                  <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
-                  <p className="text-white ml-2">/5</p>
+      </div>
+      <div className="relative px-20">
+        <div className="overflow-hidden">
+          <div
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${currentIndex * 33.33}%)` }}
+          >
+            {members.map((member, index) => (
+              <div key={index} className="w-1/3 mr-5 flex-shrink-0">
+                <img src={member.image} alt="contactUs" className="" />
+                <div className="bg-[#1B2129] flex flex-col justify-between px-5">
+                  <div className="text-xl font-thin justify-between flex mt-5">
+                    <h2 className="text-white">{member.name}</h2>
+                    <div className="flex items-center ml-[40%]">
+                      <FontAwesomeIcon
+                        icon={faStar}
+                        className="text-yellow-500"
+                      />
+                      <p className="text-white ml-2">/5</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-white mt-5"></div>
+                  <h2 className="text-white font-thin mt-5 text-xl">
+                    Specialisations:
+                  </h2>
+                  <p className="text-[#6A6A6A] text-lg font-thin">
+                    {member.specialisations}
+                  </p>
+                  <div className="my-5">
+                    <FontAwesomeIcon
+                      icon={faInstagram}
+                      className="text-white"
+                    />
+                    <FontAwesomeIcon
+                      icon={faFacebook}
+                      className="pl-3 text-white"
+                    />
+                  </div>
                 </div>
               </div>
-              <div className="h-px bg-white mt-5"></div>
-              <h2 className="text-white font-thin mt-5 text-xl">
-                Specialisations:
-              </h2>
-              <p className="text-[#6A6A6A] text-lg font-thin">
-                Crossfit Expoort, Nutrition & Rehab
-              </p>
-              <div className="my-5">
-                <FontAwesomeIcon icon={faInstagram} className="text-white" />
-                <FontAwesomeIcon
-                  icon={faFacebook}
-                  className="pl-3 text-white"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <img
-              src="/assets/images/aboutus/Avarta2.png"
-              alt="contactUs"
-              className="bg-[##DDDDDD]"
-            />
-            <div className="bg-[#1B2129] flex flex-col justify-between px-5">
-              <div className=" text-xl font-thin justify-between flex mt-5">
-                <h2 className="text-white">Madison Froning</h2>
-                <div className="flex items-center ml-[40%]">
-                  <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
-                  <p className="text-white ml-2">/5</p>
-                </div>
-              </div>
-              <div className="h-px bg-white mt-5"></div>
-              <h2 className="text-white font-thin mt-5 text-xl">
-                Specialisations:
-              </h2>
-              <p className="text-[#6A6A6A] text-lg font-thin">
-                Crossfit Expoort, Nutrition & Rehab
-              </p>
-              <div className="my-5">
-                <FontAwesomeIcon icon={faInstagram} className="text-white" />
-                <FontAwesomeIcon
-                  icon={faFacebook}
-                  className="pl-3 text-white"
-                />
-                <FontAwesomeIcon icon={faTwitter} className="pl-3 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <img
-              src="/assets/images/aboutus/Avatar3.png"
-              alt="contactUs"
-              className=""
-            />
-            <div className="bg-[#1B2129] flex flex-col justify-between px-5">
-              <div className=" text-xl font-thin justify-between flex mt-5">
-                <h2 className="text-white">Joshua Frankilin</h2>
-                <div className="flex items-center ml-[40%]">
-                  <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
-                  <p className="text-white ml-2">/5</p>
-                </div>
-              </div>
-              <div className="h-px bg-white mt-5"></div>
-              <h2 className="text-white font-thin mt-5 text-xl">
-                Specialisations:
-              </h2>
-              <p className="text-[#6A6A6A] text-lg font-thin">
-                Crossfit Expoort, Nutrition & Rehab
-              </p>
-              <div className="my-5">
-                <FontAwesomeIcon icon={faInstagram} className="text-white" />
-                <FontAwesomeIcon
-                  icon={faFacebook}
-                  className="pl-3 text-white"
-                />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
+        <button
+          onClick={handlePrev}
+          className="absolute h-full w-1/12 left-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-white/80"
+        >
+          <FontAwesomeIcon
+            className="text-orange-500 p-2 -translate-y-1/2 -left-3 absolute rounded-full bg-white border-orange-500 border"
+            icon={faArrowLeft}
+          />
+        </button>
+        <button
+          onClick={handleNext}
+          className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white/80"
+        >
+          <FontAwesomeIcon
+            className="text-orange-500 p-2 -translate-y-1/2 -right-3 absolute rounded-full bg-white border-orange-500 border"
+            icon={faArrowRight}
+          />
+        </button>
       </div>
     </div>
   );
