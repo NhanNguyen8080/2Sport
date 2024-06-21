@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { getUserCart, reduceCartItem, removeCartItem } from '../services/cartService';
+import { getUserCart, reduceCartItem, removeCartItem, addToCart, updateCartItemQuantity } from '../services/cartService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Dialog } from '@headlessui/react';
 
 const UserCart = ({ sortBy }) => {
   const [cartData, setCartData] = useState([]);
@@ -19,7 +18,7 @@ const UserCart = ({ sortBy }) => {
         const cartData = await getUserCart(sortBy);
         setCartData(cartData);
       } catch (error) {
-        // console.error('Error fetching cart:', error);
+        console.error('Error fetching cart:', error);
       }
     };
 
@@ -30,34 +29,56 @@ const UserCart = ({ sortBy }) => {
     try {
       const response = await removeCartItem(itemId, token);
       console.log(response);
-  
-      // Update the cartData state by removing the item
       setCartData(prevCartData => prevCartData.filter(item => item.id !== itemId));
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
   };
-  
 
   const handleReduceQuantity = async (id) => {
     try {
       const response = await reduceCartItem(id, token);
-      
-      setCartData(prevCartData =>
-        prevCartData.map(item =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        )
-      );
-      const updatedItem = cartData.find(item => item.id === id);
-      if (updatedItem && updatedItem.quantity === 0) {
-        alert('Quantity reduced to 0. Please remove the item if you no longer want it.');
-      }
+      setCartData(prevCartData => {
+        const updatedCartData = prevCartData.map(item => {
+          if (item.id === id) {
+            const updatedQuantity = item.quantity - 1;
+            if (updatedQuantity <= 0) {
+              return null;
+            } else {
+              return { ...item, quantity: updatedQuantity, totalPrice: item.totalPrice - (item.totalPrice / item.quantity) };
+            }
+          }
+          return item;
+        }).filter(item => item !== null);
+        return updatedCartData;
+      });
     } catch (error) {
       console.error('Error reducing cart item:', error);
     }
   };
-  
-  
+
+  const handleIncreaseQuantity = async (item) => {
+    try {
+      const response = await addToCart(item.productId, item.quantity + 1, token);
+      setCartData(prevCartData => prevCartData.map(cartItem => cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1, totalPrice: cartItem.totalPrice + (cartItem.totalPrice / cartItem.quantity) } : cartItem));
+    } catch (error) {
+      console.error('Error increasing cart item quantity:', error);
+    }
+  };
+
+  const handleQuantityChange = async (item, quantity) => {
+    if (quantity <= 0) {
+      toast.error('Quantity must be at least 1');
+      return;
+    }
+    try {
+      const response = await updateCartItemQuantity(item.id, quantity, token);
+      setCartData(prevCartData => prevCartData.map(cartItem => cartItem.id === item.id ? { ...cartItem, quantity, totalPrice: (cartItem.totalPrice / cartItem.quantity) * quantity } : cartItem));
+    } catch (error) {
+      console.error('Error updating cart item quantity:', error);
+    }
+  };
+
   const handleSelectItem = (productId) => {
     setSelectedItems(prevSelected =>
       prevSelected.includes(productId)
@@ -138,10 +159,16 @@ const UserCart = ({ sortBy }) => {
                   >
                     -
                   </button>
-                  <span className="mx-2">{item.quantity}</span>
+                  <input
+                    type="number"
+                    className="w-12 mx-2 text-center border"
+                    value={item.quantity}
+                    onChange={(e) => handleQuantityChange(item, parseInt(e.target.value))}
+                    min="1"
+                  />
                   <button
                     className="px-2 py-1 border"
-                    onClick={() => handleQuantityChange(item, 'increase')}
+                    onClick={() => handleIncreaseQuantity(item)}
                   >
                     +
                   </button>

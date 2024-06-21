@@ -64,3 +64,14 @@ export const remmoveCartItemAPI = (id, token) => {
     }
   });
 };
+
+export const updateCartItemQuantityAPI = (cartItemId, quantity, token) => {
+  const url = `${API_BASE_URL}/update-quantity-cart-item/${cartItemId}`;
+  return axiosInstance.put(url, { quantity }, {
+    headers: {
+      'accept': '*/*',
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+};

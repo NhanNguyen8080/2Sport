@@ -28,9 +28,8 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductSortBy = (sortBy = '') => {
+export const getProductFilterBy = (params) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
-  const params = { sortBy, perPage: 10, currentPage: 0, isAscending: true };
   return axios.get(url, {
     params,
     headers: {

@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchProducts, fetchProductsSorted } from '../services/productService';
+import { fetchProducts, fetchProductsFiltered } from '../services/productService';
 import { addToCart } from '../services/cartService';
 import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 
-const ProductList = ({ sortBy }) => {
+const ProductList = ({ sortBy,  }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
+  const params = {};
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         let productsData;
         if (sortBy) {
-          productsData = await fetchProductsSorted(sortBy);
+          productsData = await fetchProductsFiltered(sortBy);
         } else {
           productsData = await fetchProducts();
         }
@@ -32,11 +33,11 @@ const ProductList = ({ sortBy }) => {
     getProducts();
   }, [sortBy, dispatch]);
 
-  const handleAddToCart = async (product) => {
+  const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
     if (token) {
       try {
-        const newQuantity = quantity + 1;
+        const newQuantity = quantity + quantityToAdd;
         await addToCart(product.id, newQuantity, token);
         setQuantity(newQuantity);
         toast.success(`${product.productName} is added to cart`);
@@ -49,33 +50,35 @@ const ProductList = ({ sortBy }) => {
       dispatch(addCart(product));
     }
   };
+  
 
   return (
     <div className="">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products?.map(product => (
-          <div key={product.id} className="bg-white hover:drop-shadow-lg p-2 rounded-lg">
+          <div key={product.id} className="bg-white hover:drop-shadow-lg  hover:bg-zinc-200 p-2">
             <div className="relative">
-              <Link to={`/product/${product.id}`}>
-                <div className="bg-zinc-400 bg-opacity-65 h-full">
-                  <img src={product.mainImagePath} alt={product.mainImageName} className="w-full h-48 object-cover mb-4" />
-                </div>
+            <Link to={`/product/${product.id}`}>
+              <div className="bg-zinc-400 bg-opacity-65 h-full">
+                <img src={product.mainImagePath} alt={product.mainImageName} className="max-h-fit object-cover mb-4" />
+              </div>
               </Link>
               <button
-                className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-gray-900 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-2"
+                className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-orange-600 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-4"
                 onClick={() => handleAddToCart(product)}
               >
                 ADD TO CART
               </button>
             </div>
             <Link to={`/product/${product.id}`}>
+            <p className="text-orange-500 mb-2 ">{product.categoryName} - {product.brandName}</p>
               <h2 className="text-xl font-semibold ">{product.productName}</h2>
-              <p className="text-gray-700 mb-2">{product.brandName}</p>
-              {product.reviews?.$values.map(review => (
+              {/* <p className="text-orange-500 mb-2"></p> */}
+              {/* {product.reviews?.$values.map(review => (
                 <div key={review.id}>
                   <Rating unratedColor="amber" ratedColor="amber" className="text-yellow-500 mb-2" value={review.star} readonly />
                 </div>
-              ))}
+              ))} */}
               <p className="text-gray-700 mb-2">{product.price} VND</p>
             </Link>
           </div>

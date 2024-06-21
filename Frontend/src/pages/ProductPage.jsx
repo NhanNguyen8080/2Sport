@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faTableCellsLarge,
-  faBars,
-  faXmark,
-  faMagnifyingGlass
-}
-  from '@fortawesome/free-solid-svg-icons';
+import { faTableCellsLarge, faBars, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
 import ProductList from "./ProductList";
 import { fetchBrands } from '../services/brandService';
@@ -19,6 +13,8 @@ function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortBy, setSortBy] = useState('');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const products = useSelector(selectProducts);
 
   useEffect(() => {
@@ -52,22 +48,34 @@ function ProductPage() {
   };
 
   const handleClearFilters = () => {
+    setSelectedBrands([]);
+    setSelectedCategories([]);
     console.log("All filters cleared");
   };
+
+  const handleBrandChange = (e) => {
+    const value = e.target.value;
+    setSelectedBrands((prevSelectedBrands) =>
+      prevSelectedBrands.includes(value)
+        ? prevSelectedBrands.filter((brand) => brand !== value)
+        : [...prevSelectedBrands, value]
+    );
+  };
+
+  const handleCategoryChange = (e) => {
+    const value = e.target.value;
+    setSelectedCategories((prevSelectedCategories) =>
+      prevSelectedCategories.includes(value)
+        ? prevSelectedCategories.filter((category) => category !== value)
+        : [...prevSelectedCategories, value]
+    );
+  };
+  console.log( selectedBrands);
 
   return (
     <div className="">
       <div className="w-full px-20">
         <div className="flex justify-between items-center">
-
-          {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
-          <input
-            className="flex-grow bg-transparent outline-none placeholder-gray-400"
-            placeholder="Enter your search keywords here"
-            type="text"
-          />
-          <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
-        </div> */}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
@@ -75,18 +83,6 @@ function ProductPage() {
               <div className=" mb-4 font-rubikmonoone text-xl">
                 Products
               </div>
-              {/* <div className=" relative p-4">
-                <div>
-                  <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
-                  <label className="ml-2 text-black">New</label>
-                </div>
-                <div>
-                  <input type="checkbox" className="form-checkbox h-5 w-5 text-orange-500" />
-                  <label className="ml-2 text-black">2hand</label>
-                </div>
-              </div> */}
-
-              {/* <div className="h-px bg-gray-300 my-5 mx-auto"></div> */}
               <div className="Products text-black font-bold">Categories</div>
               <div className=" relative p-4">
                 <div className="grid grid-cols-1 gap-2">
@@ -95,46 +91,28 @@ function ProductPage() {
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
-                        value={category.categoryName}
+                        value={category.id}
+                        onChange={handleCategoryChange}
                       />
                       <span className="ml-2 text-black">{category.categoryName}</span>
                     </label>
                   ))}
                 </div>
               </div>
-
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-
               <div className=" text-black font-bold">Brands</div>
               <div className=" relative p-4">
-
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
                     <label key={index} className="inline-flex items-center">
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
-                        value={brand.value}
+                        value={brand.id}
+                        onChange={handleBrandChange}
                       />
                       <span className="ml-2 text-black">{brand.brandName} ({brand.quantity})</span>
                     </label>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-
-              <div className=" text-black font-bold">Size</div>
-
-              <div className="relative p-4">
-                <div className="grid grid-cols-4 gap-2">
-                  {["XS", "S", "M", "L", "XL", "2XL"].map((size) => (
-                    <button
-                      key={size}
-                      className="bg-transparent border border-black text-black font-bold py-2 px-4 rounded"
-                    >
-                      {size}
-                    </button>
                   ))}
                 </div>
               </div>
@@ -143,7 +121,6 @@ function ProductPage() {
                 <div className=" text-black font-bold">Price</div>
                 <PriceRangeSlider />
                 <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-
                 <div className="flex items-center justify-center mt-4 w-fit">
                   <button
                     onClick={handleClearFilters}
@@ -154,7 +131,6 @@ function ProductPage() {
                   </button>
                 </div>
               </div>
-
               <div className="relative inline-block mt-6">
                 <img src="/assets/images/product/hero.png" alt="Hero" />
                 <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center p-[10px]">
@@ -167,7 +143,6 @@ function ProductPage() {
                   </span>
                   <br />
                 </div>
-
                 <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 p-2">
                   <span className="text-black font-bold">Shop Now</span>
                 </div>
@@ -204,7 +179,7 @@ function ProductPage() {
               </div>
             </div>
             <div className="">
-              <ProductList sortBy={sortBy} />
+              <ProductList sortBy={sortBy} selectedBrands={selectedBrands} selectedCategories={selectedCategories} />
             </div>
           </div>
         </div>
