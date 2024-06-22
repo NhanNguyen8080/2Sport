@@ -154,20 +154,20 @@ const UserCart = ({ sortBy }) => {
                 </div>
                 <div className="w-2/12 text-center flex items-center justify-center">
                   <button
-                    className="px-2 py-1 border"
+                    className="px-2 py-1"
                     onClick={() => handleReduceQuantity(item.id)}
                   >
                     -
                   </button>
                   <input
                     type="number"
-                    className="w-12 mx-2 text-center border"
+                    className="w-12 mx-2 text-center "
                     value={item.quantity}
                     onChange={(e) => handleQuantityChange(item, parseInt(e.target.value))}
                     min="1"
                   />
                   <button
-                    className="px-2 py-1 border"
+                    className="px-2 py-1 "
                     onClick={() => handleIncreaseQuantity(item)}
                   >
                     +

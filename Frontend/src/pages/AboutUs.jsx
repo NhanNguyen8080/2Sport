@@ -78,7 +78,7 @@ const AboutUs = () => {
           alt="contactUs"
           className="mx-auto h-[550px] w-[90%]"
         />
-        <h1 className="text-[40px] py-10 text-white font-rubikmonoone font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out transform hover:scale-110">
+        <h1 className="text-[40px] py-10 text-white font-rubikmonoone font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
           Score Big Savings, Play Even Harder: Unleash Your Sporting Spirit with
           Affordable Second-Hand Finds!
         </h1>
