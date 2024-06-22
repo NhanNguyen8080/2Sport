@@ -92,7 +92,7 @@ function Header() {
                                 {t("header.product")}
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
-                            <Link to="/">{t("header.blog")}</Link>
+                            {/* <Link to="/">{t("header.blog")}</Link> */}
                             <Link to="/about-us">{t("header.about")}</Link>
                             <Link to="/contact-us">{t("header.contact")}</Link>
                         </div>

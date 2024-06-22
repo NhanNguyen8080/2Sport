@@ -13,26 +13,24 @@ const ProductList = ({ sortBy, selectedBrands }) => {
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
 
-  console.log(selectedBrands);
-
   useEffect(() => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (sortBy) {
-          productsData = await fetchProductsFiltered(sortBy);
-        } else {
+        if (selectedBrands.length === 0) {
           productsData = await fetchProducts();
+          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
+        } else {
+          productsData = await fetchProductsFiltered(selectedBrands);
+          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
         }
 
-        const productsArray = sortBy ? productsData : productsData.products;
-        dispatch(setProducts({ data: { products: productsArray, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     getProducts();
-  }, [sortBy, dispatch]);
+  }, [selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');

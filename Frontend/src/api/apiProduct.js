@@ -28,11 +28,20 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductFilterBy = (params) => {
-  console.log(params);
+export const getProductFilterBy = (brandIds) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
+  const params = {};
+  if (brandIds && brandIds.length > 0) {
+  
+    brandIds.forEach((id, index) => {
+      params[`brandIds[${index}]`] = id;
+    });
+  } else {
+    params.brandIds = null;
+  }
+  
   return axios.get(url, {
-    params, 
+    params,
     headers: {
       'accept': '*/*'
     }
