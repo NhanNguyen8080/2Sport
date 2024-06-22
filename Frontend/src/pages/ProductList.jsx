@@ -8,11 +8,12 @@ import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 
-const ProductList = ({ sortBy,  }) => {
+const ProductList = ({ sortBy, selectedBrands }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
-  const params = {};
+
+  console.log(selectedBrands);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -59,8 +60,8 @@ const ProductList = ({ sortBy,  }) => {
           <div key={product.id} className="bg-white hover:drop-shadow-lg  hover:bg-zinc-200 p-2">
             <div className="relative">
             <Link to={`/product/${product.id}`}>
-              <div className="bg-zinc-400 bg-opacity-65 h-full">
-                <img src={product.mainImagePath} alt={product.mainImageName} className="max-h-fit object-cover mb-4" />
+              <div className=" bg-white">
+                <img src={product.mainImagePath} alt={product.mainImageName} className="object-scale-down h-48 w-96 mb-4" />
               </div>
               </Link>
               <button

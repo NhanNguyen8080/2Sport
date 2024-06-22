@@ -29,9 +29,21 @@ export const getProductById = (id) => {
 };
 
 export const getProductFilterBy = (params) => {
+  console.log(params);
   const url = `${API_BASE_URL}/filter-sort-products`;
   return axios.get(url, {
-    params,
+    params, 
+    headers: {
+      'accept': '*/*'
+    }
+  });
+};
+
+
+export const searchProducts = (keywords) => {
+  const url = `${API_BASE_URL}/search-products`;
+  return axios.get(url, {
+    params: { keywords },
     headers: {
       'accept': '*/*'
     }

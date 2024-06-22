@@ -46,11 +46,12 @@ export default function FeatureProductSlide() {
     <div className="flex justify-between  px-20">
       <label className="font-rubikmonoone">Featured</label>
       <Link to="/product">
-        <label
+        <button
           className="font-poppins font-semibold"
         >View All
-        </label>
+        </button>
         <FontAwesomeIcon
+        className="pl-2"
           icon={faArrowRight} />
       </Link>
     </div>
@@ -58,15 +59,17 @@ export default function FeatureProductSlide() {
       <div className="overflow-hidden">
         <div className="flex transition-transform duration-500 ease-in-out " style={{ transform: `translateX(-${currentIndex * (100 / 8)}%)` }}>
           {images.map((product, index) => (
-            <div key={index} className="min-w-64 px-2 flex flex-col hover:brightness-90 ">
+            <div key={index} className="min-w-64 px-2 flex flex-col hover:brightness-90">
               <Link
-              className=" flex flex-col hover:brightness-90 "
+              className=" flex flex-col "
               to={`/product/${product.id}`}>
+                <div className="bg-white">
               <img
                 src={product.mainImagePath}
                 alt={`image ${index + 1}`}
                 className="object-scale-down h-48 w-96 shadow-lg "
               />
+              </div>
               <label
                 className="text-wrap font-poppins text-orange-500 text-clip"
               >
@@ -75,7 +78,7 @@ export default function FeatureProductSlide() {
               <label
                 className="text-wrap font-poppins font-bold text-clip"
               >
-                {product.mainImageName}
+                {product.productName}
               </label>
               
               <label
@@ -95,12 +98,12 @@ export default function FeatureProductSlide() {
           ))}
         </div>
       </div>
-      <button onClick={handlePrev} className="absolute h-2/3 w-1/12 left-20 top-1/2 transform -translate-y-2/4 bg-gradient-to-r from-white/80">
+      <button onClick={handlePrev} className="absolute w-1/12 left-20 top-1/3 transform -translate-y-1/3 ">
         <FontAwesomeIcon
           className="text-orange-500 p-2 -translate-y-1/2 -left-3 absolute rounded-full bg-white border-orange-500 border"
           icon={faArrowLeft} />
       </button>
-      <button onClick={handleNext} className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-2/3 bg-gradient-to-l from-white/80">
+      <button onClick={handleNext} className="absolute w-1/12 right-20 top-1/3 transform -translate-y-1/3 ">
         <FontAwesomeIcon
           className="text-orange-500 p-2 -translate-y-1/2 -right-3 absolute rounded-full bg-white border-orange-500 border"
           icon={faArrowRight} />
