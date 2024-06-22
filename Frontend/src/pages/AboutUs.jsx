@@ -215,13 +215,13 @@ const AboutUs = () => {
                 <img src={member.image} alt="contactUs" className="" />
                 <div className="bg-[#1B2129] flex flex-col justify-between px-5">
                   <div className="text-xl font-thin justify-between flex mt-5">
-                    <h2 className="text-white">{member.name}</h2>
+                    <h2 className="text-white">{member.name}</h2>  
                     <div className="flex items-center ml-[40%]">
-                      <FontAwesomeIcon
+                      {/* <FontAwesomeIcon
                         icon={faStar}
                         className="text-yellow-500"
-                      />
-                      <p className="text-white ml-2">/5</p>
+                      /> */}
+                      {/* <p className="text-white ml-2">/5</p> */}
                     </div>
                   </div>
                   <div className="h-px bg-white mt-5"></div>
@@ -229,7 +229,8 @@ const AboutUs = () => {
                     Specialisations:
                   </h2>
                   <p className="text-[#6A6A6A] text-lg font-thin">
-                    {member.specialisations}
+                    {/* {member.specialisations} */}
+                    <p className="text-white"> Nhóm trưởng,  lập trình viên backend</p>
                   </p>
                   <div className="my-5">
                     <FontAwesomeIcon
