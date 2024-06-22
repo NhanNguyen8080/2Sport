@@ -18,43 +18,43 @@ const startCounting = true;
 const members = [
   {
     name: "Nguyễn Quốc Nhân",
-    specialisations: "leader, dev",
-    image: "/assets/images/aboutus/Avarta1.png",
+    specialisations: "CEO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Nguyễn Tuấn Vũ",
-    specialisations: "dev",
-    image: "/assets/images/aboutus/Avarta2.png",
+    specialisations: "CTO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Dương Thị Trúc Linh",
-    specialisations: "dev",
-    image: "/assets/images/aboutus/Avatar3.png",
+    specialisations: "CHRO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Hà Thị Phương Thảo",
-    specialisations: "dev",
-    image: "/assets/images/aboutus/Avarta1.png",
+    specialisations: "CIO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Võ Nguyễn Hoàng Quân",
-    specialisations: "marketing",
-    image: "/assets/images/aboutus/Avarta2.png",
+    specialisations: "CFO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Võ Hoài Nhật",
-    specialisations: "marketing",
-    image: "/assets/images/aboutus/Avatar3.png",
+    specialisations: "CCO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Hà Anh Tài",
-    specialisations: "marketing",
-    image: "/assets/images/aboutus/Avarta1.png",
+    specialisations: "CMO",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
   {
     name: "Lê Thanh Minh Nhật",
-    specialisations: "marketing",
-    image: "/assets/images/aboutus/Avarta2.png",
+    specialisations: "Design Manager",
+    image: "/assets/images/aboutus/anonymous-avt.jpg",
   },
 ];
 
@@ -119,24 +119,24 @@ const AboutUs = () => {
             <h2 className="text-[15px]  text-[#524FF5]">WELCOME</h2>
             <h1 className="text-[35px] font-bold text-black">2Sport</h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-              2Sport is always the address providing hot secondhand products,
-              including the world's leading brands such as Yonex, Nike, Adidas,
-              Jordan, Jogarbola... at cheap prices, suitable for your pocket. In
-              addition, 2Sport is also willing to buy, sell and consign limited
-              edition products for collectors.
+              2Sport luôn là địa chỉ cung cấp các sản phẩm đồ cũ hot,
+              trong đó có những thương hiệu hàng đầu thế giới như Yonex, Nike, Adidas,
+              Jordan, Jogarbola... với giá rẻ, phù hợp với túi tiền của bạn. TRONG
+              Ngoài ra, 2Sport còn sẵn sàng mua bán, ký gửi có hạn
+              sản phẩm phiên bản dành cho người sưu tập.
             </p>
           </div>
           <div className="bg-[#EEEEEE] p-[10%]">
-            <h1 className="text-[35px] font-bold text-black">CORE VALUES:</h1>
+            <h1 className="text-[35px] font-bold text-black">GIÁ TRỊ CỐT LÕI:</h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 mb-5">
-              2Sport is committed to bringing convenience and cost-effectiveness
-              to sports lovers, by providing a trustworthy platform to shop for
-              quality and valuable secondhand sportswear. With the name 2-sport,
-              a new brand but with a great ambition is to bring customers the
-              best service and experience possible, with the motto of creating
-              convenience and saving costs effectively. efficiency for customers
-              and create maximum credibility to increase the rate of customers
-              returning to the store next time.
+              2Sport cam kết mang đến sự tiện lợi và tiết kiệm chi phí
+              cho những người yêu thích thể thao, bằng cách cung cấp một nền tảng đáng tin cậy để mua sắm
+              đồ thể thao cũ chất lượng và có giá trị. Với cái tên 2-môn thể thao,
+              một thương hiệu mới nhưng có tham vọng lớn là mang đến cho khách hàng những sản phẩm
+              dịch vụ và trải nghiệm tốt nhất có thể, với phương châm tạo ra
+              tiện lợi và tiết kiệm chi phí một cách hiệu quả. hiệu quả cho khách hàng
+              và tạo sự tin cậy tối đa để tăng tỷ lệ khách hàng
+              quay lại cửa hàng lần sau.
             </p>
             <img
               src="/assets/images/aboutus/about-us-1.jpg"
@@ -156,8 +156,8 @@ const AboutUs = () => {
             <div className="absolute bottom-12 left-8 transform translate-y-1/4 text-white">
               <h2 className="text-2xl font-bold">Our Mission</h2>
               <p className="text-lg mt-3 text-left">
-                "2SPORT is committed to bringing the best quality products and
-                services to sports players to improve their own health."
+                "2SPORT cam kết mang lại những sản phẩm chất lượng tốt nhất và
+                dịch vụ cho người chơi thể thao để cải thiện sức khỏe của chính họ."
               </p>
             </div>
           </div>
@@ -168,40 +168,40 @@ const AboutUs = () => {
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              "Becoming the largest secondhand sportswear retailer in Vietnam".
+              “Trở thành nhà bán lẻ đồ thể thao cũ lớn nhất Việt Nam”.
             </p>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Become the country's leading unit in the field of secondhand
-              sportswear retail, helping to improve public health and protect
-              the environment.
+              Trở thành đơn vị hàng đầu cả nước trong lĩnh vực đồ cũ
+              bán lẻ quần áo thể thao, giúp cải thiện sức khoẻ cộng đồng và bảo vệ
+              môi trường.
             </p>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Bringing high quality products, suitable to the needs of
-              Vietnamese people.
+              Mang đến những sản phẩm chất lượng cao, phù hợp với nhu cầu của
+              Con người Việt Nam.
             </p>
             <p className="text-[15px] text-black mt-2 mb-3">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Build a wide store system throughout 64 provinces and cities.
+              Xây dựng hệ thống cửa hàng rộng khắp 64 tỉnh thành.
             </p>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col justify-center items-center text-2xl font-bold mt-20">
-        <h2 className="text-[#524FF5] justify-center font-bold">OUR MEMBERS</h2>
+        <h2 className="text-[#524FF5] justify-center font-bold"></h2>
         <h1 className="text-[35px] font-bold text-black mt-5 mb-5">
-          Bring best to you
+          THÀNH VIÊN:
         </h1>
       </div>
       <div className="relative px-20">
@@ -215,7 +215,7 @@ const AboutUs = () => {
                 <img src={member.image} alt="contactUs" className="" />
                 <div className="bg-[#1B2129] flex flex-col justify-between px-5">
                   <div className="text-xl font-thin justify-between flex mt-5">
-                    <h2 className="text-white">{member.name}</h2>  
+                    <h2 className="text-white">{member.name}</h2>
                     <div className="flex items-center ml-[40%]">
                       {/* <FontAwesomeIcon
                         icon={faStar}
@@ -226,11 +226,11 @@ const AboutUs = () => {
                   </div>
                   <div className="h-px bg-white mt-5"></div>
                   <h2 className="text-white font-thin mt-5 text-xl">
-                    Specialisations:
+
                   </h2>
                   <p className="text-[#6A6A6A] text-lg font-thin">
-                    {/* {member.specialisations} */}
-                    <p className="text-white"> Nhóm trưởng,  lập trình viên backend</p>
+                    {member.specialisations}
+                    {/* <p className="text-white">CEO</p> */}
                   </p>
                   <div className="my-5">
                     <FontAwesomeIcon

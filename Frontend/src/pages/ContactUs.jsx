@@ -21,47 +21,47 @@ const ContactUs = () => {
           className="mx-auto h-[350px] w-[90%]"
         />
         <h1 className="text-[60px] py-20 text-white font-rubikmonoone absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          CONTACT US
+          LIÊN HỆ
         </h1>
       </div>
 
       <div className="mt-10 mx-[10%] flex">
         <div className="w-1/3 justify-center flex flex-col ml-20 mr-20">
           <h2 className="text-[20px] font-bold text-[#524FF5]">
-            WELCOME TO STRENGTHY
+            WELCOME
           </h2>
           <h1 className="text-[35px] font-bold text-black">
-            Get In Touch With Us
+            Liên hệ với chúng tôi
           </h1>
           <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-            If you have any feedback or questions about our website or our
-            services in general, please contact us by filling out the form.
+            Nếu bạn có bất kỳ phản hồi hoặc câu hỏi nào về trang web của chúng tôi hoặc
+            dịch vụ nói chung, vui lòng liên hệ với chúng tôi bằng cách điền vào mẫu.
           </p>
           <h2 className="text-[20px] font-bold text-black mt-3">Open Hours</h2>
           <div className="mt-3">
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Monday to Friday: 08:00 AM to 09:00 PM
+              Thứ Hai đến Thứ Sáu: 08:00 sáng đến 09:00 tối
             </p>
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Saturday: 09:00 AM to 06:00 PM
+              Thứ Bảy: 09:00 sáng đến 06:00 chiều
             </p>
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Sunday: 09:00 AM to 02:00 PM
+              Chủ nhật: 09:00 sáng đến 02:00 chiều
             </p>
           </div>
         </div>
 
         <div className="w-2/3 bg-[#EEEEEE] mx-16">
           <h1 className="text-[35px] font-bold text-black mt-10 ml-[14%]">
-            Send Us a Message
+            Gửi tin nhắn cho chúng tôi
           </h1>
           <h2 className="text-[15px] font-bold text-[#524FF5] ml-[14%]">
-            Your email address will not be published *
+            Địa chỉ email của bạn sẽ không được công bố *
           </h2>
           <div className="flex flex-col mt-7 items-center border-black">
             <input
               type="text"
-              placeholder="Your fullname"
+              placeholder="Họ tên của bạn"
               className="bg-white h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
@@ -71,23 +71,23 @@ const ContactUs = () => {
             />
             <input
               type="text"
-              placeholder="Subject"
+              placeholder="Tiêu đề"
               className="bg-white mt-5 h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
               type="text"
-              placeholder="Message"
+              placeholder="Thông điệp"
               className="bg-white mt-5 h-24 w-[70%] text-black pl-5 rounded-lg"
             />
           </div>
-          <Button className="mt-10 ml-[15%] mb-10">Send Now</Button>
+          <Button className="mt-10 ml-[15%] mb-10">Gửi ngay</Button>
         </div>
       </div>
 
       <div className="flex flex-col justify-center mt-14 items-center mb-10 text-2xl font-bold mx-[20%]">
         <h2 className="text-[#524FF5] font-bold justify-center">FAQ</h2>
         <h1 className="text-[35px] font-bold text-black mt-5">
-          Frequently Asked Questions
+          Các câu hỏi thường gặp
         </h1>
         <div className="w-[50%] h-16 mt-5 text-2xl font-bold">
           <Select
