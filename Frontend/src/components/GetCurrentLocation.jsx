@@ -12,7 +12,7 @@ function GetCurrentLocation(){
             fetch(url).then(res=>res.json()).then(data=>setAdd(data.address))
         })
     },[])
-    console.log(add,"sfsfh")
+    // console.log(add,"sfsfh")
     return(
         <>
             <p>{add.city}, {add.country}</p>

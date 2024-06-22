@@ -55,7 +55,8 @@ const Checkout = () => {
       if (orderMethodId === "1") {
         setOrderSuccess(true);
       } else if (orderMethodId === "2" && response.data.paymentLink) {
-        window.open(response.data.paymentLink, "_blank");
+        paymentLink = response.data.paymentLink;
+        window.location.href = paymentLink;
       }
     } catch (error) {
       console.error("Error during checkout:", error);

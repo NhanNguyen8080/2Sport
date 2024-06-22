@@ -70,6 +70,7 @@ function ProductPage() {
         : [...prevSelectedCategories, value]
     );
   };
+  console.log(selectedCategories);
 
   return (
     <div className="">
@@ -87,6 +88,7 @@ function ProductPage() {
                 <div className="grid grid-cols-1 gap-2">
                   {categories.map((category, index) => (
                     <label key={index} className="inline-flex items-center">
+                      {console.log(category.id)}
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
