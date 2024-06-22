@@ -19,42 +19,42 @@ const members = [
   {
     name: "Nguyễn Quốc Nhân",
     specialisations: "CEO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/nhan-cu-li.jpg",
   },
   {
     name: "Nguyễn Tuấn Vũ",
     specialisations: "CTO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-tong.jpg",
   },
   {
     name: "Dương Thị Trúc Linh",
     specialisations: "CHRO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/shark-linh.jpg",
   },
   {
     name: "Hà Thị Phương Thảo",
     specialisations: "CIO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-thao.jpg",
   },
   {
     name: "Võ Nguyễn Hoàng Quân",
     specialisations: "CFO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-quan.jpg",
   },
   {
     name: "Võ Hoài Nhật",
     specialisations: "CCO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-nhat.jpg",
   },
   {
     name: "Hà Anh Tài",
     specialisations: "CMO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-tai.jpg",
   },
   {
     name: "Lê Thanh Minh Nhật",
     specialisations: "Design Manager",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/nhat-gd.jpg",
   },
 ];
 
@@ -211,40 +211,43 @@ const AboutUs = () => {
             style={{ transform: `translateX(-${currentIndex * 33.33}%)` }}
           >
             {members.map((member, index) => (
-              <div key={index} className="w-1/3 mr-5 flex-shrink-0">
-                <img src={member.image} alt="contactUs" className="" />
-                <div className="bg-[#1B2129] flex flex-col justify-between px-5">
+              <div key={index} className="w-full md:w-1/3 p-2 flex-shrink-0">
+                <div className="relative w-full h-60 md:h-72 lg:h-80 bg-gray-200">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="w-full h-full object-contain" // Ensuring the image fits within the container without being cropped
+                  />
+                </div>
+                <div className="bg-[#1B2129] flex flex-col justify-between px-5 py-5 mt-2">
                   <div className="text-xl font-thin justify-between flex mt-5">
                     <h2 className="text-white">{member.name}</h2>
-                    <div className="flex items-center ml-[40%]">
-                      {/* <FontAwesomeIcon
-                        icon={faStar}
-                        className="text-yellow-500"
-                      /> */}
-                      {/* <p className="text-white ml-2">/5</p> */}
+                    <div className="flex items-center ml-auto">
+                      {/* Optional additional elements */}
                     </div>
                   </div>
                   <div className="h-px bg-white mt-5"></div>
                   <h2 className="text-white font-thin mt-5 text-xl">
-
+                    {/* Optional additional title or role here */}
                   </h2>
                   <p className="text-[#6A6A6A] text-lg font-thin">
                     {member.specialisations}
-                    {/* <p className="text-white">CEO</p> */}
                   </p>
-                  <div className="my-5">
+                  <div className="flex space-x-3 my-5">
                     <FontAwesomeIcon
                       icon={faInstagram}
                       className="text-white"
                     />
                     <FontAwesomeIcon
                       icon={faFacebook}
-                      className="pl-3 text-white"
+                      className="text-white"
                     />
                   </div>
                 </div>
               </div>
             ))}
+
+
           </div>
         </div>
         <button
