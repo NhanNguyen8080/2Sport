@@ -34,13 +34,13 @@ function Footer() {
             className="max-w-sm max-h-12"
           />
           <Typography>
-            All content on this website is protected by copyright and may not be
-            used without permission from 2Sport. For more information about our
-            Privacy Policy, please contact our Support Center.
+            Tất cả nội dung trên trang web này được bảo vệ bản quyền và không được
+            sử dụng nếu không có sự cho phép của 2Sport. Để biết thêm thông tin về Chính sách quyền riêng tư của chúng tôi,
+            vui lòng liên hệ với Trung tâm hỗ trợ của chúng tôi.
           </Typography>
           <Typography>Copyright © 2024 2Sport. All Rights Reserved.</Typography>
           <div>
-            <p className="font-rubikmonoone pb-4 ">Get Our Updates</p>
+            <p className="font-rubikmonoone pb-4 ">Nhận thông tin cập nhật của chúng tôi</p>
             <div className="flex w-full bg-white ">
               <input
                 className="flex-grow bg-transparent outline-none placeholder-gray-400 font-poppins pl-5"
@@ -48,19 +48,19 @@ function Footer() {
                 type="text"
               />
               <button className="bg-orange-500 px-12 py-4 font-poppins">
-                SUBSCRIBE
+                GỬI
               </button>
             </div>
           </div>
         </div>
         {/* right side */}
         <div className="w-1/2">
-          <div className="grid grid-cols-1 md:grid-cols-3">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3">
             <div className="space-y-2 text-white">
               <Typography className="text-white mb-4 font-rubikmonoone">
                 Company
               </Typography>
-              <Typography className=" ">About Us</Typography>
+              <Typography className=" ">Liên hệ</Typography>
               <Typography className=" ">Testimonials</Typography>
               <Typography className="">FAQS</Typography>
               <Typography className="">Terms & Condition</Typography>
@@ -90,7 +90,7 @@ function Footer() {
               <Typography className="">Return Policy</Typography>
               <Typography className="">Promo Codes</Typography>
             </div>
-          </div>
+          </div> */}
           <div className="grid grid-cols-3 pt-6">
             <div className="space-y-2 col-span-2 text-white">
               <Typography className="">
@@ -109,7 +109,7 @@ function Footer() {
 
             <div className="space-y-2 text-white">
               <Typography className="text-white font-rubikmonoone">
-                Contact
+                Liên hệ
               </Typography>
               <Typography className="">
                 <a href="https://www.facebook.com/profile.php?id=61560697567321&mibextid=LQQJ4d" className="text-white">
@@ -119,7 +119,7 @@ function Footer() {
               </Typography>
               <Typography className="">
                 <a href="https://www.instagram.com/2sport_tt/">
-                <FontAwesomeIcon icon={faInstagram} className="pr-1" />
+                  <FontAwesomeIcon icon={faInstagram} className="pr-1" />
                 </a>
                 Instagram
               </Typography>
