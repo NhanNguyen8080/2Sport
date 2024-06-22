@@ -24,7 +24,7 @@ const members = [
   {
     name: "Nguyễn Tuấn Vũ",
     specialisations: "CTO",
-    image: "/assets/images/aboutus/anonymous-avt.jpg",
+    image: "/assets/images/aboutus/sep-tong.jpg",
   },
   {
     name: "Dương Thị Trúc Linh",
