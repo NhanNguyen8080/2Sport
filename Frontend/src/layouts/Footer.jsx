@@ -95,7 +95,7 @@ function Footer() {
             <div className="space-y-2 col-span-2 text-white">
               <Typography className="">
                 <FontAwesomeIcon icon={faLocationDot} className="pr-1" />
-                Thành Phố Thủ Đức, Thành phố Hồ Chí Minh
+                VRG2+27 Dĩ An, Bình Dương, Việt Nam
               </Typography>
               <Typography className="">
                 <FontAwesomeIcon icon={faPhone} className="pr-1" />
@@ -112,14 +112,19 @@ function Footer() {
                 Contact
               </Typography>
               <Typography className="">
-                <FontAwesomeIcon icon={faFacebook} className="pr-1" />
-                Facebook
+                <a href="https://www.facebook.com/profile.php?id=61560697567321&mibextid=LQQJ4d" className="text-white">
+                  <FontAwesomeIcon icon={faFacebook} className="pr-1" />
+                  Facebook
+                </a>
               </Typography>
               <Typography className="">
+                <a href="https://www.instagram.com/2sport_tt/">
                 <FontAwesomeIcon icon={faInstagram} className="pr-1" />
+                </a>
                 Instagram
               </Typography>
             </div>
+
           </div>
         </div>
       </div>
