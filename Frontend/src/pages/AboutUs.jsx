@@ -154,7 +154,7 @@ const AboutUs = () => {
               className="filter duotone-c86409-ffffff"
             />
             <div className="absolute bottom-12 left-8 transform translate-y-1/4 text-white">
-              <h2 className="text-2xl font-bold">Our Mission</h2>
+              <h2 className="text-2xl font-bold">Sứ mệnh</h2>
               <p className="text-lg mt-3 text-left">
                 "2SPORT cam kết mang lại những sản phẩm chất lượng tốt nhất và
                 dịch vụ cho người chơi thể thao để cải thiện sức khỏe của chính họ."
@@ -162,7 +162,7 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="bg-[#B8DDEB] p-[10%]">
-            <h1 className="font-bold text-[25px] text-black">VISION</h1>
+            <h1 className="font-bold text-[25px] text-black">TẦM NHÌN</h1>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}

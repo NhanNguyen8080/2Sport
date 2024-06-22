@@ -32,7 +32,7 @@ namespace _2Sport_BE.Controllers
                 var result = await _brandService.ListAllAsync();
                 foreach (var item in result.ToList())
                 {
-                    var product = await _productService.GetProducts(_ => _.BrandId == item.Id);
+                    var product = await _productService.GetProducts(_ => _.BrandId == item.Id && _.Status == true);
                     item.Quantity = product.ToList().Count;
                 }
                 return Ok(new { total = result.Count(), data = result });

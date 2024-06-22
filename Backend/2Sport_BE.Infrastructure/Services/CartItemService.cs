@@ -147,14 +147,13 @@ namespace _2Sport_BE.Service.Services
             var reducedCartItem = await _cartItemRepository.FindAsync(cartItemId);
             if (reducedCartItem != null)
             {
-				if (reducedCartItem.Quantity == 0)
+                var product = (await _unitOfWork.ProductRepository.GetAsync(_ => _.Id == reducedCartItem.ProductId)).FirstOrDefault();
+                reducedCartItem.Quantity -= 1;
+                reducedCartItem.TotalPrice -= product.Price;
+                await _unitOfWork.CartItemRepository.UpdateAsync(reducedCartItem);
+                if (reducedCartItem.Quantity == 0)
 				{
 					DeleteCartItem(reducedCartItem.Id);
-				}
-				else
-				{
-					reducedCartItem.Quantity -= 1;
-                    await _unitOfWork.CartItemRepository.UpdateAsync(reducedCartItem);
 				}
 			}
 		}
