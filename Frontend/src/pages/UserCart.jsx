@@ -173,8 +173,8 @@ const UserCart = ({ sortBy }) => {
                     +
                   </button>
                 </div>
-                <div className="w-1/12 text-center">{item.totalPrice/item.quantity} VND</div>
-                <div className="w-2/12 text-center">{item.totalPrice} VND</div>
+                <div className="w-1/12 text-center">{(item.totalPrice / item.quantity).toLocaleString()} VND</div>
+                <div className="w-2/12 text-center">{item.totalPrice.toLocaleString()} VND</div>
                 <div className="w-1/12 text-center">
                   <button
                     className="text-red-500"

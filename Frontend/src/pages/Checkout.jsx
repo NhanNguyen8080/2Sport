@@ -55,7 +55,8 @@ const Checkout = () => {
       if (orderMethodId === "1") {
         setOrderSuccess(true);
       } else if (orderMethodId === "2" && response.data.paymentLink) {
-        paymentLink = response.data.paymentLink;
+        const paymentLink = response.data.paymentLink;
+        console.log(paymentLink);
         window.location.href = paymentLink;
       }
     } catch (error) {
@@ -63,10 +64,11 @@ const Checkout = () => {
     }
   };
 
+
   const calculateTransportFee = (distance) => {
     if (distance < 5) {
       return 0;
-    } else if (totalPrice >= 200000) {
+    } else if (totalPrice >= 500000) {
       return 0;
     } else if (distance <= 10) {
       return 15000;
@@ -75,7 +77,7 @@ const Checkout = () => {
     }
   };
 
-   const transportFee = 
+  const transportFee =
     distance !== null ? calculateTransportFee(distance) : "Calculating...";
 
   if (orderSuccess) {
@@ -131,7 +133,7 @@ const Checkout = () => {
                         {item.productName}
                       </h3>
                     </div>
-                    <p className="text-lg text-black">{item.totalPrice} VND</p>
+                    <p className="text-lg text-black">{item.totalPrice.toLocaleString()} VND</p>
                   </div>
                 </div>
               ))}
@@ -139,7 +141,7 @@ const Checkout = () => {
             <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
               <h3 className="text-lg font-semibold">Subtotal</h3>
-              <p className="text-lg text-black">{totalPrice} VND</p>
+              <p className="text-lg text-black">{totalPrice.toLocaleString()} VND</p>
             </div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
               <h3 className="text-lg font-semibold">Transport Fee</h3>
@@ -152,10 +154,9 @@ const Checkout = () => {
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
               <h3 className="text-lg font-semibold">Total</h3>
               <p className="text-lg text-black">
-                {totalPrice +
-                  (transportFee === "Calculating..." ? 0 : transportFee)}{" "}
-                VND
+                {(totalPrice + (transportFee === "Calculating..." ? 0 : transportFee)).toLocaleString()} VND
               </p>
+
             </div>
           </div>
         )}

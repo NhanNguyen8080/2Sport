@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
 
-export const getProductList = (perPage=15, sortBy = '') => {
+export const getProductList = (perPage = 15, sortBy = '') => {
   const url = `${API_BASE_URL}/list-products`;
   const params = {};
   if (sortBy) {
@@ -10,9 +10,10 @@ export const getProductList = (perPage=15, sortBy = '') => {
     params.sortBy = sortBy;
   } else {
     params.perPage = 15;
-    params.sortBy = '""'; 
+    params.sortBy = '""';
   }
-  return axios.get(url, {perPage,
+  return axios.get(url, {
+    perPage,
     params,
     headers: {
       'accept': '*/*'
@@ -28,18 +29,28 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductFilterBy = (brandIds) => {
+export const getProductFilterBy = (brandIds, categoryIds, minPrice, maxPrice) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
   const params = {};
+
   if (brandIds && brandIds.length > 0) {
-  
     brandIds.forEach((id, index) => {
       params[`brandIds[${index}]`] = id;
     });
-  } else {
-    params.brandIds = null;
   }
-  
+
+  if (categoryIds && categoryIds.length > 0) {
+    categoryIds.forEach((id, index) => {
+      params[`categoryIds[${index}]`] = id;
+    });
+  }
+
+  if (minPrice !== 0) {
+    params.minPrice = minPrice;
+  }
+  if (maxPrice !== 0) {
+    params.maxPrice = maxPrice;
+  }
   return axios.get(url, {
     params,
     headers: {

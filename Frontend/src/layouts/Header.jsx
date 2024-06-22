@@ -23,10 +23,10 @@ import SearchBar from "../components/Product/SearchBar";
 function Header() {
     const { scrollYProgress } = useScroll();
     const { t } = useTranslation("translation");
-    const [enabled, setEnabled] = useState(false);
+    const [enabled, setEnabled] = useState(true);
 
     const changeLanguage = () => {
-        const languageValue = enabled ? 'eng' : 'vie';
+        const languageValue = enabled ? 'eng' : 'vie'; 
         i18n.changeLanguage(languageValue);
     }
     return (
@@ -36,11 +36,11 @@ function Header() {
                     <div className="bg-white/95 backdrop-blur-lg font-medium text-black flex justify-between items-center relative text-xs py-2">
                         <div className="flex pl-20 items-center space-x-2">
                             <Link to="/" >
-                                <img
-                                    src="/assets/images/Logo.png"
-                                    alt="2Sport"
-                                    className="max-w-sm max-h-8 pr-3"
-                                />
+                            <img
+                                src="/assets/images/Logo.png"
+                                alt="2Sport"
+                                className="max-w-sm max-h-8 pr-3"
+                            />
                             </Link>
                             <FontAwesomeIcon icon={faLocationDot} />
                             {/* <p>Ho Chi Minh, Viet Nam</p> */}
@@ -68,7 +68,7 @@ function Header() {
                         {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
                             <input
                                 className="flex-grow bg-transparent outline-none placeholder-gray-400"
-                                placeholder="Bạn muốn tìm kiếm sản phẩm nào?"
+                                placeholder="Enter your search keywords here"
                                 type="text"
                             />
                             <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
