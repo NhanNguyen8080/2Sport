@@ -1,4 +1,5 @@
 ﻿using _2Sport_BE.Helpers;
+using _2Sport_BE.Infrastructure.Services;
 using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
@@ -16,12 +17,16 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICartItemService _cartItemService;
+		private readonly IWarehouseService _warehouseService;
         private readonly IMapper _mapper;
 
-        public CartController(IUnitOfWork unitOfWork, ICartItemService cartItemService, IMapper mapper)
+        public CartController(IUnitOfWork unitOfWork, ICartItemService cartItemService,
+                              IWarehouseService warehouse,
+                              IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _cartItemService = cartItemService;
+            _warehouseService = warehouse;
             _mapper = mapper;
         }
 
@@ -96,7 +101,12 @@ namespace _2Sport_BE.Controllers
                 }
 
 				var newCartItem = _mapper.Map<CartItemCM, CartItem>(cartItemCM);
-
+				var quantityOfProduct = (await _warehouseService.GetWarehouseByProductId(cartItemCM.ProductId))
+										.FirstOrDefault().Quantity;
+				if (quantityOfProduct == 0)
+				{
+					return BadRequest("Sold out!");
+				}
                 var addedCartItem = await _cartItemService.AddCartItem(userId, newCartItem);
                 if (addedCartItem != null)
                 {

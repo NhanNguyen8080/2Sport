@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using System.Linq;
+using System.Net.WebSockets;
 
 namespace _2Sport_BE.Controllers
 {
@@ -100,8 +102,9 @@ namespace _2Sport_BE.Controllers
 
         [HttpGet]
         [Route("filter-sort-products")]
-        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, string? size, decimal minPrice, decimal maxPrice,
-                                                        int sportId, int brandId, int categoryId, int classificationId)
+        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, [FromQuery] string? size, 
+                                                            [FromQuery] decimal minPrice, [FromQuery] decimal maxPrice,
+                                                        [FromQuery] int sportId, [FromQuery] int[] brandIds, [FromQuery] int[] categoryIds)
         {
             try
             {
@@ -110,21 +113,9 @@ namespace _2Sport_BE.Controllers
                 {
                     query = query.Where(_ => _.SportId == sportId);
                 }
-                if (brandId != 0)
-                {
-                    query = query.Where(_ => _.BrandId == brandId);
-                }
-                if (categoryId != 0)
-                {
-                    query = query.Where(_ => _.CategoryId == categoryId);
-                }
-                if (classificationId != 0)
-                {
-                    query = query.Where(_ => _.ClassificationId == classificationId);
-                }
                 if (!String.IsNullOrEmpty(size))
                 {
-                    query = query.Where(_ => _.Size.ToLower().Equals(size.ToLower()) || _.Size.ToLower().Equals("free"));
+                    query = query.Where(_ => _.Size.ToLower().Equals(size.ToLower()));
                 }
                 if (minPrice >= 0 && maxPrice > 0)
                 {
@@ -137,9 +128,21 @@ namespace _2Sport_BE.Controllers
                         return BadRequest("Invalid query!");
                     }
                 }
+                // Apply brandIds filter if provided
+                if (brandIds.Length > 0)
+                {
+                    query = query.Where(_ => brandIds.ToList().Contains((int)_.BrandId));
+                }
 
-				var products = query.ToList();
-				foreach (var product in products)
+                // Apply categoryIds filter if provided
+                if (categoryIds.Length > 0)
+                {
+                    query = query.Where(_ => categoryIds.ToList().Contains((int)_.CategoryId));
+                }
+
+                var products = query.ToList();
+
+                foreach (var product in products)
 				{
 					var brand = await _brandService.GetBrandById(product.BrandId);
 					product.Brand = brand.FirstOrDefault();
