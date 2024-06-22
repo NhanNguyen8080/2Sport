@@ -74,7 +74,7 @@ namespace _2Sport_BE.Service.Services
                 }
                 string content = $"Thanh toan hoa don {order.OrderCode}";
                 int expiredAt = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (60 * 5));
-                PaymentData data = new PaymentData(Int32.Parse(order.OrderCode), Int32.Parse(order.IntoMoney.ToString()), content, orders, "http://localhost:5173", "https://translate.google.com/?hl=vi&sl=en&tl=vi&text=thanh%20toan%20thanh%20cong&op=translate", null, user.FullName, user.Email, user.Phone, user.Address, expiredAt);
+                PaymentData data = new PaymentData(Int32.Parse(order.OrderCode), Int32.Parse(order.IntoMoney.ToString()), content, orders, "https://twosport.vercel.app/order_cancel", "https://twosport.vercel.app/order_success", null, user.FullName, user.Email, user.Phone, user.Address, expiredAt);
                 var createPayment = await _payOs.createPaymentLink(data);
                 return createPayment.checkoutUrl;
             }
