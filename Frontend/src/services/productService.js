@@ -13,10 +13,11 @@ export const fetchProducts = async (sortBy = '') => {
   }
 };
 
-export const fetchProductsFiltered = async (params) => {
+export const fetchProductsFiltered = async (brandIds) => {
   try {
-    const response = await getProductFilterBy(params);
-    return response.data.data.$values;
+    const response = await getProductFilterBy(brandIds);
+    const { total, data } = response.data;
+    return { total, products: data.$values };
   } catch (error) {
     console.error('Error fetching sorted products:', error);
     throw error;

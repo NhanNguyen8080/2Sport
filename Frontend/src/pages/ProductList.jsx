@@ -8,30 +8,29 @@ import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 
-const ProductList = ({ sortBy,  }) => {
+const ProductList = ({ sortBy, selectedBrands }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
-  const params = {};
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (sortBy) {
-          productsData = await fetchProductsFiltered(sortBy);
-        } else {
+        if (selectedBrands.length === 0) {
           productsData = await fetchProducts();
+          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
+        } else {
+          productsData = await fetchProductsFiltered(selectedBrands);
+          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
         }
 
-        const productsArray = sortBy ? productsData : productsData.products;
-        dispatch(setProducts({ data: { products: productsArray, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     getProducts();
-  }, [sortBy, dispatch]);
+  }, [selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
@@ -59,8 +58,8 @@ const ProductList = ({ sortBy,  }) => {
           <div key={product.id} className="bg-white hover:drop-shadow-lg  hover:bg-zinc-200 p-2">
             <div className="relative">
             <Link to={`/product/${product.id}`}>
-              <div className="bg-zinc-400 bg-opacity-65 h-full">
-                <img src={product.mainImagePath} alt={product.mainImageName} className="max-h-fit object-cover mb-4" />
+              <div className=" bg-white">
+                <img src={product.mainImagePath} alt={product.mainImageName} className="object-scale-down h-48 w-96 mb-4" />
               </div>
               </Link>
               <button

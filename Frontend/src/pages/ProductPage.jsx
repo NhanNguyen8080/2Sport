@@ -70,7 +70,6 @@ function ProductPage() {
         : [...prevSelectedCategories, value]
     );
   };
-  console.log(selectedCategories, selectedBrands);
 
   return (
     <div className="">

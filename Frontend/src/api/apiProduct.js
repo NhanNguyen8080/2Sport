@@ -28,10 +28,31 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductFilterBy = (params) => {
+export const getProductFilterBy = (brandIds) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
+  const params = {};
+  if (brandIds && brandIds.length > 0) {
+  
+    brandIds.forEach((id, index) => {
+      params[`brandIds[${index}]`] = id;
+    });
+  } else {
+    params.brandIds = null;
+  }
+  
   return axios.get(url, {
     params,
+    headers: {
+      'accept': '*/*'
+    }
+  });
+};
+
+
+export const searchProducts = (keywords) => {
+  const url = `${API_BASE_URL}/search-products`;
+  return axios.get(url, {
+    params: { keywords },
     headers: {
       'accept': '*/*'
     }

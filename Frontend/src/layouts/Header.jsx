@@ -18,6 +18,7 @@ import { Switch } from '@headlessui/react'
 import SignInModal from "../components/Auth/SignInModal";
 import { motion, useScroll } from "framer-motion";
 import { BreadcrumbsDefault } from "./BreadcrumbsDefault";
+import SearchBar from "../components/Product/SearchBar";
 
 function Header() {
     const { scrollYProgress } = useScroll();
@@ -61,14 +62,17 @@ function Header() {
                             </Switch>
                             <span className="text-orange-500">{enabled ? 'VI' : 'EN'}</span>
                         </div>
-                        <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
+                        {/*search*/}
+                        <SearchBar/>
+                        
+                        {/* <div className="flex w-1/4 bg-white border-2 border-orange-500 rounded-full  p-2 mx-auto">
                             <input
                                 className="flex-grow bg-transparent outline-none placeholder-gray-400"
                                 placeholder="Bạn muốn tìm kiếm sản phẩm nào?"
                                 type="text"
                             />
                             <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
-                        </div>
+                        </div> */}
                         <div className="flex pr-20 items-center space-x-4">
                             <p><FontAwesomeIcon icon={faPhone} className="pr-1" />+84 338-581-571</p>
                             <p><FontAwesomeIcon icon={faEnvelope} className="pr-1" />2sportteam@gmail.com</p>
@@ -88,7 +92,7 @@ function Header() {
                                 {t("header.product")}
                                 <FontAwesomeIcon icon={faCaretDown} className="pl-2" />
                             </Link>
-                            <Link to="/">{t("header.blog")}</Link>
+                            {/* <Link to="/">{t("header.blog")}</Link> */}
                             <Link to="/about-us">{t("header.about")}</Link>
                             <Link to="/contact-us">{t("header.contact")}</Link>
                         </div>
