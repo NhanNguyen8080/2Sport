@@ -191,7 +191,7 @@ const UserCart = ({ sortBy }) => {
               <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> Continue Shopping
             </Link>
             <div className="text-right">
-              <p className="text-lg font-semibold">Total ({selectedItems.length} items): {totalPrice} VND</p>
+              <p className="text-lg font-semibold">Total ({selectedItems.length} items): {totalPrice.toLocaleString()} VND</p>
               <button
                 className="bg-orange-500 text-white px-4 py-2 mt-2"
                 onClick={handleCheckout}

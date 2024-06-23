@@ -45,7 +45,7 @@ function Header() {
                             <FontAwesomeIcon icon={faLocationDot} />
                             {/* <p>Ho Chi Minh, Viet Nam</p> */}
                             <GetCurrentLocation />
-                            <Switch
+                            {/* <Switch
                                 checked={enabled}
                                 onChange={() => {
                                     setEnabled(!enabled);
@@ -60,7 +60,7 @@ function Header() {
                                         } pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
                                 />
                             </Switch>
-                            <span className="text-orange-500">{enabled ? 'VI' : 'EN'}</span>
+                            <span className="text-orange-500">{enabled ? 'VI' : 'EN'}</span> */}
                         </div>
                         {/*search*/}
                         <SearchBar/>

@@ -121,7 +121,7 @@ const Checkout = () => {
                     <img
                       src={item.mainImagePath}
                       alt={item.mainImageName}
-                      className="w-auto h-32 object-cover rounded"
+                      className="w-auto h-32 object-scale-down rounded"
                     />
                     <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {item.quantity}
@@ -133,7 +133,7 @@ const Checkout = () => {
                         {item.productName}
                       </h3>
                     </div>
-                    <p className="text-lg text-black">{item.totalPrice.toLocaleString()} VND</p>
+                    <p className="text-lg text-black">{item.totalPrice} VND</p>
                   </div>
                 </div>
               ))}

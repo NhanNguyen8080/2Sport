@@ -252,7 +252,7 @@ const AboutUs = () => {
         </div>
         <button
           onClick={handlePrev}
-          className="absolute h-full w-1/12 left-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-white/80"
+          className="absolute h-full w-1/12 left-20 top-1/2 transform -translate-y-1/2 "
         >
           <FontAwesomeIcon
             className="text-orange-500 p-2 -translate-y-1/2 -left-3 absolute rounded-full bg-white border-orange-500 border"
@@ -261,7 +261,7 @@ const AboutUs = () => {
         </button>
         <button
           onClick={handleNext}
-          className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white/80"
+          className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-1/2 "
         >
           <FontAwesomeIcon
             className="text-orange-500 p-2 -translate-y-1/2 -right-3 absolute rounded-full bg-white border-orange-500 border"

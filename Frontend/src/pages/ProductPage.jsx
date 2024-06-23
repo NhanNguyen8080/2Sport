@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableCellsLarge, faBars, faXmark, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faTableCellsLarge, faBars, faXmark, faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons';
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
 import ProductList from "./ProductList";
 import { fetchBrands } from '../services/brandService';
@@ -12,11 +12,12 @@ import { selectProducts } from '../redux/slices/productSlice';
 function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [sortBy, setSortBy] = useState(15);
+  const [sortBy, setSortBy] = useState("");
+  const [isAscending, setIsAscending] = useState(true)
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(5000000);
+  const [maxPrice, setMaxPrice] = useState(3000000);
   const products = useSelector(selectProducts);
 
   useEffect(() => {
@@ -51,11 +52,15 @@ function ProductPage() {
     setSortBy(e.target.value);
   };
 
+  const handleAsc = () => {
+    setIsAscending(prevState => !prevState);
+  };
+
   const handleClearFilters = () => {
     setSelectedBrands([]);
     setSelectedCategories([]);
     setMinPrice(0);
-    setMaxPrice(5000000);
+    setMaxPrice(3000000);
   };
 
   const handleBrandChange = (e) => {
@@ -175,12 +180,15 @@ function ProductPage() {
                     onChange={handleSortChange}
                   >
                     <option value="">None</option>
-                    <option value="listedprice">Price</option>
+                    <option value="price">Giá tiền</option>
                   </select>
+                  {sortBy ? <button onClick={handleAsc}>
+                    <FontAwesomeIcon icon={isAscending ? faArrowUpWideShort : faArrowDownWideShort} />
+                  </button> :"" }
                   <div className="ml-4 flex items-center space-x-2">
-                    <button>
+                    {/* <button>
                       <FontAwesomeIcon icon={faTableCellsLarge} />
-                    </button>
+                    </button> */}
                     {/* <Link to="/productv2">
                       <button>
                         <FontAwesomeIcon icon={faBars} />
@@ -193,6 +201,7 @@ function ProductPage() {
             <div className="pl-10">
               <ProductList
                 sortBy={sortBy}
+                isAscending={isAscending}
                 selectedBrands={selectedBrands}
                 selectedCategories={selectedCategories}
                 minPrice={minPrice}

@@ -7,28 +7,46 @@ import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAnglesRight} from '@fortawesome/free-solid-svg-icons';
 
-const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
+const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (selectedBrands.length === 0 && selectedCategories.length === 0 && minPrice === 0 && maxPrice === 0) {
+        if (
+          sortBy === "" &&
+          isAscending === true &&
+          selectedBrands.length === 0 &&
+          selectedCategories.length === 0 &&
+          minPrice === 0 &&
+          maxPrice === 3000000
+        ) {
           productsData = await fetchProducts();
         } else {
-          productsData = await fetchProductsFiltered(selectedBrands, selectedCategories, minPrice, maxPrice);
+          productsData = await fetchProductsFiltered(
+            sortBy,
+            isAscending,
+            selectedBrands,
+            selectedCategories,
+            minPrice,
+            maxPrice
+          );
         }
         dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
+
     getProducts();
-  }, [minPrice, maxPrice,selectedCategories, selectedBrands, dispatch]);
+  }, [sortBy, isAscending, minPrice, maxPrice, selectedCategories, selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
@@ -82,6 +100,10 @@ const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxP
           </div>
         ))}
       </div>
+      {/* <button>
+
+        <FontAwesomeIcon icon={faAnglesRight} />
+        </button> */}
     </div>
   );
 };
