@@ -81,15 +81,15 @@ namespace _2Sport_BE.Controllers
                     return StatusCode(500, "Order creation failed.");
                 }
 
-                var paymentLink = orderMethodId == (int)OrderMethods.PayOS
-                                  ? await _paymentService.PaymentWithPayOs(order.Id)
-                                  : null;
-
-                var check = await DeleteCartItem(user.Id, orderCM.OrderDetails);
+                var check = await DeleteCartItem(cart, orderCM.OrderDetails);
                 if (!check)
                 {
                     return StatusCode(500, "Failed to delete cart items.");
                 }
+
+                var paymentLink = orderMethodId == (int)OrderMethods.PayOS
+                                  ? await _paymentService.PaymentWithPayOs(order.Id)
+                                  : null;
 
                 var orderVM = new OrderVM()
                 {
@@ -192,21 +192,16 @@ namespace _2Sport_BE.Controllers
         [NonAction]
         protected async Task<Order> CreateOrder(OrderCM orderCM, int paymentMethodId)
         {
-            // Lấy thông tin người dùng từ token
             var user = await GetUserFromToken();
             if (user == null)
             {
                 throw new Exception("User not found");
             }
-
-            // Lấy phương thức thanh toán
             var paymentMethod = await _paymentMethodService.GetPaymentMethodAsync(paymentMethodId);
             if (paymentMethod == null)
             {
                 throw new Exception("Payment method not found");
             }
-
-            // Tạo đối tượng Order mới
             var order = new Order
             {
                 OrderCode = GenerateOrderCode(),
@@ -222,8 +217,6 @@ namespace _2Sport_BE.Controllers
             };
 
             decimal totalPrice = 0;
-
-            // Duyệt qua các chi tiết đơn hàng
             foreach (var item in orderCM.OrderDetails)
             {
                 var product = await _productService.GetProductById((int)item.ProductId);
@@ -242,58 +235,60 @@ namespace _2Sport_BE.Controllers
                 }
                 else
                 {
-                    // Xử lý trường hợp sản phẩm không tồn tại
                     throw new Exception($"Product with ID {item.ProductId} not found");
                 }
             }
 
             order.TotalPrice = totalPrice;
             order.IntoMoney = totalPrice + orderCM.TransportFee;
-
-            // Thêm đơn hàng vào cơ sở dữ liệu
             await _orderService.AddOrderAsync(order);
 
             return order;
         }
         [NonAction]
-        protected async Task<bool> DeleteCartItem(int userId, List<OrderDetailRequest> orderDetails)
+        protected async Task<bool> DeleteCartItem(Cart cart, List<OrderDetailRequest> orderDetails)
         {
-            var cart = await _cartService.GetCartByUserId(userId);
+            if (orderDetails == null || !orderDetails.Any())
+            {
+                return false;
+            }
+
             if (cart != null && cart.CartItems.Any())
             {
+                bool allItemsDeleted = true;
                 foreach (var orderDetail in orderDetails)
                 {
-                    var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == orderDetail.ProductId && ci.Status == true);
-                    var wareHouse =(Warehouse) await _warehouseService.GetWarehouseByProductId(orderDetail.ProductId);
-                    if (cartItem != null)
+                    var warehouses = await _warehouseService.GetWarehouseByProductId(orderDetail.ProductId);
+                    Warehouse wareHouse = warehouses.FirstOrDefault();
+                    if (wareHouse != null && wareHouse.Quantity >= orderDetail.Quantity)
                     {
-                        if (cartItem.Quantity > orderDetail.Quantity)
+                        var cartItem = cart.CartItems.FirstOrDefault(ci => ci.ProductId == orderDetail.ProductId && ci.Status == true);
+                        if (cartItem != null)
                         {
-                            var quantity = cartItem.Quantity - orderDetail.Quantity;
-                            await _cartItemService.UpdateQuantityOfCartItem(cartItem.Id, (int)quantity);
-                            wareHouse.Quantity = wareHouse.Quantity - orderDetail.Quantity;
+                            await _cartItemService.DeleteCartItem(cartItem.Id);
+                            wareHouse.Quantity -= orderDetail.Quantity;
                             await _warehouseService.UpdateWarehouseAsync(wareHouse);
-                            _unitOfWork.Save();
-                        }
-                        else if (cartItem.Quantity < orderDetail.Quantity)
-                        {
-                            return false;
                         }
                         else
                         {
-                            await _cartItemService.DeleteCartItem(cartItem.Id);
+                            allItemsDeleted = false;
                         }
-
                     }
                     else
                     {
-                        return false;
+                        allItemsDeleted = false;
                     }
                 }
-                return true;
+
+                if (allItemsDeleted)
+                {
+                    _unitOfWork.Save();
+                    return true;
+                }
             }
             return false;
         }
+
 
     }
 }
