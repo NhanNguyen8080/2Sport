@@ -40,7 +40,7 @@ function Footer() {
           </Typography>
           <Typography>Copyright © 2024 2Sport. All Rights Reserved.</Typography>
           <div>
-            <p className="font-rubikmonoone pb-4 ">Nhận thông tin cập nhật của chúng tôi</p>
+            <p className="font-alfa text-xl pb-4 ">Nhận thông tin cập nhật của chúng tôi</p>
             <div className="flex w-full bg-white ">
               <input
                 className="flex-grow bg-transparent outline-none placeholder-gray-400 font-poppins pl-5"

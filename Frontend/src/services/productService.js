@@ -13,9 +13,9 @@ export const fetchProducts = async (sortBy = '') => {
   }
 };
 
-export const fetchProductsFiltered = async (brandIds) => {
+export const fetchProductsFiltered = async (brandIds, categoryIds, minPrice, maxPrice) => {
   try {
-    const response = await getProductFilterBy(brandIds);
+    const response = await getProductFilterBy(brandIds, categoryIds, minPrice, maxPrice);
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {

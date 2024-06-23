@@ -12,16 +12,19 @@ import { selectProducts } from '../redux/slices/productSlice';
 function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [sortBy, setSortBy] = useState('');
+  const [sortBy, setSortBy] = useState(15);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(5000000);
   const products = useSelector(selectProducts);
 
   useEffect(() => {
     const getBrands = async () => {
       try {
         const brandsData = await fetchBrands();
-        setBrands(brandsData);
+        const filteredBrands = brandsData.filter(brand => brand.quantity > 0);
+        setBrands(filteredBrands);
       } catch (error) {
         console.error('Error fetching brand data:', error);
       }
@@ -34,7 +37,8 @@ function ProductPage() {
     const getCategories = async () => {
       try {
         const categoriesData = await fetchCategories();
-        setCategories(categoriesData);
+        const filteredCategories = categoriesData.filter(category => category.quantity > 0);
+        setCategories(filteredCategories);
       } catch (error) {
         console.error('Error fetching category data:', error);
       }
@@ -50,7 +54,8 @@ function ProductPage() {
   const handleClearFilters = () => {
     setSelectedBrands([]);
     setSelectedCategories([]);
-    console.log("All filters cleared");
+    setMinPrice(0);
+    setMaxPrice(5000000);
   };
 
   const handleBrandChange = (e) => {
@@ -70,39 +75,37 @@ function ProductPage() {
         : [...prevSelectedCategories, value]
     );
   };
-  console.log(selectedCategories);
 
   return (
-    <div className="">
+    <div className="pt-10">
       <div className="w-full px-20">
-        <div className="flex justify-between items-center">
-        </div>
+        <div className="flex justify-between items-center"></div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
-            <div className=" w-full">
-              <div className=" mb-4 font-rubikmonoone text-xl">
-                Products
-              </div>
+            <div className="w-full">
+              <div className="mb-4 font-rubikmonoone text-xl">Products</div>
               <div className="Products text-black font-bold">Categories</div>
-              <div className=" relative p-4">
+              <div className="relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {categories.map((category, index) => (
                     <label key={index} className="inline-flex items-center">
-                      {console.log(category.id)}
                       <input
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-orange-500"
                         value={category.id}
                         onChange={handleCategoryChange}
+                        checked={selectedCategories.includes(category.id.toString())}
                       />
-                      <span className="ml-2 text-black">{category.categoryName}</span>
+                      <span className="ml-2 text-black">
+                        {category.categoryName} ({category.quantity})
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-              <div className=" text-black font-bold">Brands</div>
-              <div className=" relative p-4">
+              <div className="text-black font-bold">Brands</div>
+              <div className="relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
                     <label key={index} className="inline-flex items-center">
@@ -111,16 +114,24 @@ function ProductPage() {
                         className="form-checkbox h-5 w-5 text-orange-500"
                         value={brand.id}
                         onChange={handleBrandChange}
+                        checked={selectedBrands.includes(brand.id.toString())}
                       />
-                      <span className="ml-2 text-black">{brand.brandName} ({brand.quantity})</span>
+                      <span className="ml-2 text-black">
+                        {brand.brandName} ({brand.quantity})
+                      </span>
                     </label>
                   ))}
                 </div>
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div>
-                <div className=" text-black font-bold">Price</div>
-                <PriceRangeSlider />
+                <div className="text-black font-bold">Price</div>
+                <PriceRangeSlider
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                  setMinPrice={setMinPrice}
+                  setMaxPrice={setMaxPrice}
+                />
                 <div className="h-px bg-gray-300 my-5 mx-auto"></div>
                 <div className="flex items-center justify-center mt-4 w-fit">
                   <button
@@ -170,17 +181,23 @@ function ProductPage() {
                     <button>
                       <FontAwesomeIcon icon={faTableCellsLarge} />
                     </button>
-                    <Link to="/productv2">
+                    {/* <Link to="/productv2">
                       <button>
                         <FontAwesomeIcon icon={faBars} />
                       </button>
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="">
-              <ProductList sortBy={sortBy} selectedBrands={selectedBrands} selectedCategories={selectedCategories} />
+            <div className="pl-10">
+              <ProductList
+                sortBy={sortBy}
+                selectedBrands={selectedBrands}
+                selectedCategories={selectedCategories}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+              />
             </div>
           </div>
         </div>

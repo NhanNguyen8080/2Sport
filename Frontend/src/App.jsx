@@ -37,7 +37,7 @@ function App() {
      <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/manage-account/*" element={<UserRoutes />} />
-          <Route path="/productv2" element={<Productv2Page />} />
+          {/* <Route path="/productv2" element={<Productv2Page />} /> */}
           <Route path="/product/*" element={<ProductRoutes />} />
           <Route path="/cart" element={user ? <UserCart/> : <Cart />} />
           <Route path="/checkout" element={<Checkout />} />

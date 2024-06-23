@@ -23,7 +23,7 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="relative w-1/4 p-2 mx-auto">
+    <div className="relative z-50 w-1/4 p-2 mx-auto ">
       <div className="flex w-full bg-white border-2 border-orange-500 rounded-full p-2 mx-auto">
         <input
           className="flex-grow bg-transparent outline-none placeholder-gray-400"
@@ -35,7 +35,7 @@ const SearchBar = () => {
         <FontAwesomeIcon icon={faMagnifyingGlass} className="items-center text-orange-500 font-medium pr-3" />
       </div>
       {results.length > 0 && (
-        <div className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-2 z-50">
+        <div className="absolute z-60 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-2">
           {results.map((product) => (
             <Link to={`/product/${product.id}`} key={product.id} className="block p-2 hover:bg-gray-200">
               <div className="flex items-center space-x-4">
@@ -45,6 +45,7 @@ const SearchBar = () => {
             </Link>
           ))}
         </div>
+
       )}
     </div>
   );

@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 
-const ProductList = ({ sortBy, selectedBrands }) => {
+const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
@@ -17,20 +17,18 @@ const ProductList = ({ sortBy, selectedBrands }) => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (selectedBrands.length === 0) {
+        if (selectedBrands.length === 0 && selectedCategories.length === 0 && minPrice === 0 && maxPrice === 0) {
           productsData = await fetchProducts();
-          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
         } else {
-          productsData = await fetchProductsFiltered(selectedBrands);
-          dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
+          productsData = await fetchProductsFiltered(selectedBrands, selectedCategories, minPrice, maxPrice);
         }
-
+        dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
     getProducts();
-  }, [selectedBrands, dispatch]);
+  }, [minPrice, maxPrice,selectedCategories, selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
@@ -78,7 +76,8 @@ const ProductList = ({ sortBy, selectedBrands }) => {
                   <Rating unratedColor="amber" ratedColor="amber" className="text-yellow-500 mb-2" value={review.star} readonly />
                 </div>
               ))} */}
-              <p className="text-gray-700 mb-2">{product.price} VND</p>
+              <p className="text-gray-700 mb-2">{product.price.toLocaleString()} VND</p>
+
             </Link>
           </div>
         ))}
