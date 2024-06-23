@@ -94,11 +94,12 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-    builder.WithOrigins("*")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-         );
+    builder.WithOrigins("https://twosport.vercel.app", "http://localhost:5173")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+    );
 });
+
 //Mapping services
 var mappingConfig = new MapperConfiguration(mc =>
 {
