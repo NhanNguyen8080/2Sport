@@ -15,6 +15,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,m
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  console.log(selectedBrands, selectedCategories);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -22,7 +23,6 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,m
         let productsData;
         if (
           sortBy === "" &&
-          isAscending === true &&
           selectedBrands.length === 0 &&
           selectedCategories.length === 0 &&
           minPrice === 0 &&

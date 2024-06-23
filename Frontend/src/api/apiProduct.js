@@ -27,7 +27,13 @@ export const getProductById = (id) => {
 
 export const getProductFilterBy = ( sortBy, isAscending, brandIds, categoryIds, minPrice, maxPrice) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
-  const params = {perPage, sortBy, isAscending};
+  const params = {perPage};
+  if (sortBy) {
+    params.sortBy = sortBy;
+  }
+  if (typeof isAscending === 'boolean') {
+    params.isAscending = isAscending;
+  }
 
   if (brandIds && brandIds.length > 0) {
     brandIds.forEach((id, index) => {
