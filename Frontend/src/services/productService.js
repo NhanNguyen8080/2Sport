@@ -1,10 +1,10 @@
 // src/services/productService.js
 import { toast } from 'react-toastify';
-import { getProductList, getProductById, getProductFilterBy   } from '../api/apiProduct';
+import { getProductList, getProductById, getProductFilterBy } from '../api/apiProduct';
 
-export const fetchProducts = async (sortBy = '') => {
+export const fetchProducts = async () => {
   try {
-    const response = await getProductList(sortBy);
+    const response = await getProductList();
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {
@@ -13,9 +13,23 @@ export const fetchProducts = async (sortBy = '') => {
   }
 };
 
-export const fetchProductsFiltered = async (brandIds, categoryIds, minPrice, maxPrice) => {
+export const fetchProductsFiltered = async (
+      sortBy,
+      isAscending,
+      selectedBrands,
+      selectedCategories,
+      minPrice,
+      maxPrice
+    ) => {
   try {
-    const response = await getProductFilterBy(brandIds, categoryIds, minPrice, maxPrice);
+    const response = await getProductFilterBy(
+      sortBy,
+      isAscending,
+      selectedBrands,
+      selectedCategories,
+      minPrice,
+      maxPrice
+    );
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {

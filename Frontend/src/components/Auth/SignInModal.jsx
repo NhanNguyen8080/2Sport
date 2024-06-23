@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { authenticateUser } from '../../services/authService';
 import ForgotPasswordModal from './ForgotPasswordModal';
 
+
 export default function SignInModal() {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
@@ -25,6 +26,7 @@ export default function SignInModal() {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -107,10 +109,10 @@ export default function SignInModal() {
                 <Dialog.Panel className="flex justify-between w-1/2 transform overflow-hidden rounded-md shadow-xl transition-all">
                   <div className="flex-col flex py-20 px-10 space-y-5 bg-zinc-700 text-white items-center w-1/2">
                     <h1 className="font-rubikmonoone text-lg text-orange-500">
-                      Welcome back!
+                      {t("signin.welcome_back")}
                     </h1>
                     <p className="font-poppins text-center">
-                      Welcome back! We are so happy to have you here. It's great to see you again. We hope you had a safe and enjoyable time away.
+                      {t("signin.welcome_back_message")}
                     </p>
                     <button
                       className="flex font-poppins bg-gradient-to-r from-zinc-500 to-zinc-600 w-fit p-3 shadow-zinc-800 shadow-md rounded-md"
@@ -119,17 +121,17 @@ export default function SignInModal() {
                         openSignUpModal();
                       }}
                     >
-                      No account yet?{' '}
-                      <p className="pl-1 text-orange-500 font-bold">Sign up!</p>
+                      {t("signin.no_account")}
+                      <p className="pl-1 text-orange-500 font-bold">{t("signin.signup")}</p>
                     </button>
                   </div>
                   <div className="bg-white w-1/2 px-20 text-black flex-col flex font-poppins justify-center" >
                     <form onSubmit={handleSubmit(onSubmit)} className=" text-black flex-col flex font-poppins justify-center pb-5" >
-                      <label className="font-rubikmonoone text-xl items-center text-center mb-2">Sign in</label>
-                      <label className="">Username</label>
+                      <label className="font-rubikmonoone text-xl items-center text-center mb-2">{t("signin.signin")}</label>
+                      <label className="">{t("signin.username")}</label>
                       <input
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder={t("signin.enter_username")}
                         className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                         {...register('userName', {
                           required: true,
@@ -138,20 +140,20 @@ export default function SignInModal() {
                         })}
                       />
                       {errors.userName && errors.userName.type === 'required' && (
-                        <p className="text-red-400 text-sm italic">This field is required!</p>
+                        <p className="text-red-400 text-sm italic">{t("signin.required")}</p>
                       )}
                       {errors.userName && errors.userName.type === 'maxLength' && (
-                        <p>Username cannot exceed 20 characters</p>
+                          <p>{t("signin.username_length")}</p>
                       )}
                       {errors.userName && errors.userName.type === 'pattern' && (
-                        <p className="text-red-400 text-sm italic">Username can only contain letters, numbers, and underscores</p>
+                        <p className="text-red-400 text-sm italic">{t("signin.username_pattern")}</p>
                       )}
 
-                      <label className="">Password</label>
+                      <label className="">{t("signin.password")}</label>
                       <div className="relative">
                         <input
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Enter your password"
+                          placeholder={t("signin.enter_password")}
                           className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                           {...register('password', { required: true })}
                         />
@@ -163,7 +165,7 @@ export default function SignInModal() {
                           />
                         </div>
                       </div>
-                      {errors.password && <p className="text-red-400 text-sm italic">Password is required</p>}
+                      {errors.password && <p className="text-red-400 text-sm italic">{t("signin.password_required")}</p>}
                       <button
                         className="text-left pb-3 text-blue-500 underline"
                         onClick={() => {
@@ -171,7 +173,7 @@ export default function SignInModal() {
                           openForgotPasswordModal();
                         }}
                       >
-                        Forgot password?
+                        {t("signin.forgot_password")}
                       </button>
 
                       <button
@@ -179,7 +181,7 @@ export default function SignInModal() {
                         className="bg-orange-500 font-rubikmonoone text-white rounded-lg px-10 py-2 w-full"
                         onClick={closeSignInModal}
                       >
-                        Sign in
+                        {t("signin.signin")}
                       </button>
                     </form>
 

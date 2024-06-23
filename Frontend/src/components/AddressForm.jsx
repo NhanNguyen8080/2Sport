@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const AddressForm = ({ onAddressChange }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         city: "",
         district: "",
@@ -71,7 +73,7 @@ const AddressForm = ({ onAddressChange }) => {
                 value={formData.city}
                 onChange={handleInputChange}
             >
-                <option value="">Chọn tỉnh thành</option>
+                <option value="">{t("address_form.select_city")}</option>
                 {data.map(city => (
                     <option key={city.Id} value={city.Id}>
                         {city.Name}
@@ -85,7 +87,7 @@ const AddressForm = ({ onAddressChange }) => {
                 value={formData.district}
                 onChange={handleInputChange}
             >
-                <option value="">Chọn quận huyện</option>
+                <option value="">{t("address_form.select_district")}</option>
                 {districts.map(district => (
                     <option key={district.Id} value={district.Id}>
                         {district.Name}
@@ -99,7 +101,7 @@ const AddressForm = ({ onAddressChange }) => {
                 value={formData.ward}
                 onChange={handleInputChange}
             >
-                <option value="">Chọn phường xã</option>
+                <option value="">{t("address_form.select_ward")}</option>
                 {wards.map(ward => (
                     <option key={ward.Id} value={ward.Id}>
                         {ward.Name}

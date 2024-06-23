@@ -11,6 +11,7 @@ import {
 import UpdateShipment from "../Payment/UpdateShipment";
 import DeleteShipment from "../Payment/DeleteShipment";
 import AddShipment from "../Payment/AddShipment";
+import { useTranslation } from "react-i18next";
 
 const UserShipment = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const UserShipment = () => {
   const shipments = useSelector(selectShipment);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [currentShipment, setCurrentShipment] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const getShipment = async () => {
@@ -48,11 +50,11 @@ const UserShipment = () => {
   return (
     <div className="container mx-auto px-20 py-5">
       {shipments.length === 0 ? (
-        <p>Your address book is empty</p>
+        <p>{t("user_shipment.empty")}</p>
       ) : (
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="font-rubikmonoone text-2xl">My address</h2>
+            <h2 className="font-rubikmonoone text-2xl">{t("user_shipment.address")}</h2>
             <AddShipment />
           </div>
           {shipments.map((shipment) => (
@@ -73,7 +75,7 @@ const UserShipment = () => {
                   type="button"
                   onClick={() => openUpdateModal(shipment)}
                 >
-                  Update
+                  {t("user_shipment.update")}
                 </button>
                 <DeleteShipment id={shipment.id} />
               </div>

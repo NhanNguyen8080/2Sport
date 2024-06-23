@@ -8,10 +8,12 @@ import { logout } from "../../redux/slices/authSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signOutUser } from "../../services/authService";
+import { useTranslation } from "react-i18next";
 
 const Logout = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         // // Get all cookies
@@ -61,7 +63,7 @@ const Logout = () => {
     return (
         <button onClick={handleLogout} className="">
             <FontAwesomeIcon className="pr-1" icon={faRightFromBracket} />
-            Logout
+                {t("logout.logout")}
         </button>
     );
 };

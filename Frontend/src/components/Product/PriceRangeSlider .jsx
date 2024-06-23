@@ -3,7 +3,7 @@ import './PriceRangeSlider.css';
 
 const PriceRangeSlider = ({ minPrice, maxPrice, setMinPrice, setMaxPrice }) => {
   const min = 0;
-  const max = 5000000;
+  const max = 3000000;
 
   // const [minPrice, setMinPrice] = useState(1000);
   // const [maxPrice, setMaxPrice] = useState(7000);

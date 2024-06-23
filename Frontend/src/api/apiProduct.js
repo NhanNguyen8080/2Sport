@@ -1,19 +1,15 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
+const perPage = 15;
 
-export const getProductList = (perPage = 15, sortBy = '') => {
+export const getProductList = () => {
   const url = `${API_BASE_URL}/list-products`;
-  const params = {};
-  if (sortBy) {
-    params.perPage = 15;
-    params.sortBy = sortBy;
-  } else {
-    params.perPage = 15;
-    params.sortBy = '""';
-  }
+  const params = {
+    perPage : perPage
+  };
+  console.log(params);
   return axios.get(url, {
-    perPage,
     params,
     headers: {
       'accept': '*/*'
@@ -29,9 +25,15 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductFilterBy = (brandIds, categoryIds, minPrice, maxPrice) => {
+export const getProductFilterBy = ( sortBy, isAscending, brandIds, categoryIds, minPrice, maxPrice) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
-  const params = {};
+  const params = {perPage};
+  if (sortBy) {
+    params.sortBy = sortBy;
+  }
+  if (typeof isAscending === 'boolean') {
+    params.isAscending = isAscending;
+  }
 
   if (brandIds && brandIds.length > 0) {
     brandIds.forEach((id, index) => {

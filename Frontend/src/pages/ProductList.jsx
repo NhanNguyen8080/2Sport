@@ -8,27 +8,48 @@ import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 
+import { useTranslation } from "react-i18next";
+
+
 const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  console.log(selectedBrands, selectedCategories);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
         let productsData;
-        if (selectedBrands.length === 0 && selectedCategories.length === 0 && minPrice === 0 && maxPrice === 0) {
+        if (
+          sortBy === "" &&
+          selectedBrands.length === 0 &&
+          selectedCategories.length === 0 &&
+          minPrice === 0 &&
+          maxPrice === 3000000
+        ) {
           productsData = await fetchProducts();
         } else {
-          productsData = await fetchProductsFiltered(selectedBrands, selectedCategories, minPrice, maxPrice);
+          productsData = await fetchProductsFiltered(
+            sortBy,
+            isAscending,
+            selectedBrands,
+            selectedCategories,
+            minPrice,
+            maxPrice
+          );
         }
         dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
+
     getProducts();
-  }, [minPrice, maxPrice,selectedCategories, selectedBrands, dispatch]);
+  }, [sortBy, isAscending, minPrice, maxPrice, selectedCategories, selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
@@ -64,7 +85,7 @@ const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxP
                 className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-orange-600 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-4"
                 onClick={() => handleAddToCart(product)}
               >
-                ADD TO CART
+                {t("product_list.add_to_cart")}
               </button>
             </div>
             <Link to={`/product/${product.id}`}>
@@ -76,12 +97,16 @@ const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxP
                   <Rating unratedColor="amber" ratedColor="amber" className="text-yellow-500 mb-2" value={review.star} readonly />
                 </div>
               ))} */}
-              <p className="text-gray-700 mb-2">{product.price.toLocaleString()} VND</p>
+              <p className="text-gray-700 mb-2">{product.price.toLocaleString()} {t("product_list.vnd")}</p>
 
             </Link>
           </div>
         ))}
       </div>
+      {/* <button>
+
+        <FontAwesomeIcon icon={faAnglesRight} />
+        </button> */}
     </div>
   );
 };

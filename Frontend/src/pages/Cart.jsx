@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from "react-i18next";
 
 const Cart = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -62,11 +64,11 @@ const Cart = () => {
     <div className="container mx-auto px-20 py-5">
       <ToastContainer />
       <div className="flex justify-between items-center mb-4">
-        <h1 className="font-rubikmonoone text-orange-500 text-2xl">Shopping Cart</h1>
-        <span className="font-rubikmonoone text-orange-500 text-xl">{totalItems} Items</span>
+        <h1 className="font-rubikmonoone text-orange-500 text-2xl">{t("cart.title")}</h1>
+        <span className="font-rubikmonoone text-orange-500 text-xl">{totalItems} {t("cart.items")}</span>
       </div>
       {cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
+        <p>{t("cart.empty")}</p>
       ) : (
         <div className="w-full">
           <div className="bg-zinc-100 rounded-lg overflow-hidden shadow-lg">
@@ -78,11 +80,11 @@ const Cart = () => {
                   onChange={handleSelectAll}
                 />
               </div>
-              <div className="w-5/12 text-center font-poppins text-lg font-bold">Products</div>
-              <div className="w-2/12 text-center font-poppins text-lg font-bold">Quantity</div>
-              <div className="w-1/12 text-center font-poppins text-lg font-bold">Price</div>
-              <div className="w-2/12 text-center font-poppins text-lg font-bold">Total</div>
-              <div className="w-1/12 text-center font-poppins text-lg font-bold">Action</div>
+              <div className="w-5/12 text-center font-poppins text-lg font-bold">{t("cart.products")}</div>
+              <div className="w-2/12 text-center font-poppins text-lg font-bold">{t("cart.quantity")}</div>
+              <div className="w-1/12 text-center font-poppins text-lg font-bold">{t("cart.price")}</div>
+              <div className="w-2/12 text-center font-poppins text-lg font-bold">{t("cart.total")}</div>
+              <div className="w-1/12 text-center font-poppins text-lg font-bold">{t("cart.action")}</div>
             </div>
             {cartItems.map(item => (
               <div key={item.id} className="flex items-center justify-between p-4 border-b hover:bg-zinc-200">
@@ -97,7 +99,7 @@ const Cart = () => {
                   <img src={item.mainImagePath} alt={item.mainImageName} className="w-16 h-16 object-cover mr-4" />
                   <Link to={`/product/${item.id}`} className="text-sm font-poppins font-bold text-wrap w-1/2">{item.productName}</Link>
                   <div className="pl-10">
-                    <label>Type:</label>
+                    <label>{t("cart.type")}:</label>
                     <p>{item.size} {item.color}</p>
                   </div>
                 </div>
@@ -116,8 +118,11 @@ const Cart = () => {
                     +
                   </button>
                 </div>
-                <div className="w-1/12 text-center">{item.price} VND</div>
-                <div className="w-2/12 text-center">{item.price * item.quantity} VND</div>
+
+                <div className="w-1/12 text-center">{item.price} {t("cart.vnd")}</div>
+                <div className="w-2/12 text-center">{item.price * item.quantity} {t("cart.vnd")}</div>
+
+
                 <div className="w-1/12 text-center">
                   <button
                     className="text-red-500"
@@ -131,10 +136,12 @@ const Cart = () => {
           </div>
           <div className="flex justify-between items-center mt-4">
             <Link to="/product" className="text-blue-500 flex items-center font-poppins">
-            <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> Continue Shopping
+            <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> {t("cart.continueshopping")}
             </Link>
             <div className="text-right">
-              <p className="text-lg font-semibold">Total ({selectedItems.length} items): {totalPrice} VND</p>
+
+              <p className="text-lg font-semibold">{t("cart.total")} ({selectedItems.length} {t("cart.items")}): {totalPrice} {t("cart.vnd")}</p>
+
               <button
                 className="bg-orange-500 text-white px-4 py-2 mt-2"
                 onClick={handleCheckout}

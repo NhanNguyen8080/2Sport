@@ -3,8 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { fetchProducts } from '../../services/productService';
 import { Link } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 export default function FeatureProductSlide() {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const sortBy = 'likes';
   const [images, setImages] = useState([]);
@@ -44,11 +46,11 @@ export default function FeatureProductSlide() {
 
   return (<>
     <div className="flex justify-between  px-20">
-      <label className="font-rubikmonoone">Featured</label>
+      <label className="font-rubikmonoone">{t("fearureproduct.featured")}</label>
       <Link to="/product">
         <button
           className="font-poppins font-semibold"
-        >View All
+        >{t("fearureproduct.viewall")}
         </button>
         <FontAwesomeIcon
         className="pl-2"

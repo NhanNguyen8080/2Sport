@@ -9,13 +9,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@material-tailwind/react";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Footer() {
+  const { t } = useTranslation();
   return (
     <div className="bg-zinc-700 h-full">
       <div className="bg-footer bg-cover bg-center flex justify-center items-center">
         <h1 className="text-3xl py-20 text-white font-rubikmonoone drop-shadow-md">
-          Follow us on
+        {t("footer.text-img")}
           <Link
             to="https://fb.com/profile.php?id=61560697567321"
             className="underline underline-offset-2 pl-8"
@@ -34,21 +36,19 @@ function Footer() {
             className="max-w-sm max-h-12"
           />
           <Typography>
-            Tất cả nội dung trên trang web này được bảo vệ bản quyền và không được
-            sử dụng nếu không có sự cho phép của 2Sport. Để biết thêm thông tin về Chính sách quyền riêng tư của chúng tôi,
-            vui lòng liên hệ với Trung tâm hỗ trợ của chúng tôi.
+          {t("footer.text")}
           </Typography>
-          <Typography>Copyright © 2024 2Sport. All Rights Reserved.</Typography>
+          <Typography>      {t("footer.Copyright")}</Typography>
           <div>
-            <p className="font-alfa text-xl pb-4 ">Nhận thông tin cập nhật của chúng tôi</p>
+            <p className="font-alfa text-xl pb-4 ">{t("footer.getupdate")}</p>
             <div className="flex w-full bg-white ">
               <input
                 className="flex-grow bg-transparent outline-none placeholder-gray-400 font-poppins pl-5"
-                placeholder="Enter your email address ..."
+                placeholder={t("footer.input")}
                 type="text"
               />
               <button className="bg-orange-500 px-12 py-4 font-poppins">
-                GỬI
+              {t("footer.btn")}
               </button>
             </div>
           </div>
@@ -95,7 +95,7 @@ function Footer() {
             <div className="space-y-2 col-span-2 text-white">
               <Typography className="">
                 <FontAwesomeIcon icon={faLocationDot} className="pr-1" />
-                VRG2+27 Dĩ An, Bình Dương, Việt Nam
+                {t("footer.address")}
               </Typography>
               <Typography className="">
                 <FontAwesomeIcon icon={faPhone} className="pr-1" />
@@ -109,7 +109,7 @@ function Footer() {
 
             <div className="space-y-2 text-white">
               <Typography className="text-white font-rubikmonoone">
-                Liên hệ
+                {t("footer.contact")}
               </Typography>
               <Typography className="">
                 <a href="https://www.facebook.com/profile.php?id=61560697567321&mibextid=LQQJ4d" className="text-white">

@@ -7,8 +7,10 @@ import OrderSuccess from "../components/Payment/OrderSuccess";
 import { checkout } from "../services/paymentServices";
 import { useSelector } from "react-redux";
 import { selectedShipment } from "../redux/slices/shipmentSlice";
+import { useTranslation } from "react-i18next";
 
 const Checkout = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const shipment = useSelector(selectedShipment);
@@ -101,12 +103,12 @@ const Checkout = () => {
       </div>
       <div className="basis-3/5 mx-2 h-1/4">
         <div className="font-rubikmonoone text-center p-5 border rounded text-black">
-          Order Summary
+          {t("checkout.order_summary")}
         </div>
         {selectedProducts.length === 0 ? (
           <div className="flex justify-center items-center py-4 text-center">
             <p className="text-lg text-black">
-              No items selected for checkout.
+              {t("checkout.no_items_selected")}
             </p>
           </div>
         ) : (
@@ -121,7 +123,7 @@ const Checkout = () => {
                     <img
                       src={item.mainImagePath}
                       alt={item.mainImageName}
-                      className="w-auto h-32 object-cover rounded"
+                      className="w-auto h-32 object-scale-down rounded"
                     />
                     <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {item.quantity}
@@ -133,18 +135,18 @@ const Checkout = () => {
                         {item.productName}
                       </h3>
                     </div>
-                    <p className="text-lg text-black">{item.totalPrice.toLocaleString()} VND</p>
+                    <p className="text-lg text-black">{item.totalPrice} VND</p>
                   </div>
                 </div>
               ))}
             </div>
             <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
-              <h3 className="text-lg font-semibold">Subtotal</h3>
+              <h3 className="text-lg font-semibold">{t("checkout.subtotal")}</h3>
               <p className="text-lg text-black">{totalPrice.toLocaleString()} VND</p>
             </div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
-              <h3 className="text-lg font-semibold">Transport Fee</h3>
+              <h3 className="text-lg font-semibold">{t("checkout.transport_fee")}</h3>
               <p className="text-lg text-black">
                 {transportFee === "Calculating..."
                   ? transportFee
@@ -152,7 +154,7 @@ const Checkout = () => {
               </p>
             </div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
-              <h3 className="text-lg font-semibold">Total</h3>
+              <h3 className="text-lg font-semibold">{t("checkout.total")}</h3>
               <p className="text-lg text-black">
                 {(totalPrice + (transportFee === "Calculating..." ? 0 : transportFee)).toLocaleString()} VND
               </p>
@@ -165,7 +167,7 @@ const Checkout = () => {
             className="text-white bg-orange-500 w-40 py-3 rounded"
             onClick={handleCheckout}
           >
-            Complete order
+            {t("checkout.complete_order")}
           </Button>
         </div>
       </div>

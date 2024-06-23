@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useMotionValue, useVelocity, useAnimationFrame } from "framer-motion";
 import { wrap } from "@motionone/utils";
 import { fetchBrands } from '../services/brandService';
+import { useTranslation } from "react-i18next";
 
 function ParallaxText({ children, baseVelocity = 100 }) {
     const baseX = useMotionValue(0);
@@ -34,10 +35,8 @@ function ParallaxText({ children, baseVelocity = 100 }) {
 
     return (
         <div className="parallax overflow-x-auto" style={{ scrollbarWidth: 'none', '-ms-overflow-style': 'none' }}>
-            <motion.div className="scroller  " style={{ x }}>
+            <motion.div className="scroller " style={{ x }}>
                 <span className="w-full justify-self-center ">{children} </span>
-                <span className="w-full justify-self-center">{children} </span>
-                <span className="w-full justify-self-center">{children} </span>
             </motion.div>
         </div>
     );
@@ -45,6 +44,7 @@ function ParallaxText({ children, baseVelocity = 100 }) {
 
 export default function Brands() {
     const [brands, setBrands] = useState([]);
+    const { t } = useTranslation();
 
   useEffect(() => {
     const getBrands = async () => {
@@ -62,11 +62,13 @@ export default function Brands() {
 
     return (
         <div className="flex flex-col items-center justify-center px-20">
-            <p className="font-rubikmonoone text-orange-500 text-3xl pt-2">BRANDS</p>
+
+            <p className="font-rubikmonoone text-orange-500 text-3xl pt-2"> {t("brand.name")} </p>
             <ParallaxText baseVelocity={-5}>
                 <div className="grid grid-cols-16 gap-5 px-3 items-center pt-5">
+
                     {brands.map(brand => (
-                        brand.logo ? <img key={brand.id} src={brand.logo} alt={brand.brandName} /> : null
+                        brand.logo ? <img key={brand.id} src={brand.logo} alt={brand.brandName} className="object-scale-down w-24 h-full"/> : null
                     ))}
                 </div>
             </ParallaxText>

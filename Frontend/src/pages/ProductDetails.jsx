@@ -4,12 +4,14 @@ import { fetchProductById } from "../services/productService";
 // import { Rating } from "@material-tailwind/react";
 import AddToCart from "../components/Product/AddToCart";
 import { Rating } from "@material-tailwind/react";
+import { useTranslation } from "react-i18next";
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const getProduct = async () => {
@@ -27,11 +29,11 @@ const ProductDetails = () => {
   }, [productId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("product_details.loading")}</div>;
   }
 
   if (error) {
-    return <div>Error loading product details.</div>;
+    return <div>{t("product_details.error")}</div>;
   }
 
   return (
@@ -48,9 +50,9 @@ const ProductDetails = () => {
                   <Rating unratedColor="amber" ratedColor="amber" key={review.id} className="pt-5" value={review.star} readonly />
                 </div>
               ))}
-               <h4 className="text-lg font-bold text-black mb-2">Price</h4>
+               <h4 className="text-lg font-bold text-black mb-2">{t("product_details.price")}</h4>
                 <span className="text-2xl font-semibold text-orange-500 mt-10">
-                  {product.price} VND
+                  {product.price} {t("product_details.vnd")}
                 </span>
                 <AddToCart />
             {/* <div className="flex items-center mt-4">

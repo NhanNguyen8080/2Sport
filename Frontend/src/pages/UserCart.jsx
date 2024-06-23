@@ -5,8 +5,10 @@ import { faTrash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { getUserCart, reduceCartItem, removeCartItem, addToCart, updateCartItemQuantity } from '../services/cartService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTranslation } from "react-i18next";
 
 const UserCart = ({ sortBy }) => {
+  const { t } = useTranslation();
   const [cartData, setCartData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const navigate = useNavigate();
@@ -115,11 +117,11 @@ const UserCart = ({ sortBy }) => {
     <div className="container mx-auto px-20 py-5">
       <ToastContainer />
       <div className="flex justify-between items-center mb-4">
-        <h1 className="font-rubikmonoone text-orange-500 text-2xl">Shopping Cart</h1>
-        <span className="font-rubikmonoone text-orange-500 text-xl">{totalItems} Items</span>
+        <h1 className="font-rubikmonoone text-orange-500 text-2xl">{t("user_cart.shopping_cart")}</h1>
+        <span className="font-rubikmonoone text-orange-50 text-xl">{totalItems} {t("user_cart.items")}</span>
       </div>
       {cartData.length === 0 ? (
-        <p>Your cart is empty</p>
+        <p>{t("user_cart.empty")}</p>
       ) : (
         <div className="w-full">
           <div className="bg-zinc-100 rounded-lg overflow-hidden shadow-lg">
@@ -131,11 +133,11 @@ const UserCart = ({ sortBy }) => {
                   onChange={handleSelectAll}
                 />
               </div>
-              <div className="w-5/12 text-center font-poppins text-lg font-bold">Products</div>
-              <div className="w-2/12 text-center font-poppins text-lg font-bold">Quantity</div>
-              <div className="w-1/12 text-center font-poppins text-lg font-bold">Price</div>
-              <div className="w-2/12 text-center font-poppins text-lg font-bold">Total</div>
-              <div className="w-1/12 text-center font-poppins text-lg font-bold">Action</div>
+              <div className="w-5/12 text-center font-poppins text-lg font-bold">{t("user_cart.products")}</div>
+              <div className="w-2/12 text-center font-poppins text-lg font-bold">{t("user_cart.quantity")}</div>
+              <div className="w-1/12 text-center font-poppins text-lg font-bold">{t("user_cart.price")}</div>
+              <div className="w-2/12 text-center font-poppins text-lg font-bold">{t("user_cart.total")}</div>
+              <div className="w-1/12 text-center font-poppins text-lg font-bold">{t("user_cart.action")}</div>
             </div>
             {cartData.map(item => (
               <div key={item.id} className="flex items-center justify-between p-4 border-b hover:bg-zinc-200">
@@ -173,8 +175,8 @@ const UserCart = ({ sortBy }) => {
                     +
                   </button>
                 </div>
-                <div className="w-1/12 text-center">{(item.totalPrice / item.quantity).toLocaleString()} VND</div>
-                <div className="w-2/12 text-center">{item.totalPrice.toLocaleString()} VND</div>
+                <div className="w-1/12 text-center">{(item.totalPrice / item.quantity).toLocaleString()} {t("user_cart.vnd")}</div>
+                <div className="w-2/12 text-center">{item.totalPrice.toLocaleString()} {t("user_cart.vnd")}</div>
                 <div className="w-1/12 text-center">
                   <button
                     className="text-red-500"
@@ -188,15 +190,17 @@ const UserCart = ({ sortBy }) => {
           </div>
           <div className="flex justify-between items-center mt-4">
             <Link to="/product" className="text-blue-500 flex items-center font-poppins">
-              <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> Continue Shopping
+              <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> {t("user_cart.continue_shopping")}
             </Link>
             <div className="text-right">
-              <p className="text-lg font-semibold">Total ({selectedItems.length} items): {totalPrice} VND</p>
+
+              <p className="text-lg font-semibold">{t("user_cart.total")} ({selectedItems.length} items): {totalPrice} {t("user_cart.vnd")}</p>
+
               <button
                 className="bg-orange-500 text-white px-4 py-2 mt-2"
                 onClick={handleCheckout}
               >
-                Checkout
+                {t("user_cart.checkout")}
               </button>
             </div>
           </div>

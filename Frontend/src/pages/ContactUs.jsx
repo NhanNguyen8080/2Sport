@@ -7,8 +7,9 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import React from "react";
-
+import { useTranslation } from "react-i18next";
 const ContactUs = () => {
+  const { t } = useTranslation();
   // const [open, setOpen] = React.useState(false);
 
   // const toggleOpen = () => setOpen((cur) => !cur);
@@ -21,47 +22,46 @@ const ContactUs = () => {
           className="mx-auto h-[350px] w-[90%]"
         />
         <h1 className="text-[60px] py-20 text-white font-rubikmonoone absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          LIÊN HỆ
+        {t("contactUs.txt")}
         </h1>
       </div>
 
       <div className="mt-10 mx-[10%] flex">
         <div className="w-1/3 justify-center flex flex-col ml-20 mr-20">
           <h2 className="text-[20px] font-bold text-[#524FF5]">
-            WELCOME
+            {t("WELCOMETOSTRENGTHY.txt")}
           </h2>
           <h1 className="text-[35px] font-bold text-black">
-            Liên hệ với chúng tôi
+            {t("GetInTouchWithUs.txt")}
           </h1>
           <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-            Nếu bạn có bất kỳ phản hồi hoặc câu hỏi nào về trang web của chúng tôi hoặc
-            dịch vụ nói chung, vui lòng liên hệ với chúng tôi bằng cách điền vào mẫu.
+          {t("AskFeedback.txt")}
           </p>
-          <h2 className="text-[20px] font-bold text-black mt-3">Open Hours</h2>
+          <h2 className="text-[20px] font-bold text-black mt-3">{t("OpenHours.txt")}</h2>
           <div className="mt-3">
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Thứ Hai đến Thứ Sáu: 08:00 sáng đến 09:00 tối
+            {t("MontoFri.txt")}
             </p>
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Thứ Bảy: 09:00 sáng đến 06:00 chiều
+            {t("Sat.txt")}
             </p>
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-              Chủ nhật: 09:00 sáng đến 02:00 chiều
+            {t("Sun.txt")}
             </p>
           </div>
         </div>
 
         <div className="w-2/3 bg-[#EEEEEE] mx-16">
           <h1 className="text-[35px] font-bold text-black mt-10 ml-[14%]">
-            Gửi tin nhắn cho chúng tôi
+          {t("SendUsaMessage.txt")}
           </h1>
           <h2 className="text-[15px] font-bold text-[#524FF5] ml-[14%]">
-            Địa chỉ email của bạn sẽ không được công bố *
+          {t("YourEmail.txt")}
           </h2>
           <div className="flex flex-col mt-7 items-center border-black">
             <input
               type="text"
-              placeholder="Họ tên của bạn"
+              placeholder= {t("YourFullName.txt")}
               className="bg-white h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
@@ -71,28 +71,28 @@ const ContactUs = () => {
             />
             <input
               type="text"
-              placeholder="Tiêu đề"
+              placeholder= {t("Subject.txt")}
               className="bg-white mt-5 h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
               type="text"
-              placeholder="Thông điệp"
+              placeholder={t("Message.txt")}
               className="bg-white mt-5 h-24 w-[70%] text-black pl-5 rounded-lg"
             />
           </div>
-          <Button className="mt-10 ml-[15%] mb-10">Gửi ngay</Button>
+          <Button className="mt-10 ml-[15%] mb-10"> {t("SendNow.txt")}</Button>
         </div>
       </div>
 
       <div className="flex flex-col justify-center mt-14 items-center mb-10 text-2xl font-bold mx-[20%]">
         <h2 className="text-[#524FF5] font-bold justify-center">FAQ</h2>
         <h1 className="text-[35px] font-bold text-black mt-5">
-          Các câu hỏi thường gặp
+        {t("FrequentlyAskedQuestions.txt")}
         </h1>
         <div className="w-[50%] h-16 mt-5 text-2xl font-bold">
           <Select
             className="block border-0 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md h-16  text-2xl font-bold"
-            label="What?"
+            label={t("what.txt")}
           >
             <option value="">None</option>
           </Select>
@@ -117,7 +117,7 @@ const ContactUs = () => {
         <div className="w-[50%] h-16 mt-10">
           <Select
             className="block text-base border-0 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md h-16 "
-            label="Do I need?"
+            label={t("DoIneed?.txt")}
           >
             <option value="" className="text-[#6A6A6A] text-wrap">
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -132,7 +132,7 @@ const ContactUs = () => {
         <div className="w-[50%] h-16 mt-10">
           <Select
             className="block text-base border-0 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md h-16 "
-            label="Do you offer"
+            label={t("Doyouoffer.txt")}
           >
             <option value="" className="text-[#6A6A6A] text-wrap">
               Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -147,7 +147,7 @@ const ContactUs = () => {
         <div className="w-[50%] h-16 mt-10">
           <Select
             className="block text-base border-0 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md h-16 "
-            label="Do you offer"
+            label={t("Doyouoffer.txt")}
           >
             <option value="" className="text-[#6A6A6A] text-wrap">
               Lorem Ipsum is simply dummy text of the printing and typesetting
