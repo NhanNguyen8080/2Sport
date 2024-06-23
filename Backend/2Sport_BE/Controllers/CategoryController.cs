@@ -35,7 +35,7 @@ namespace _2Sport_BE.Controllers
                 var query = await _categoryService.GetAllCategories();
 				foreach (var item in query.ToList())
 				{
-					var product = await _productService.GetProducts(_ => _.CategoryId == item.Id);
+					var product = await _productService.GetProducts(_ => _.CategoryId == item.Id && _.Status == true);
 					item.Quantity = product.ToList().Count;
 				}
 				var categories = _mapper.Map<List<CategoryVM>>(query.ToList());
