@@ -118,11 +118,8 @@ const Cart = () => {
                     +
                   </button>
                 </div>
-
-                <div className="w-1/12 text-center">{item.price} {t("cart.vnd")}</div>
-                <div className="w-2/12 text-center">{item.price * item.quantity} {t("cart.vnd")}</div>
-
-
+                <div className="w-1/12 text-center">{item.price.toLocaleString()} VND</div>
+                <div className="w-2/12 text-center"> {(item.price * item.quantity).toLocaleString()} VND</div>
                 <div className="w-1/12 text-center">
                   <button
                     className="text-red-500"
@@ -139,9 +136,7 @@ const Cart = () => {
             <FontAwesomeIcon className="pr-2" icon={faArrowLeft} /> {t("cart.continueshopping")}
             </Link>
             <div className="text-right">
-
-              <p className="text-lg font-semibold">{t("cart.total")} ({selectedItems.length} {t("cart.items")}): {totalPrice} {t("cart.vnd")}</p>
-
+              <p className="text-lg font-semibold">Total ({selectedItems.length} items): {totalPrice.toLocaleString()} VND</p>
               <button
                 className="bg-orange-500 text-white px-4 py-2 mt-2"
                 onClick={handleCheckout}

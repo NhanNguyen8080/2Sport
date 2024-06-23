@@ -7,13 +7,12 @@ import { selectProducts, setProducts } from '../redux/slices/productSlice';
 import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAnglesRight} from '@fortawesome/free-solid-svg-icons';
 
 import { useTranslation } from "react-i18next";
-
-
-const ProductList = ({ sortBy, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
+const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);

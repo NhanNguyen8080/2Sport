@@ -184,7 +184,6 @@ function ProductPage() {
 
                     <option value="">None</option>
                     <option value="price">Giá tiền</option>
-
                   </select>
                   {sortBy ? <button onClick={handleAsc}>
                     <FontAwesomeIcon icon={isAscending ? faArrowUpWideShort : faArrowDownWideShort} />

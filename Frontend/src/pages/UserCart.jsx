@@ -194,7 +194,7 @@ const UserCart = ({ sortBy }) => {
             </Link>
             <div className="text-right">
 
-              <p className="text-lg font-semibold">{t("user_cart.total")} ({selectedItems.length} items): {totalPrice} {t("user_cart.vnd")}</p>
+              <p className="text-lg font-semibold">{t("user_cart.total")} ({selectedItems.length} items): {totalPrice.toLocaleString()} {t("user_cart.vnd")}</p>
 
               <button
                 className="bg-orange-500 text-white px-4 py-2 mt-2"
