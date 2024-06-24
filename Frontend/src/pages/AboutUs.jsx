@@ -82,7 +82,7 @@ const AboutUs = () => {
           alt="contactUs"
           className="mx-auto h-[550px] w-[90%]"
         />
-        <h1 className="text-[40px] py-10 text-white font-alfa font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
+        <h1 className="text-[40px] py-10 text-white font-alfa text- absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
           {t("aboutus.textimg")}
         </h1>
         {/* <div className="flex w-3/4 justify-around bg-white border-zinc-600 border-2 absolute mt-[30%] drop-shadow-lg py-10">

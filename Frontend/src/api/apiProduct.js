@@ -8,7 +8,7 @@ export const getProductList = () => {
   const params = {
     perPage : perPage
   };
-  console.log(params);
+  // console.log(params);
   return axios.get(url, {
     params,
     headers: {
