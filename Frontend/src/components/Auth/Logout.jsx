@@ -54,6 +54,8 @@ const Logout = () => {
             toast.success("You have signed out successfully");
             navigate('/');
             dispatch(logout());
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
         } catch (error) {
             console.error('There was an error making the request!', error);
             console.error('Response data:', error.response?.data);

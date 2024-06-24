@@ -92,7 +92,7 @@ function ProductPage() {
   };
 
   return (
-    <div className="pt-10">
+    <div className="pt-10 bg-zinc-50">
       <div className="w-full px-20">
         <div className="flex justify-between items-center"></div>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">

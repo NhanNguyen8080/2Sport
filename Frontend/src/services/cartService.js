@@ -9,7 +9,7 @@ export const addToCart = async (productId, quantityToAdd, token) => {
     return response.data;
   } catch (error) {
     console.error('Add to cart failed', error);
-    toast.error("Add to cart failed: " + error.message);
+    toast.error("Chỉ còn 1 sản phẩm!");
     throw error;
   }
 };
