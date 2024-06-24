@@ -2,9 +2,9 @@
 import { toast } from 'react-toastify';
 import { getProductList, getProductById, getProductFilterBy } from '../api/apiProduct';
 
-export const fetchProducts = async () => {
+export const fetchProducts = async (currentPage) => {
   try {
-    const response = await getProductList();
+    const response = await getProductList(currentPage);
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {

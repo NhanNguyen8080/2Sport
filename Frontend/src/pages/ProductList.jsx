@@ -8,9 +8,10 @@ import { toast } from "react-toastify";
 import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAnglesRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 import { useTranslation } from "react-i18next";
+const perPage = 15;
 
 const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, minPrice, maxPrice }) => {
   const { t } = useTranslation();
@@ -18,8 +19,9 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
   const { products } = useSelector(selectProducts) || { products: [] };
   const [quantity, setQuantity] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  // console.log(selectedBrands, selectedCategories);
-
+  const [warehouseTotal, setWarehouseTotal] = useState(null);
+  const totalPages = Math.ceil(warehouseTotal / perPage);
+  
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -31,7 +33,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
           minPrice === 0 &&
           maxPrice === 3000000
         ) {
-          productsData = await fetchProducts();
+          productsData = await fetchProducts(currentPage);
         } else {
           productsData = await fetchProductsFiltered(
             sortBy,
@@ -56,14 +58,15 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
         }
       });
       const data = await response.json();
-      return data.data.$values;
+      return  { total:data.total, products: data.data.$values };
     };
 
     const checkWarehouseQuantities = async (products) => {
       try {
         const warehouseData = await fetchWarehouseData();
+        setWarehouseTotal(warehouseData.total)
         products.forEach(product => {
-          const warehouseProduct = warehouseData.find(w => w.productName === product.productName);
+          const warehouseProduct = warehouseData.products.find(w => w.productName === product.productName);
           if (warehouseProduct) {
             product.quantity = warehouseProduct.quantity;
           }
@@ -74,7 +77,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
     };
 
     getProducts();
-  }, [sortBy, isAscending, minPrice, maxPrice, selectedCategories, selectedBrands, dispatch]);
+  }, [currentPage, sortBy, isAscending, minPrice, maxPrice, selectedCategories, selectedBrands, dispatch]);
 
   const handleAddToCart = async (product, quantityToAdd = 1) => {
     const token = localStorage.getItem('token');
@@ -92,6 +95,15 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
       toast.success(product.productName + " is added to cart");
       dispatch(addCart(product));
     }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    console.log(currentPage);
   };
 
   return (
@@ -129,6 +141,19 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
           </div>
         ))}
       </div>
+      <button
+      disabled={currentPage === 1}
+      onClick={handlePrevPage}
+      >
+      <FontAwesomeIcon icon={faChevronLeft} />
+      </button>
+      <span className="px-4 py-2">{currentPage}</span>
+      <button
+      disabled={currentPage === totalPages}
+      onClick={handleNextPage}
+      >
+      <FontAwesomeIcon icon={faChevronRight} />
+      </button>
     </div>
   );
 };

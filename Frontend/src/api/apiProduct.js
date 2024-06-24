@@ -3,10 +3,11 @@ import axios from 'axios';
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
 const perPage = 15;
 
-export const getProductList = () => {
+export const getProductList = (currentPage) => {
   const url = `${API_BASE_URL}/list-products`;
   const params = {
-    perPage : perPage
+    perPage : perPage,
+    currentPage: currentPage
   };
   // console.log(params);
   return axios.get(url, {
