@@ -71,6 +71,7 @@ namespace _2Sport_BE.Service.Services
         public async Task<CartItem> AddCartItem(Cart cart, CartItem cartItem)
         {
             var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId &&
+                                                                        _.CartId == cart.Id &&
                                                                         _.Status == true)).FirstOrDefault();
             var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId && _.Status == true))
                                                    .FirstOrDefault();

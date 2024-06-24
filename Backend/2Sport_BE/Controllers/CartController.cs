@@ -103,9 +103,9 @@ namespace _2Sport_BE.Controllers
 				var newCartItem = _mapper.Map<CartItemCM, CartItem>(cartItemCM);
 				var quantityOfProduct = (await _warehouseService.GetWarehouseByProductId(cartItemCM.ProductId))
 										.FirstOrDefault().Quantity;
-				if (quantityOfProduct == 0)
+				if (cartItemCM.Quantity > quantityOfProduct)
 				{
-					return BadRequest("Sold out!");
+					return BadRequest($"There is only {quantityOfProduct} product left");
 				}
                 var addedCartItem = await _cartItemService.AddCartItem(userId, newCartItem);
                 if (addedCartItem != null)
@@ -156,8 +156,14 @@ namespace _2Sport_BE.Controllers
 				{
 					return Unauthorized();
 				}
-
-				await _cartItemService.UpdateQuantityOfCartItem(cartItemId, quantity);
+				var cartItem = await _cartItemService.GetCartItemById(cartItemId);
+                var quantityOfProduct = (await _warehouseService.GetWarehouseByProductId(cartItem.ProductId))
+                        .FirstOrDefault().Quantity;
+                if (quantity > quantityOfProduct)
+                {
+                    return BadRequest($"There is only {quantityOfProduct} product left");
+                }
+                await _cartItemService.UpdateQuantityOfCartItem(cartItemId, quantity);
 				_unitOfWork.Save();
 				return Ok($"Update quantity cart item with id: {cartItemId}");
 			}
