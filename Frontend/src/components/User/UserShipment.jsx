@@ -54,7 +54,7 @@ const UserShipment = () => {
       ) : (
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="font-rubikmonoone text-2xl">{t("user_shipment.address")}</h2>
+            <h2 className="font-alfa text-2xl">{t("user_shipment.address")}</h2>
             <AddShipment />
           </div>
           {shipments.map((shipment) => (

@@ -21,8 +21,8 @@ const ContactUs = () => {
           alt="contactUs"
           className="mx-auto h-[350px] w-[90%]"
         />
-        <h1 className="text-[60px] py-20 text-white font-rubikmonoone absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-        {t("contactUs.txt")}
+        <h1 className="text-[60px] py-20 text-white font-alfa absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          {t("contactUs.txt")}
         </h1>
       </div>
 
@@ -35,33 +35,31 @@ const ContactUs = () => {
             {t("GetInTouchWithUs.txt")}
           </h1>
           <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-          {t("AskFeedback.txt")}
+            {t("AskFeedback.txt")}
           </p>
-          <h2 className="text-[20px] font-bold text-black mt-3">{t("OpenHours.txt")}</h2>
+          <h2 className="text-[20px] font-bold text-black mt-3">
+            {t("OpenHours.txt")}
+          </h2>
           <div className="mt-3">
             <p className="text-[15px] text-[#6A6A6A] mt-2">
-            {t("MontoFri.txt")}
+              {t("MontoFri.txt")}
             </p>
-            <p className="text-[15px] text-[#6A6A6A] mt-2">
-            {t("Sat.txt")}
-            </p>
-            <p className="text-[15px] text-[#6A6A6A] mt-2">
-            {t("Sun.txt")}
-            </p>
+            <p className="text-[15px] text-[#6A6A6A] mt-2">{t("Sat.txt")}</p>
+            <p className="text-[15px] text-[#6A6A6A] mt-2">{t("Sun.txt")}</p>
           </div>
         </div>
 
         <div className="w-2/3 bg-[#EEEEEE] mx-16">
           <h1 className="text-[35px] font-bold text-black mt-10 ml-[14%]">
-          {t("SendUsaMessage.txt")}
+            {t("SendUsaMessage.txt")}
           </h1>
           <h2 className="text-[15px] font-bold text-[#524FF5] ml-[14%]">
-          {t("YourEmail.txt")}
+            {t("YourEmail.txt")}
           </h2>
           <div className="flex flex-col mt-7 items-center border-black">
             <input
               type="text"
-              placeholder= {t("YourFullName.txt")}
+              placeholder={t("YourFullName.txt")}
               className="bg-white h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
@@ -71,7 +69,7 @@ const ContactUs = () => {
             />
             <input
               type="text"
-              placeholder= {t("Subject.txt")}
+              placeholder={t("Subject.txt")}
               className="bg-white mt-5 h-12 w-[70%] text-black pl-5 rounded-lg"
             />
             <input
@@ -87,7 +85,7 @@ const ContactUs = () => {
       <div className="flex flex-col justify-center mt-14 items-center mb-10 text-2xl font-bold mx-[20%]">
         <h2 className="text-[#524FF5] font-bold justify-center">FAQ</h2>
         <h1 className="text-[35px] font-bold text-black mt-5">
-        {t("FrequentlyAskedQuestions.txt")}
+          {t("FrequentlyAskedQuestions.txt")}
         </h1>
         <div className="w-[50%] h-16 mt-5 text-2xl font-bold">
           <Select

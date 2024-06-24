@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTableCellsLarge, faBars, faXmark, faArrowUpWideShort, faArrowDownWideShort } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTableCellsLarge,
+  faBars,
+  faXmark,
+  faArrowUpWideShort,
+  faArrowDownWideShort,
+} from "@fortawesome/free-solid-svg-icons";
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
 import ProductList from "./ProductList";
-import { fetchBrands } from '../services/brandService';
-import { fetchCategories } from '../services/categoryService';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectProducts } from '../redux/slices/productSlice';
+import { fetchBrands } from "../services/brandService";
+import { fetchCategories } from "../services/categoryService";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectProducts } from "../redux/slices/productSlice";
 import { useTranslation } from "react-i18next";
 
 function ProductPage() {
@@ -15,7 +21,7 @@ function ProductPage() {
   const [brands, setBrands] = useState([]);
   const [categories, setCategories] = useState([]);
   const [sortBy, setSortBy] = useState("");
-  const [isAscending, setIsAscending] = useState(true)
+  const [isAscending, setIsAscending] = useState(true);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
@@ -26,10 +32,10 @@ function ProductPage() {
     const getBrands = async () => {
       try {
         const brandsData = await fetchBrands();
-        const filteredBrands = brandsData.filter(brand => brand.quantity > 0);
+        const filteredBrands = brandsData.filter((brand) => brand.quantity > 0);
         setBrands(filteredBrands);
       } catch (error) {
-        console.error('Error fetching brand data:', error);
+        console.error("Error fetching brand data:", error);
       }
     };
 
@@ -40,10 +46,12 @@ function ProductPage() {
     const getCategories = async () => {
       try {
         const categoriesData = await fetchCategories();
-        const filteredCategories = categoriesData.filter(category => category.quantity > 0);
+        const filteredCategories = categoriesData.filter(
+          (category) => category.quantity > 0
+        );
         setCategories(filteredCategories);
       } catch (error) {
-        console.error('Error fetching category data:', error);
+        console.error("Error fetching category data:", error);
       }
     };
 
@@ -55,7 +63,7 @@ function ProductPage() {
   };
 
   const handleAsc = () => {
-    setIsAscending(prevState => !prevState);
+    setIsAscending((prevState) => !prevState);
   };
 
   const handleClearFilters = () => {
@@ -90,8 +98,12 @@ function ProductPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-2">
           <div className="w-full lg:col-span-1">
             <div className="w-full">
-              <div className="mb-4 font-rubikmonoone text-xl">{t("productv2.products")}</div>
-              <div className="Products text-black font-bold">{t("productv2.categories")}</div>
+              <div className="mb-4 font-alfa text-xl">
+                {t("productv2.products")}
+              </div>
+              <div className="Products text-black font-bold">
+                {t("productv2.categories")}
+              </div>
               <div className="relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {categories.map((category, index) => (
@@ -101,7 +113,9 @@ function ProductPage() {
                         className="form-checkbox h-5 w-5 text-orange-500"
                         value={category.id}
                         onChange={handleCategoryChange}
-                        checked={selectedCategories.includes(category.id.toString())}
+                        checked={selectedCategories.includes(
+                          category.id.toString()
+                        )}
                       />
                       <span className="ml-2 text-black">
                         {category.categoryName} ({category.quantity})
@@ -111,7 +125,9 @@ function ProductPage() {
                 </div>
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
-              <div className="text-black font-bold">{t("productv2.brands")}</div>
+              <div className="text-black font-bold">
+                {t("productv2.brands")}
+              </div>
               <div className="relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
@@ -132,7 +148,9 @@ function ProductPage() {
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div>
-                <div className="text-black font-bold">{t("productv2.price")}</div>
+                <div className="text-black font-bold">
+                  {t("productv2.price")}
+                </div>
                 <PriceRangeSlider
                   minPrice={minPrice}
                   maxPrice={maxPrice}
@@ -163,7 +181,9 @@ function ProductPage() {
                   <br />
                 </div>
                 <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 p-2">
-                  <span className="text-black font-bold">{t("productv2.shop_now")}</span>
+                  <span className="text-black font-bold">
+                    {t("productv2.shop_now")}
+                  </span>
                 </div>
               </div>
             </div>
@@ -172,22 +192,34 @@ function ProductPage() {
             <div className="py-6">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div className="text-sm text-gray-600">
-                  {t("productv2.showing")} {products.total} {t("productv2.results")}
+                  {t("productv2.showing")} {products.total}{" "}
+                  {t("productv2.results")}
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 text-sm text-gray-600">{t("productv2.sort_by")}</span>
+                  <span className="mr-2 text-sm text-gray-600">
+                    {t("productv2.sort_by")}
+                  </span>
                   <select
                     className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                     value={sortBy}
                     onChange={handleSortChange}
                   >
-
                     <option value="">None</option>
                     <option value="price">Giá tiền</option>
                   </select>
-                  {sortBy ? <button onClick={handleAsc}>
-                    <FontAwesomeIcon icon={isAscending ? faArrowUpWideShort : faArrowDownWideShort} />
-                  </button> :"" }
+                  {sortBy ? (
+                    <button onClick={handleAsc}>
+                      <FontAwesomeIcon
+                        icon={
+                          isAscending
+                            ? faArrowUpWideShort
+                            : faArrowDownWideShort
+                        }
+                      />
+                    </button>
+                  ) : (
+                    ""
+                  )}
                   <div className="ml-4 flex items-center space-x-2">
                     {/* <button>
                       <FontAwesomeIcon icon={faTableCellsLarge} />

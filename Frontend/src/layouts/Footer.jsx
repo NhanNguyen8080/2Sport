@@ -16,8 +16,8 @@ function Footer() {
   return (
     <div className="bg-zinc-700 h-full">
       <div className="bg-footer bg-cover bg-center flex justify-center items-center">
-        <h1 className="text-3xl py-20 text-white font-rubikmonoone drop-shadow-md">
-        {t("footer.text-img")}
+        <h1 className="text-3xl py-20 text-white font-alfa drop-shadow-md">
+          {t("footer.text-img")}
           <Link
             to="https://fb.com/profile.php?id=61560697567321"
             className="underline underline-offset-2 pl-8"
@@ -35,10 +35,8 @@ function Footer() {
             alt="2Sport"
             className="max-w-sm max-h-12"
           />
-          <Typography>
-          {t("footer.text")}
-          </Typography>
-          <Typography>      {t("footer.Copyright")}</Typography>
+          <Typography>{t("footer.text")}</Typography>
+          <Typography> {t("footer.Copyright")}</Typography>
           <div>
             <p className="font-alfa text-xl pb-4 ">{t("footer.getupdate")}</p>
             <div className="flex w-full bg-white ">
@@ -48,7 +46,7 @@ function Footer() {
                 type="text"
               />
               <button className="bg-orange-500 px-12 py-4 font-poppins">
-              {t("footer.btn")}
+                {t("footer.btn")}
               </button>
             </div>
           </div>
@@ -57,7 +55,7 @@ function Footer() {
         <div className="w-1/2">
           {/* <div className="grid grid-cols-1 md:grid-cols-3">
             <div className="space-y-2 text-white">
-              <Typography className="text-white mb-4 font-rubikmonoone">
+              <Typography className="text-white mb-4 font-alfa">
                 Company
               </Typography>
               <Typography className=" ">Liên hệ</Typography>
@@ -68,7 +66,7 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white ">
-              <Typography className="text-white font-rubikmonoone">
+              <Typography className="text-white font-alfa">
                 Products
               </Typography>
               <Typography className=" ">Men's Section</Typography>
@@ -80,7 +78,7 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white ">
-              <Typography className="text-white font-rubikmonoone">
+              <Typography className="text-white font-alfa">
                 Support
               </Typography>
               <Typography className=" ">Order Tracking</Typography>
@@ -108,11 +106,14 @@ function Footer() {
             </div>
 
             <div className="space-y-2 text-white">
-              <Typography className="text-white font-rubikmonoone">
+              <Typography className="text-white font-alfa">
                 {t("footer.contact")}
               </Typography>
               <Typography className="">
-                <a href="https://www.facebook.com/profile.php?id=61560697567321&mibextid=LQQJ4d" className="text-white">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61560697567321&mibextid=LQQJ4d"
+                  className="text-white"
+                >
                   <FontAwesomeIcon icon={faFacebook} className="pr-1" />
                   Facebook
                 </a>
@@ -124,7 +125,6 @@ function Footer() {
                 Instagram
               </Typography>
             </div>
-
           </div>
         </div>
       </div>

@@ -74,7 +74,6 @@ const AboutUs = () => {
 
   const { t } = useTranslation();
 
-
   return (
     <div className="relative mb-[4%]">
       <div className="flex justify-center items-center relative">
@@ -83,8 +82,8 @@ const AboutUs = () => {
           alt="contactUs"
           className="mx-auto h-[550px] w-[90%]"
         />
-        <h1 className="text-[40px] py-10 text-white font-rubikmonoone font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
-        {t("aboutus.textimg")}
+        <h1 className="text-[40px] py-10 text-white font-alfa font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
+          {t("aboutus.textimg")}
         </h1>
         {/* <div className="flex w-3/4 justify-around bg-white border-zinc-600 border-2 absolute mt-[30%] drop-shadow-lg py-10">
       <div className="text-center">
@@ -120,16 +119,20 @@ const AboutUs = () => {
       <div className="mt-28 mx-[20%] flex">
         <div className="w-1/2 justify-center flex flex-col ml-10 mr-10">
           <div className="mb-10">
-            <h2 className="text-[15px]  text-[#524FF5]">{t("aboutus.welcome")}</h2>
+            <h2 className="text-[15px]  text-[#524FF5]">
+              {t("aboutus.welcome")}
+            </h2>
             <h1 className="text-[35px] font-bold text-black">2Sport</h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-            {t("aboutus.text2Sport")}
+              {t("aboutus.text2Sport")}
             </p>
           </div>
           <div className="bg-[#EEEEEE] p-[10%]">
-            <h1 className="text-[35px] font-bold text-black">{t("aboutus.value")}</h1>
+            <h1 className="text-[35px] font-bold text-black">
+              {t("aboutus.value")}
+            </h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 mb-5">
-            {t("aboutus.textvalue")}
+              {t("aboutus.textvalue")}
             </p>
             <img
               src="/assets/images/aboutus/about-us-1.jpg"
@@ -154,7 +157,9 @@ const AboutUs = () => {
             </div>
           </div>
           <div className="bg-[#B8DDEB] p-[10%]">
-            <h1 className="font-bold text-[25px] text-black">{t("aboutus.vision")}</h1>
+            <h1 className="font-bold text-[25px] text-black">
+              {t("aboutus.vision")}
+            </h1>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
@@ -227,16 +232,11 @@ const AboutUs = () => {
                       icon={faInstagram}
                       className="text-white"
                     />
-                    <FontAwesomeIcon
-                      icon={faFacebook}
-                      className="text-white"
-                    />
+                    <FontAwesomeIcon icon={faFacebook} className="text-white" />
                   </div>
                 </div>
               </div>
             ))}
-
-
           </div>
         </div>
         <button

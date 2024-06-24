@@ -66,7 +66,6 @@ const Checkout = () => {
     }
   };
 
-
   const calculateTransportFee = (distance) => {
     if (distance < 5) {
       return 0;
@@ -83,7 +82,7 @@ const Checkout = () => {
     distance !== null ? calculateTransportFee(distance) : "Calculating...";
 
   if (orderSuccess) {
-    navigate('/order_success')
+    navigate("/order_success");
   }
 
   return (
@@ -102,7 +101,7 @@ const Checkout = () => {
         />
       </div>
       <div className="basis-3/5 mx-2 h-1/4">
-        <div className="font-rubikmonoone text-center p-5 border rounded text-black">
+        <div className="font-alfa text-center p-5 border rounded text-black">
           {t("checkout.order_summary")}
         </div>
         {selectedProducts.length === 0 ? (
@@ -142,11 +141,17 @@ const Checkout = () => {
             </div>
             <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
-              <h3 className="text-lg font-semibold">{t("checkout.subtotal")}</h3>
-              <p className="text-lg text-black">{totalPrice.toLocaleString()} VND</p>
+              <h3 className="text-lg font-semibold">
+                {t("checkout.subtotal")}
+              </h3>
+              <p className="text-lg text-black">
+                {totalPrice.toLocaleString()} VND
+              </p>
             </div>
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
-              <h3 className="text-lg font-semibold">{t("checkout.transport_fee")}</h3>
+              <h3 className="text-lg font-semibold">
+                {t("checkout.transport_fee")}
+              </h3>
               <p className="text-lg text-black">
                 {transportFee === "Calculating..."
                   ? transportFee
@@ -156,9 +161,12 @@ const Checkout = () => {
             <div className="flex justify-between items-center pt-1 border rounded mt-4">
               <h3 className="text-lg font-semibold">{t("checkout.total")}</h3>
               <p className="text-lg text-black">
-                {(totalPrice + (transportFee === "Calculating..." ? 0 : transportFee)).toLocaleString()} VND
+                {(
+                  totalPrice +
+                  (transportFee === "Calculating..." ? 0 : transportFee)
+                ).toLocaleString()}{" "}
+                VND
               </p>
-
             </div>
           </div>
         )}
