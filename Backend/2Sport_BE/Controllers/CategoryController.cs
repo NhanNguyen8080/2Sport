@@ -1,4 +1,5 @@
-﻿using _2Sport_BE.Repository.Interfaces;
+﻿using _2Sport_BE.Infrastructure.Services;
+using _2Sport_BE.Repository.Interfaces;
 using _2Sport_BE.Repository.Models;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
@@ -15,14 +16,18 @@ namespace _2Sport_BE.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
+        private readonly IWarehouseService _warehouseService;
         private readonly IUnitOfWork _unitOfWork;
-		private readonly IMapper _mapper;
+        private readonly IMapper _mapper;
         public CategoryController(ICategoryService categoryService, IUnitOfWork unitOfWork,
-									IProductService productService, IMapper mapper)
+									IProductService productService,
+                                    IWarehouseService warehouseService,
+                                    IMapper mapper)
         {
             _categoryService = categoryService;
             _productService = productService;
-			_unitOfWork = unitOfWork;
+            _warehouseService = warehouseService;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -33,11 +38,22 @@ namespace _2Sport_BE.Controllers
             try
             {
                 var query = await _categoryService.GetAllCategories();
-				foreach (var item in query.ToList())
+                var warehouses = (await _warehouseService.GetWarehouse(_ => _.Quantity > 0)).Include(_ => _.Product).ToList();
+                foreach (var item in warehouses)
+                {
+                    item.Product = await _productService.GetProductById((int)item.ProductId);
+                }
+                foreach (var item in query.ToList())
 				{
-					var product = await _productService.GetProducts(_ => _.CategoryId == item.Id && _.Status == true);
-					item.Quantity = product.ToList().Count;
-				}
+                    item.Quantity = 0;
+                    foreach (var productInWarehouse in warehouses)
+                    {
+                        if (productInWarehouse.Product.CategoryId == item.Id)
+                        {
+                            item.Quantity += 1;
+                        }
+                    }
+                }
 				var categories = _mapper.Map<List<CategoryVM>>(query.ToList());
                 return Ok(new { total = categories.Count, data = categories });
             }

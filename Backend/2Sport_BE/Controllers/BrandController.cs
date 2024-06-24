@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace _2Sport_BE.Controllers
 {
@@ -16,12 +17,17 @@ namespace _2Sport_BE.Controllers
     {
         private readonly IBrandService _brandService;
         private readonly IProductService _productService;
+        private readonly IWarehouseService _warehouseService;
         private readonly IMapper _mapper;
-        public BrandController(IBrandService brandService, IProductService productService, IMapper mapper)
+        public BrandController(IBrandService brandService, IProductService productService, 
+                               IWarehouseService warehouseService,
+                               IMapper mapper)
         {
             _brandService = brandService;
             _productService = productService;
+            _warehouseService = warehouseService;
             _mapper = mapper;
+
         }
         [HttpGet]
         [Route("list-all")]
@@ -29,12 +35,25 @@ namespace _2Sport_BE.Controllers
         {
             try
             {
-                var result = await _brandService.ListAllAsync();
-                foreach (var item in result.ToList())
+                var brands = await _brandService.ListAllAsync();
+                var warehouses = (await _warehouseService.GetWarehouse(_ => _.Quantity > 0)).Include(_ => _.Product).ToList();
+                foreach (var item in warehouses)
                 {
-                    var product = await _productService.GetProducts(_ => _.BrandId == item.Id && _.Status == true);
-                    item.Quantity = product.ToList().Count;
+                    item.Product = await _productService.GetProductById((int)item.ProductId);
                 }
+                
+                foreach (var item in brands.ToList())
+                {
+                    item.Quantity = 0;
+                    foreach (var productInWarehouse in warehouses)
+                    {
+                        if (productInWarehouse.Product.BrandId == item.Id)
+                        {
+                            item.Quantity += 1;
+                        }
+                    }
+                }
+                var result = _mapper.Map<List<BrandVM>>(brands.ToList());
                 return Ok(new { total = result.Count(), data = result });
             }
             catch (Exception e)
