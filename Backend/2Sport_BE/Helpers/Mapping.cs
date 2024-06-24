@@ -98,6 +98,7 @@ namespace _2Sport_BE.Helpers
             #region Warehouse
             CreateMap<Warehouse, WarehouseVM>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Product.Id))
                 .ReverseMap();
             CreateMap<WarehouseCM, Warehouse>().ReverseMap();
             CreateMap<WarehouseUM, Warehouse>().ReverseMap();
