@@ -105,7 +105,7 @@ namespace _2Sport_BE.Controllers
 										.FirstOrDefault().Quantity;
 				if (cartItemCM.Quantity > quantityOfProduct)
 				{
-					return BadRequest($"There is only {quantityOfProduct} product left");
+					return BadRequest($"Xin lỗi! Chúng tôi chỉ còn {quantityOfProduct} sản phẩm");
 				}
                 var addedCartItem = await _cartItemService.AddCartItem(userId, newCartItem);
                 if (addedCartItem != null)
@@ -161,7 +161,7 @@ namespace _2Sport_BE.Controllers
                         .FirstOrDefault().Quantity;
                 if (quantity > quantityOfProduct)
                 {
-                    return BadRequest($"There is only {quantityOfProduct} product left");
+                    return BadRequest($"Xin lỗi! Chúng tôi chỉ còn {quantityOfProduct} sản phẩm");
                 }
                 await _cartItemService.UpdateQuantityOfCartItem(cartItemId, quantity);
 				_unitOfWork.Save();
