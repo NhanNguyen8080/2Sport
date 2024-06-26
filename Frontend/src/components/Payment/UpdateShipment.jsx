@@ -21,7 +21,7 @@ export default function UpdateShipment({ shipment, onClose }) {
       const updatedShipment = await updateUserShipmentDetail(
         shipment.id,
         token,
-        { ...formData, address } // Include the address in the update payload
+        { ...formData, address }
       );
       dispatch(updateShipment(updatedShipment));
       setIsOpen(false);
@@ -34,7 +34,6 @@ export default function UpdateShipment({ shipment, onClose }) {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log(formData);
   };
 
   const handleAddressChange = (newAddress) => {

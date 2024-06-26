@@ -5,7 +5,6 @@ import { getUserShipmentDetails } from "../../services/shipmentService";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectShipment,
-  selectShipments,
   setShipment,
 } from "../../redux/slices/shipmentSlice";
 import UpdateShipment from "../Payment/UpdateShipment";
@@ -40,11 +39,11 @@ const UserShipment = () => {
   const openUpdateModal = (shipment) => {
     setCurrentShipment(shipment);
     setIsUpdateModalOpen(true);
-    setIsShipmentListOpen(false);
   };
+
   const closeUpdateModal = () => {
     setIsUpdateModalOpen(false);
-    setIsShipmentListOpen(true);
+    setCurrentShipment(null);
   };
 
   return (

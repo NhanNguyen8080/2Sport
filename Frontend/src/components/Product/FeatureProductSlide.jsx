@@ -14,8 +14,12 @@ export default function FeatureProductSlide() {
   useEffect(() => {
     const getFeature = async () => {
       try {
-        const productFeatured = await fetchProducts(sortBy);
-        // console.log('Fetched Products:', productFeatured);
+        const productFeatured = await fetch('https://twosportapiv2.azurewebsites.net/api/Product/list-products',{sortBy}, {
+          headers: {
+            'accept': '*/*'
+          }
+        });
+        console.log('Fetched Products:', productFeatured);
 
         if (productFeatured && Array.isArray(productFeatured.products)) {
           setImages(productFeatured.products);
