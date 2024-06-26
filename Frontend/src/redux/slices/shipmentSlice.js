@@ -28,12 +28,19 @@ const shipmentSlice = createSlice({
                 state.shipment[index] = action.payload;
             }
         },
+        addShipment: (state, action) => {
+            state.shipment.push(action.payload);
+        },
+        deleteShipment: (state, action) => {
+            state.shipment = state.shipment.filter(shipment => shipment.id !== action.payload);
+        },
     },
 });
 
-export const { setShipment, selectShipments, updateShipment } = shipmentSlice.actions;
+export const { setShipment, selectShipments, updateShipment, addShipment, deleteShipment } = shipmentSlice.actions;
 
 export const selectShipment = (state) => state.shipment?.shipment || [];
 export const selectedShipment = (state) => state.shipment.selectedShipments;
 
-export default persistReducer(shipmentPersistConfig, shipmentSlice.reducer);
+// export default persistReducer(shipmentPersistConfig, shipmentSlice.reducer);
+export default shipmentSlice.reducer;

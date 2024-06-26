@@ -15,10 +15,11 @@ import { useTranslation } from "react-i18next";
 const UserShipment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const shipments = useSelector(selectShipment);
+  const shipment = useSelector(selectShipment);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [currentShipment, setCurrentShipment] = useState(null);
   const { t } = useTranslation();
+  const [shipments, setShipments] = useState([])
 
   useEffect(() => {
     const getShipment = async () => {
@@ -27,6 +28,8 @@ const UserShipment = () => {
         if (token) {
           const shipmentData = await getUserShipmentDetails(token);
           dispatch(setShipment(shipmentData.$values));
+          setShipments(shipmentData.$values)
+          console.log(shipments);
         }
       } catch (error) {
         console.error("Error fetching shipment:", error);
@@ -35,6 +38,21 @@ const UserShipment = () => {
 
     getShipment();
   }, [dispatch]);
+
+  useEffect(() => {
+  }, [shipments,dispatch]);
+
+  const refreshShipments = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const shipmentData = await getUserShipmentDetails(token);
+        dispatch(setShipment(shipmentData.$values));
+      }
+    } catch (error) {
+      console.error("Error refreshing shipments:", error);
+    }
+  };
 
   const openUpdateModal = (shipment) => {
     setCurrentShipment(shipment);
@@ -54,7 +72,7 @@ const UserShipment = () => {
         <div>
           <div className="flex items-center justify-between">
             <h2 className="font-alfa text-2xl">{t("user_shipment.address")}</h2>
-            <AddShipment />
+            <AddShipment refreshShipments={refreshShipments} />
           </div>
           {shipments.map((shipment) => (
             <div

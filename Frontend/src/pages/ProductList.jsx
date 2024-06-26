@@ -86,7 +86,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
         const newQuantity = quantity + quantityToAdd;
         await addToCart(product.id, newQuantity, token);
         setQuantity(newQuantity);
-        toast.success(`${product.productName} is added to cart`);
+        toast.success(`${product.productName} đã được thêm vào giỏ hàng!`);
       } catch (error) {
         console.error('Error adding product to cart:', error);
         toast.error('Error adding product to cart');

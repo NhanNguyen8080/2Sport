@@ -5,7 +5,7 @@ export const addToCart = async (productId, quantityToAdd, token) => {
   // console.log(quantity, token, productId);
   try {
     const response = await addToCartAPI(productId, quantityToAdd, token);
-    toast.success("Product added to cart successfully");
+    // toast.success("Product added to cart successfully");
     return response.data;
   } catch (error) {
     console.error('Add to cart failed', error);

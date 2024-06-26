@@ -162,7 +162,7 @@ const UserCart = ({ sortBy }) => {
         <h1 className="font-alfa text-orange-500 text-2xl">
           {t("user_cart.shopping_cart")}
         </h1>
-        <span className="font-alfa text-orange-50 text-xl">
+        <span className="font-alfa text-orange-500 text-xl">
           {totalItems} {t("user_cart.items")}
         </span>
       </div>

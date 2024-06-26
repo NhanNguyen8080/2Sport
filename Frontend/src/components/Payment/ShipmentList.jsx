@@ -1,37 +1,56 @@
-import { useState, Fragment } from "react";
+import { useState,useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectShipment,
   selectShipments,
+  setShipment,
 } from "../../redux/slices/shipmentSlice";
 import { Dialog, Transition } from "@headlessui/react";
 import "react-toastify/dist/ReactToastify.css";
 import UpdateShipment from "./UpdateShipment";
 import AddShipment from "./AddShipment";
-import { addUserShipmentDetail } from "../../services/shipmentService";
+import { addUserShipmentDetail, getUserShipmentDetails } from "../../services/shipmentService";
 
 export default function ShipmentList() {
   const dispatch = useDispatch();
-  const shipments = useSelector(selectShipment);
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [isShipmentListOpen, setIsShipmentListOpen] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [currentShipment, setCurrentShipment] = useState(null);
+  // const [shipments, setShipments] = useState([])
+  const shipments = useSelector(selectShipment);
 
-  const handleSaveClick = async (data) => {
+  useEffect(() => {
+    const getShipment = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const shipmentData = await getUserShipmentDetails(token);
+          dispatch(setShipment(shipmentData.$values));
+          // setShipments(shipmentData.$values)
+        }
+      } catch (error) {
+        console.error("Error fetching shipment:", error);
+      }
+    };
+
+    getShipment();
+  }, [dispatch]);
+
+  useEffect(() => {
+  }, [shipments,dispatch]);
+
+  const refreshShipments = async () => {
     try {
-      const response = await addUserShipmentDetail(token, data);
-
-      if (response.status === 200) {
-        alert("Shipment details saved successfully.");
+      const token = localStorage.getItem("token");
+      if (token) {
+        const shipmentData = await getUserShipmentDetails(token);
+        dispatch(setShipment(shipmentData.$values));
       }
     } catch (error) {
-      setIsSubmitting(false);
-      console.error("Error saving shipment details:", error);
+      console.error("Error refreshing shipments:", error);
     }
   };
-
-  const handleCancel = () => {};
 
   const handleSelectShipment = (shipment) => {
     dispatch(selectShipments(shipment));
@@ -65,7 +84,7 @@ export default function ShipmentList() {
             onClick={openModal}
             className="border-r-2 pr-4 text-orange-500"
           >
-            Address archives
+           Địa chỉ đã lưu trữ
           </button>
       {isShipmentListOpen && (
         <div className="mb-4">
@@ -140,10 +159,7 @@ export default function ShipmentList() {
                             </div>
                           ))}
                           <AddShipment
-                            onSubmit={handleSaveClick}
-                            onCancel={handleCancel}
-                            // initialData={userData}
-                            // setUserData={setUserData}
+                          refreshShipments={refreshShipments}
                           />
                         </div>
                       )}
