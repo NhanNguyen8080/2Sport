@@ -157,6 +157,19 @@
     "aboutus.purpose": "Purpose",
     "aboutus.value": "Values",
     "aboutus.vision": "Vision",
-    "aboutus.member": "MEMBER"
+    "aboutus.member": "MEMBER",
+    "payment.address_archives":"Address archives",
+    "payment.address_book_empty":"Your address book is empty",
+    "payment.my_address":"My Address",
+    "payment.update":"Update",
+    "payment.add_new":"Add new",
+    "payment.add_shipment":"Add Shipment",
+    "payment.full_name":"Full name",
+    "payment.phone_number":"Phone number",
+    "payment.cancel":"Cancel",
+    "payment.confirm":"Confirm",
+    "payment.delete":"Delete",
+    "payment.update_shipment":"Update Shipment",
+    "payment.address":"Address"
    
 }

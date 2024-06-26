@@ -157,5 +157,18 @@
     "aboutus.purpose": "Mục tiêu",
     "aboutus.value": "Giá trị",
     "aboutus.vision": "Tầm nhìn",
-    "aboutus.member": "THÀNH VIÊN"
+    "aboutus.member": "THÀNH VIÊN",
+    "payment.address_archives":"Sổ địa chỉ",
+    "payment.address_book_empty":"Sổ địa chỉ của bạn trống",
+    "payment.my_address":"Địa chỉ của tôi",
+    "payment.update":"Cập nhật",
+    "payment.add_new":"Thêm mới",
+    "payment.add_shipment":"Thêm địa chỉ",
+    "payment.full_name":"Họ và tên",
+    "payment.phone_number":"Số điện thoại",
+    "payment.cancel":"Hủy bỏ",
+    "payment.confirm":"Xác nhận",
+    "payment.delete":"Xóa",
+    "payment.update_shipment":"Cập nhật địa chỉ",
+    "payment.address":"Địa chỉ"
 }

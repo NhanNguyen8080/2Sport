@@ -3,8 +3,10 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import { Input, Button } from "@material-tailwind/react";
 import AddressForm from '../AddressForm';
+import { useTranslation } from "react-i18next";
 
 export default function AddShipment({ onSubmit, onCancel, initialData, setUserData }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({ ...initialData });
 
@@ -39,7 +41,7 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
         type="button"
         onClick={openModal}
       >
-        + Add new
+        {t("payment.add_new")}
       </button>
     </div>
       <Transition appear show={isOpen} as={Fragment}>
@@ -47,12 +49,12 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen">
               <Dialog.Panel className="bg-white p-6 rounded-md shadow-xl">
-                <Dialog.Title className="text-lg font-bold">Add Shipment</Dialog.Title>
+                <Dialog.Title className="text-lg font-bold">{t("payment.add_shipment")}</Dialog.Title>
                 <div className="mt-4">
                   <Input
                     className="text-black w-full"
                     size="lg"
-                    placeholder="Full name"
+                    placeholder={t("payment.full_name")}
                     value={formData.fullName}
                     onChange={handleInputChange}
                     name="fullName"
@@ -60,7 +62,7 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
                   <Input
                     className="text-black w-full mt-4"
                     size="lg"
-                    placeholder="Phone number"
+                    placeholder={t("payment.phone_number")}
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
@@ -81,13 +83,13 @@ export default function AddShipment({ onSubmit, onCancel, initialData, setUserDa
                     className="bg-gray-500 text-white px-4 py-2 rounded-md mr-2"
                     onClick={closeModal}
                   >
-                    Cancel
+                    {t("payment.cancel")}
                   </Button>
                   <Button
                     className="bg-blue-500 text-white px-4 py-2 rounded-md"
                     onClick={handleAddShipment}
                   >
-                    Confirm
+                    {t("payment.confirm")}
                   </Button>
                 </div>
               </Dialog.Panel>
