@@ -12,6 +12,7 @@ import AddShipment from "./AddShipment";
 import { addUserShipmentDetail, getUserShipmentDetails } from "../../services/shipmentService";
 
 export default function ShipmentList() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [isShipmentListOpen, setIsShipmentListOpen] = useState(true);
@@ -117,13 +118,13 @@ export default function ShipmentList() {
                     <Dialog.Panel className="bg-white p-6 rounded-md shadow-xl w-fit mx-4">
                       {shipments.length === 0 ? (
                         <p className="text-center text-gray-700">
-                          Your address book is empty
+                          {t("payment.address_book_empty")}
                         </p>
                       ) : (
                         <div>
                           <div className="mb-4">
                             <h2 className="font-bold text-xl text-gray-900">
-                              My Address
+                              {t("payment.my_address")}
                             </h2>
                           </div>
                           {shipments.map((shipment) => (
@@ -154,7 +155,7 @@ export default function ShipmentList() {
                                 type="button"
                                 onClick={() => openUpdateModal(shipment)}
                               >
-                                Update
+                                {t("payment.update")}
                               </button>
                             </div>
                           ))}

@@ -88,11 +88,11 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
         setQuantity(newQuantity);
         toast.success(`${product.productName} đã được thêm vào giỏ hàng!`);
       } catch (error) {
-        console.error('Error adding product to cart:', error);
-        toast.error('Error adding product to cart');
+        console.error(`${t("product_list.error_adding_product_to_cart")}:`, error);
+        toast.error(`${t("product_list.error_adding_product_to_cart")}`);
       }
     } else {
-      toast.success(product.productName + " is added to cart");
+      toast.success(`${product.productName} ${t("product_list.is_added_to_cart")}`);
       dispatch(addCart(product));
     }
   };

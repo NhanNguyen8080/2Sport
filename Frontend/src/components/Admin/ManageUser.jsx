@@ -14,8 +14,10 @@ import {
   faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchAllUsers } from "../../services/ManageUserService";
+import { useTranslation } from "react-i18next";
 
 export default function ManageUser() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
@@ -46,7 +48,7 @@ export default function ManageUser() {
     <>
       <Card className="h-full w-[95.7%] mx-10 my-10">
         <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
-          User
+          {t("manage_user.user")}
         </Typography>
 
         <CardBody className="overflow-scroll px-0">
@@ -76,7 +78,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    UserName
+                    {t("manage_user.username")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -85,7 +87,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    FullName
+                    {t("manage_user.fullname")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -94,7 +96,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Email
+                    {t("manage_user.email")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -103,7 +105,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    RoleName
+                    {t("manage_user.rolename")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -112,7 +114,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Gender
+                    {t("manage_user.gender")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -121,7 +123,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Phone
+                    {t("manage_user.phone")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -130,7 +132,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    birthDate
+                    {t("manage_user.birthdate")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -139,7 +141,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    createdDate
+                    {t("manage_user.createddate")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -148,7 +150,7 @@ export default function ManageUser() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    lastUpdate
+                    {t("manage_user.lastupdate")}
                   </Typography>
                 </th>
               </tr>
