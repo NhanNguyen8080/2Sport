@@ -2,43 +2,39 @@ import { refreshTokenAPI, signIn, signOut,signUp } from '../api/apiAuth';
 import { jwtDecode } from 'jwt-decode';
 import { login, logout } from '../redux/slices/authSlice';
 import { toast } from 'react-toastify';
-import { useTranslation } from "react-i18next";
 
 export const authenticateUser = async (dispatch, data) => {
-  const { t } = useTranslation();
   try {
     const response = await signIn(data.userName, data.password);
     localStorage.setItem('token', response.data.data.token);
     localStorage.setItem('refreshToken', response.data.data.refreshToken);
     const decoded = jwtDecode(response.data.data.token);
     dispatch(login(decoded));
-    toast.success(`${t("auth.login_successful")}`);
+    toast.success("Login successful");
     return decoded;
   } catch (error) {
-    console.error(`${t("auth.login_failed")}:`, error);
-    toast.error(`${t("auth.login_failed")}`);
+    console.error('Login failed', error);
+    toast.error("Login failed");
     throw error;
   }
 };
 
 export const signUpUser = async (userData) => {
-  const { t } = useTranslation();
   try {
     const response = await signUp(userData);
     return response.data;
   } catch (error) {
-    console.error(`${t("auth.error_during_sign_up")}:`, error);
+    console.error('Error during sign-up:', error);
     throw error;
   }
 };
 
 export const signOutUser = async (data) => {
-  const { t } = useTranslation();
   try {
     const response = await signOut(data);
     return response;
   } catch (error) {
-    console.error(`${t("auth.error_during_sign_out")}:`, error);
+    console.error('Error during sign-out:', error);
     throw error;
   }
 };

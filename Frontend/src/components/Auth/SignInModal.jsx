@@ -37,6 +37,7 @@ export default function SignInModal() {
   const onSubmit = async (data) => {
     try {
       const decoded = await authenticateUser(dispatch, data);
+      console.log(decoded);
       setIsSignInOpen(false);
     } catch (error) {
       // Handle error inside authenticateUser

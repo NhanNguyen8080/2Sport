@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import UpdateShipment from "./UpdateShipment";
 import AddShipment from "./AddShipment";
 import { addUserShipmentDetail, getUserShipmentDetails } from "../../services/shipmentService";
+import { useTranslation } from "react-i18next";
 
 export default function ShipmentList() {
   const { t } = useTranslation();

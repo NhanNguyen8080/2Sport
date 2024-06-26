@@ -1,7 +1,6 @@
 // src/services/productService.js
 import { toast } from 'react-toastify';
 import { getProductList, getProductById, getProductFilterBy } from '../api/apiProduct';
-import { useTranslation } from "react-i18next";
 
 export const fetchProducts = async (currentPage) => {
   try {
@@ -9,7 +8,7 @@ export const fetchProducts = async (currentPage) => {
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {
-    console.error(`${t("product.error_fetching_products")}:`, error);
+    console.error('Error fetching products:', error);
     throw error;
   }
 };
@@ -32,21 +31,19 @@ export const fetchProductsFiltered = async (
       maxPrice
     );
     const { total, data } = response.data;
-    const { t } = useTranslation();
     return { total, products: data.$values };
   } catch (error) {
-    console.error(`${t("product.error_fetching_sorted_products")}:`, error);
+    console.error('Error fetching sorted products:', error);
     throw error;
   }
 };
 
 export const fetchProductById = async (id) => {
-  const { t } = useTranslation();
   try {
     const response = await getProductById(id);
     return response.data;
   } catch (error) {
-    console.error(`${t("product.error_fetching_product_with_id")}:`, error);
+    console.error(`Error fetching product with id ${id}:`, error);
     throw error;
   }
 };
