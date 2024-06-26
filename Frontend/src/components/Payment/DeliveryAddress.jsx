@@ -13,6 +13,7 @@ import DistanceCalculator from "./DistanceCalculator";
 import AddShipment from "./AddShipment";
 import { useNavigate } from "react-router-dom";
 import { addUserShipmentDetail, getUserShipmentDetails } from "../../services/shipmentService";
+import { useTranslation } from "react-i18next";
 
 const DeliveryAddress = ({
   userData,
@@ -27,6 +28,7 @@ const DeliveryAddress = ({
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchShipments = async () => {
@@ -81,12 +83,12 @@ const DeliveryAddress = ({
   return (
     <div className="pl-20 py-10">
       <div className="flex justify-between items-center">
-        <h3 className="text-2xl font-bold">Delivery Address</h3>
+        <h3 className="text-2xl font-bold">{t("payment.delivery_address")}</h3>
       </div>
 
       {!user ? (
         <div className="flex items-center">
-          <p className="text-xl pr-5">Already have an account?</p>
+          <p className="text-xl pr-5">{t("payment.already_have_account")}</p>
           <SignInModal className="text-blue-500" />
         </div>
       ) : (
@@ -95,17 +97,17 @@ const DeliveryAddress = ({
             <ShipmentList />
             {shipment && (
               <div className="w-fit bg-white border border-gray-200 rounded-lg shadow-md p-6 my-4 space-y-2 ">
-                <h4 className="text-lg font-semibold mb-4">Selected Shipment:</h4>
+                <h4 className="text-lg font-semibold mb-4">{t("payment.selected_shipment")}:</h4>
                 <p className="text-gray-700">
-                  <span className="font-semibold">Full Name:</span>{" "}
+                  <span className="font-semibold">{t("payment.full_name")}:</span>{" "}
                   {shipment.fullName}
                 </p>
-                <p className="text-gray-700">
-                  <span className="font-semibold">Address:</span>{" "}
+                <p className="text-gray-70">
+                  <span className="font-semibold">{t("payment.address")}:</span>{" "}
                   {shipment.address}
                 </p>
                 <p className="text-gray-700">
-                  <span className="font-semibold">Phone Number:</span>{" "}
+                  <span className="font-semibold">{t("payment.phone_number")}:</span>{" "}
                   {shipment.phoneNumber}
                 </p>
               </div>

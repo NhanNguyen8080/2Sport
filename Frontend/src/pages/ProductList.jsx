@@ -9,8 +9,8 @@ import { addCart } from '../redux/slices/cartSlice';
 import { Rating } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAnglesRight} from '@fortawesome/free-solid-svg-icons';
-
 import { useTranslation } from "react-i18next";
+
 const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,minPrice, maxPrice }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,m
         }
         dispatch(setProducts({ data: { products: productsData.products, total: productsData.total } }));
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error(`${t("product_list.error_fetching_products")}:`, error);
       }
     };
 
@@ -57,13 +57,13 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories,m
         const newQuantity = quantity + quantityToAdd;
         await addToCart(product.id, newQuantity, token);
         setQuantity(newQuantity);
-        toast.success(`${product.productName} is added to cart`);
+        toast.success(`${product.productName} ${t("product_list.is_added_to_cart")}`);
       } catch (error) {
-        console.error('Error adding product to cart:', error);
-        toast.error('Error adding product to cart');
+        console.error(`${t("product_list.error_adding_product_to_cart")}:`, error);
+        toast.error(`${t("product_list.error_adding_product_to_cart")}`);
       }
     } else {
-      toast.success(product.productName + " is added to cart");
+      toast.success(`${product.productName} ${t("product_list.is_added_to_cart")}`);
       dispatch(addCart(product));
     }
   };

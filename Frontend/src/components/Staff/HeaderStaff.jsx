@@ -6,8 +6,11 @@ import {
   faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { Menu, MenuHandler, MenuList, MenuItem, Button } from "@material-tailwind/react";
+import { useTranslation } from "react-i18next";
+
 
 function HeaderStaff() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const handleMenuToggle = () => {
@@ -29,12 +32,12 @@ function HeaderStaff() {
               className="w-24 h-10 text-black bg-transparent flex items-center justify-center"
               onClick={handleMenuToggle}
             >
-              Staff
+              {t("header_staff.staff")}
               <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
             </Button>
           </MenuHandler>
           <MenuList>
-            <MenuItem onClick={() => setOpen(false)}>Log out</MenuItem>
+            <MenuItem onClick={() => setOpen(false)}>{t("header_staff.log_out")}</MenuItem>
           </MenuList>
         </Menu>
       </div>
