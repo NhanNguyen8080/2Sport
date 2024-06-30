@@ -93,6 +93,7 @@ namespace _2Sport_BE.Controllers
 
                 var orderVM = new OrderVM()
                 {
+                    id = order.Id,
                     ShipmentDetailId = orderCM.ShipmentDetailId,
                     PaymentMethod = order.PaymentMethod.PaymentMethodName,
                     ReceivedDate = order.ReceivedDate,
@@ -101,7 +102,6 @@ namespace _2Sport_BE.Controllers
                     Status = order.Status,
                     PaymentLink = paymentLink,
                     OrderDetails = orderCM.OrderDetails
-                    
                 };
 
                 var responseModel = new ResponseModel<OrderVM>
@@ -143,7 +143,7 @@ namespace _2Sport_BE.Controllers
                 if (checkOrderExist == null){
                     return BadRequest("You don't have permission in this function");
                 }
-                checkOrderExist.Status = (int) OrderStatus.Canceled;
+                checkOrderExist.Status = (int) OrderStatus.CANCELLED;
                 var cancelledPaymentLinkInfo = await _paymentService.CancelPaymentLink(request.OrderId, request.Reason);
                 return Ok(cancelledPaymentLinkInfo);
             }
@@ -152,6 +152,127 @@ namespace _2Sport_BE.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("cancel")]
+        public async Task<IActionResult> HandleCancel([FromQuery] PaymentResponse paymentResponse)
+        {
+            if (!ModelState.IsValid || AreAnyStringsNullOrEmpty(paymentResponse))
+            {
+                return BadRequest(new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request data.",
+                    Data = null
+                });
+            }
+            Order order = await _orderService.GetOrderByOrderCode(paymentResponse.OrderCode);
+            if (order == null)
+            {
+                return NotFound(new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Order not found.",
+                    Data = null
+                });
+            }
+            // Cập nhật trạng thái Order thành "Cancelled"
+            var isUpdated = await _orderService.UpdateOrderAsync(order.Id, (int)OrderStatus.CANCELLED);
+            if (!isUpdated)
+            {
+                return StatusCode(500, new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Failed to update order status.",
+                    Data = null
+                });
+            }
+            _unitOfWork.Save();
+            // Tạo và trả về Response
+            OrderVM orderVM = new OrderVM
+            {
+                id = order.Id,
+                IntoMoney = order.IntoMoney,
+                Status = order.Status,
+                ReceivedDate = order.ReceivedDate,
+                ShipmentDetailId = order.ShipmentDetailId,
+                TransportFee = order.TransportFee,
+                PaymentMethod = "PayOs",
+                OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
+                {
+                    ProductId = item.ProductId,
+                    Price = (decimal) item.Price,
+                    Quantity = item.Quantity
+                }).ToList()
+            };
+
+            return Ok(new ResponseModel<OrderVM>
+            {
+                IsSuccess = true,
+                Message = "Payment has been cancelled.",
+                Data = orderVM
+            });
+        }
+        [HttpGet("return")]
+        public async Task<IActionResult> HandleReturn([FromQuery] PaymentResponse paymentResponse)
+        {
+            if (!ModelState.IsValid || AreAnyStringsNullOrEmpty(paymentResponse))
+            {
+                return BadRequest(new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Invalid request data.",
+                    Data = null
+                });
+            }
+            var orders = await _unitOfWork.OrderRepository.GetAsync(_ => _.OrderCode.Equals(paymentResponse.OrderCode.Trim()), "OrderDetails");
+            Order order = orders.FirstOrDefault();
+            if (order == null)
+            {
+                return NotFound(new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Order not found.",
+                    Data = null
+                });
+            }
+
+            var isUpdated = await _orderService.UpdateOrderAsync(order.Id, (int)OrderStatus.PAID);
+            if (!isUpdated)
+            {
+                return StatusCode(500, new ResponseModel<object>
+                {
+                    IsSuccess = false,
+                    Message = "Failed to update order status.",
+                    Data = null
+                });
+            }
+            
+            _unitOfWork.Save();
+            // Tạo và trả về Response
+            OrderVM orderVM = new OrderVM
+            {
+                id = order.Id,
+                IntoMoney = order.IntoMoney,
+                Status = order.Status,
+                ReceivedDate = order.ReceivedDate,
+                ShipmentDetailId = order.ShipmentDetailId,
+                TransportFee = order.TransportFee,
+                PaymentMethod = "PayOs",
+                OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
+                {
+                    ProductId = item.ProductId,
+                    Price = (decimal)item.Price,
+                    Quantity = item.Quantity
+                }).ToList()
+            };
+
+            return Ok(new ResponseModel<OrderVM>
+            {
+                IsSuccess = true,
+                Message = "Payment has been completed.",
+                Data = orderVM
+            });
+        }
+
         [NonAction]
         public string GenerateOrderCode()
         {
@@ -205,7 +326,7 @@ namespace _2Sport_BE.Controllers
             var order = new Order
             {
                 OrderCode = GenerateOrderCode(),
-                Status = (int?)OrderStatus.Order_Confirmation,
+                Status = paymentMethodId == 1 ? (int?)OrderStatus.PROCESSING : (int?)OrderStatus.PENDING,
                 TransportFee = orderCM.TransportFee,
                 PaymentMethodId = paymentMethodId,
                 PaymentMethod = paymentMethod,
@@ -266,8 +387,8 @@ namespace _2Sport_BE.Controllers
                         if (cartItem != null)
                         {
                             await _cartItemService.DeleteCartItem(cartItem.Id);
-                            wareHouse.Quantity -= orderDetail.Quantity;
-                            await _warehouseService.UpdateWarehouseAsync(wareHouse);
+                            /*wareHouse.Quantity -= orderDetail.Quantity;
+                            await _warehouseService.UpdateWarehouseAsync(wareHouse);*/
                         }
                         else
                         {
@@ -288,7 +409,13 @@ namespace _2Sport_BE.Controllers
             }
             return false;
         }
-
-
+        [NonAction]
+        public bool AreAnyStringsNullOrEmpty(PaymentResponse response)
+        {
+            return string.IsNullOrEmpty(response.Status) ||
+                   string.IsNullOrEmpty(response.Code) ||
+                   string.IsNullOrEmpty(response.Id) ||
+                   string.IsNullOrEmpty(response.OrderCode);
+        }
     }
 }

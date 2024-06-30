@@ -8,11 +8,11 @@ namespace _2Sport_BE.Service.Enums
 {
     public enum OrderStatus : int
     {
-        Canceled = 0,
-        Order_Confirmation = 1,
-        Order_Placed = 2,
-        In_Transit = 3,
-        Delivered = 4,
-        Delayed = 5
+        CANCELLED = 0,
+        PENDING = 1,
+        PROCESSING = 2,
+        PAID = 3,
+        DELIVERED = 4,
+        DELAYED = 5
     }
 }

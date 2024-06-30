@@ -31,6 +31,7 @@ namespace _2Sport_BE.Controllers
         [Route("get-all-orders")]
         public async Task<IActionResult> GetOrders()
         {
+           
             var orders = await _orderService.GetOrdersAsync();
             var list = orders.ToList();
             List<OrderInfo> ordersInfo = new List<OrderInfo>();
@@ -44,6 +45,7 @@ namespace _2Sport_BE.Controllers
                     {
                         OrderInfo orderInfo = new OrderInfo()
                         {
+                            Id = order.Id,
                             CreateDate = order.ReceivedDate.HasValue ? order.ReceivedDate.Value.ToString("MM/dd/yyyy") : null,
                             Amount = order.IntoMoney.ToString(),
                             CustomerName = user.FullName,
@@ -204,21 +206,15 @@ namespace _2Sport_BE.Controllers
             {
                 return NotFound("Change status is false!");
             }
-
-            return Ok("Update successfully");
-        }
-        // DELETE: api/Orders/5
-        /*[HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var result = await _orderService.DeleteOrderAsync(id);
-            if (!result)
+            Order order = await _orderService.GetOrderByIdAsync(id);
+            ResponseModel<Order> orderModel = new ResponseModel<Order>()
             {
-                return NotFound();
-            }
-
-            return Ok("Delete successfully");
-        }*/
+                IsSuccess = true,
+                Message = "Update successfully",
+                Data = order
+            };
+            return StatusCode(200, orderModel);
+        }
         [NonAction]
         protected int GetCurrentUserIdFromToken()
         {
