@@ -5,8 +5,10 @@ import Productv2Card from "../components/Product/Productv2Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import PriceRangeSlider from "../components/Product/PriceRangeSlider ";
+import { useTranslation } from "react-i18next";
 
 function Productv2Page() {
+  const { t } = useTranslation();
   const product = [
     { name: "New in Closet (50)", value: "new-in-closet" },
     { name: "Featured Items (150)", value: "featured-items" },
@@ -48,10 +50,10 @@ function Productv2Page() {
           <div className="w-full lg:col-span-1">
             <div className="ProductWrapper w-full">
               <div className="ProductTitle mb-4 font-bold text-3xl">
-                Products
+                {t("productv2.products")}
               </div>
 
-              <div className="Products text-black font-bold">Categories</div>
+              <div className="Products text-black font-bold">{t("productv2.categories")}</div>
               <div className="Categories relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {product.map((category, index) => (
@@ -69,7 +71,7 @@ function Productv2Page() {
 
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
 
-              <div className="Products text-black font-bold">Brands</div>
+              <div className="Products text-black font-bold">{t("productv2.brands")}</div>
               <div className="Categories relative p-4">
                 <div className="grid grid-cols-1 gap-2">
                   {brands.map((brand, index) => (
@@ -87,7 +89,7 @@ function Productv2Page() {
 
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
 
-              <div className="Products text-black font-bold">Size</div>
+              <div className="Products text-black font-bold">{t("productv2.size")}</div>
 
               <div className="inline-block relative w-32 my-2 mx-4">
                 <select className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
@@ -109,7 +111,7 @@ function Productv2Page() {
 
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
               <div>
-                <div className="Products text-black font-bold">Price</div>
+                <div className="Products text-black font-bold">{t("productv2.price")}</div>
                 <PriceRangeSlider />
               </div>
               <div className="h-px bg-gray-300 my-5 mx-auto"></div>
@@ -120,7 +122,7 @@ function Productv2Page() {
                   className="flex items-center text-black font-bold underline"
                 >
                   <FontAwesomeIcon icon={faXmark} />
-                  CLEAR ALL FILTER
+                  {t("productv2.clear_all_filter")}
                 </button>
               </div>
 
@@ -128,17 +130,17 @@ function Productv2Page() {
                 <img src="/assets/images/product/hero.png" alt="Hero" />
                 <div className="absolute top-[10%] left-1/2 transform -translate-x-1/2 text-center p-[10px]">
                   <span className="text-white font-bold text-xl font-poppins">
-                    Get Yours
+                    {t("productv2.get_yours")}
                   </span>
                   <br />
                   <span className="text-white font-bold text-3xl uppercase font-poppins">
-                    Best Gear
+                    {t("productv2.best_gear")}
                   </span>
                   <br />
                 </div>
 
-                <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-500 p-2">
-                  <span className="text-black font-bold">Shop Now</span>
+                <div className="absolute top-[85%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-orange-5000 p-2">
+                  <span className="text-black font-bold">{t("productv2.shop_now")}</span>
                 </div>
               </div>
             </div>
@@ -147,20 +149,20 @@ function Productv2Page() {
             <div className="py-2">
               <div className="flex justify-between items-center border-b pb-4 mb-4">
                 <div className="text-sm text-gray-600">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} -{" "}
+                  {t("productv2.showing")} {(currentPage - 1) * itemsPerPage + 1} -{" "}
                   {Math.min(currentPage * itemsPerPage, product.length)} of{" "}
-                  {product.length} results
+                  {product.length} {t("productv2.results")}
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2 text-sm text-gray-600">Sort by</span>
+                  <span className="mr-2 text-sm text-gray-6000">{t("productv2.sort_by")}</span>
                   <select
                     className="block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                     value={sortBy}
                     onChange={handleSortChange}
                   >
-                    <option value="popularity">Popularity</option>
-                    <option value="price">Price</option>
-                    <option value="rating">Rating</option>
+                    <option value="popularity">{t("productv2.popularity")}</option>
+                    <option value="price">{t("productv2.price")}</option>
+                    <option value="rating">{t("productv2.rating")}</option>
                   </select>
                   <div className="ml-4 flex items-center space-x-2">
                     <button>

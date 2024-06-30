@@ -4,8 +4,10 @@ import { updateUserShipmentDetail } from "../../services/shipmentService";
 import { useDispatch } from "react-redux";
 import { updateShipment } from "../../redux/slices/shipmentSlice";
 import AddressForm from "../AddressForm";
+import { useTranslation } from "react-i18next";
 
 export default function UpdateShipment({ shipment, onClose }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(true);
   const [formData, setFormData] = useState({ ...shipment });
   const [address, setAddress] = useState("");
@@ -21,7 +23,7 @@ export default function UpdateShipment({ shipment, onClose }) {
       const updatedShipment = await updateUserShipmentDetail(
         shipment.id,
         token,
-        { ...formData, address } // Include the address in the update payload
+        { ...formData, address }
       );
       dispatch(updateShipment(updatedShipment));
       setIsOpen(false);
@@ -34,7 +36,6 @@ export default function UpdateShipment({ shipment, onClose }) {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log(formData);
   };
 
   const handleAddressChange = (newAddress) => {
@@ -75,11 +76,11 @@ export default function UpdateShipment({ shipment, onClose }) {
               >
                 <Dialog.Panel className="bg-white p-6 rounded-md shadow-xl max-w-md w-full mx-4">
                   <Dialog.Title className="text-xl font-bold">
-                    Update Shipment
+                    {t("payment.update_shipment")}
                   </Dialog.Title>
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Full Name
+                      {t("payment.full_name")}
                     </label>
                     <input
                       type="text"
@@ -91,7 +92,7 @@ export default function UpdateShipment({ shipment, onClose }) {
                   </div>
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Phone Number
+                      {t("payment.phone_number")}
                     </label>
                     <input
                       type="tel"
@@ -103,7 +104,7 @@ export default function UpdateShipment({ shipment, onClose }) {
                   </div>
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700">
-                      Address
+                      {t("payment.address")}
                     </label>
                     <AddressForm onAddressChange={handleAddressChange} />
                   </div>
@@ -113,14 +114,14 @@ export default function UpdateShipment({ shipment, onClose }) {
                       className="bg-gray-500 text-white px-4 py-2 rounded-md mr-2 hover:bg-gray-600"
                       onClick={closeModal}
                     >
-                      Cancel
+                      {t("payment.cancel")}
                     </button>
                     <button
                       type="button"
                       className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-700"
                       onClick={handleUpdateShipment}
                     >
-                      Confirm
+                      {t("payment.confirm")}
                     </button>
                   </div>
                 </Dialog.Panel>

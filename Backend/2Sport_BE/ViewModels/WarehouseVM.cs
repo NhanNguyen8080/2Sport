@@ -4,6 +4,7 @@ namespace _2Sport_BE.ViewModels
 {
     public class WarehouseDTO
     {
+        public int? ProductId { get; set; }
         public int? Quantity { get; set; }
     }
     public class WarehouseVM : WarehouseDTO
@@ -14,12 +15,10 @@ namespace _2Sport_BE.ViewModels
 
     public class WarehouseCM : WarehouseDTO
     {
-        public int? ProductId { get; set; }
     }
 
     public class WarehouseUM : WarehouseDTO
     {
-        public int? ProductId { get; set; }
 
     }
 }

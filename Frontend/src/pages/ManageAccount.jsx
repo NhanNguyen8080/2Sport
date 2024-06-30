@@ -1,7 +1,9 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function ManageAccount() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col justify-center items-center md:flex-row py-12 ">
       <nav className="" >
@@ -10,13 +12,13 @@ function ManageAccount() {
             to="/manage-account/profile" 
             className={({ isActive }) => isActive ? "text-orange-500" : "text-zinc-800"}
           >
-            <li>My Profile</li>
+            <li>{t("manage_account.my_profile")}</li>
           </NavLink>
           <NavLink 
             to="/manage-account/shipment" 
             className={({ isActive }) => isActive ? "text-orange-500" : "text-zinc-800"}
           >
-            <li>Address Book</li>
+            <li>{t("manage_account.address_book")}</li>
           </NavLink>
           {/* <li className="text-gray-500">My Payment Options</li>
           <li className="text-gray-500">My Returns</li>

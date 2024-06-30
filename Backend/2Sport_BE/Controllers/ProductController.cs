@@ -325,5 +325,21 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        [HttpGet]
+        [Route("get-number-of-products")]
+        public async Task<IActionResult> GetNumberOfProducts()
+        {
+            try
+            {
+                var totalProducts = (await _productService.GetAllProducts()).Count();
+                return Ok(totalProducts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

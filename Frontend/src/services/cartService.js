@@ -5,11 +5,11 @@ export const addToCart = async (productId, quantityToAdd, token) => {
   // console.log(quantity, token, productId);
   try {
     const response = await addToCartAPI(productId, quantityToAdd, token);
-    toast.success("Product added to cart successfully");
+    // toast.success("Product added to cart successfully");
     return response.data;
   } catch (error) {
     console.error('Add to cart failed', error);
-    toast.error("Add to cart failed: " + error.message);
+    toast.error("Chỉ còn 1 sản phẩm!");
     throw error;
   }
 };

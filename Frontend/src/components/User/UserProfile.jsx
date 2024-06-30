@@ -2,21 +2,23 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@material-tailwind/react';
 import { selectUser } from "../../redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 
 const UserProfile = ({ onEditClick }) => {
     const user = useSelector(selectUser);
+    const { t } = useTranslation();
 
   return (
     <div>
-      <h2 className="text-orange-500 font-semibold text-xl mb-4">User Profile</h2>
+      <h2 className="text-orange-500 font-semibold text-xl mb-4">{t("user_profile.user_profile")}</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-gray-700">Username:</label>
+          <label className="block text-gray-700">{t("user_profile.username")}:</label>
           <p>{user.UserName}</p>
         </div>
         <div>
-          <label className="block text-gray-700">Fullname:</label>
+          <label className="block text-gray-700">{t("user_profile.fullname")}:</label>
           <p>{user.FullName}</p>
         </div>
         {/* <div>
@@ -24,7 +26,7 @@ const UserProfile = ({ onEditClick }) => {
           <p>{user.Gender}</p>
         </div> */}
         <div>
-          <label className="block text-gray-700">Email:</label>
+          <label className="block text-gray-700">{t("user_profile.email")}:</label>
           <p>{user.Email}</p>
         </div>
         {/* <div>
@@ -41,7 +43,7 @@ const UserProfile = ({ onEditClick }) => {
             variant="filled"
             onClick={onEditClick}
           >
-            Edit Profile
+            {t("user_profile.edit_profile")}
           </Button>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { useTranslation } from "react-i18next";
 
 const AddToCart = () => {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
   const increaseQuantity = () => setQuantity(quantity + 1);
   const decreaseQuantity = () => {
@@ -30,7 +32,7 @@ const AddToCart = () => {
       </div>
       <div className="flex  space-x-4">
         <button className="px-6 py-2 bg-orange-500 text-white rounded shadow hover:bg-orange-700 focus:outline-none">
-          ADD TO CART
+          {t("product_list.add_to_cart")}
         </button>
         <button className="p-2 border border-gray-300 rounded hover:bg-gray-100 focus:outline-none">
           <FontAwesomeIcon icon={faHeart} />

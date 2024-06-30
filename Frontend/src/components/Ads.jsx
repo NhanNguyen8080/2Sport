@@ -56,7 +56,7 @@ function Ads() {
                     <img src="/assets/images/ads/image.png" alt="Badminton" className="w-full" />
                     <Link to="/product" className="absolute bottom-4 ">
                         <button className=" text-black font-poppins font-semibold pl-24 pb-36 rounded">
-                            Explore More
+                            {t("ads.btn")}
                             <FontAwesomeIcon className="pl-5" icon={faArrowRight} />
                         </button>
                     </Link>

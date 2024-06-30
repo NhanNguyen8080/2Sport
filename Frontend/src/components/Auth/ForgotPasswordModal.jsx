@@ -4,8 +4,10 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next"; 
 
 export default function ForgotPasswordModal({ isOpen, closeModal }) {
+    const { t } = useTranslation();
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
@@ -45,28 +47,28 @@ export default function ForgotPasswordModal({ isOpen, closeModal }) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="w-1/2 transform overflow-hidden rounded-md shadow-xl transition-all bg-white p-6">
-                <h2 className="text-2xl font-semibold mb-4">Forgot Password</h2>
+                <h2 className="text-2xl font-semibold mb-4">{t("forgot_password.forgot_password")}</h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <label className="block mb-2">Username</label>
+                  <label className="block mb-2">{t("forgot_password.username")}</label>
                   <input
                     type="text"
-                    placeholder="Enter your username"
+                    placeholder={t("forgot_password.enter_username")}
                     className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full mb-4"
                     {...register('username', { required: true })}
                   />
-                  {errors.username && <p className="text-red-400 text-sm italic">This field is required!</p>}
+                  {errors.username && <p className="text-red-400 text-sm italic">{t("forgot_password.required")}</p>}
 
-                  <label className="block mb-2">Email</label>
+                  <label className="block mb-2">{t("forgot_password.email")}</label>
                   <input
                     type="email"
-                    placeholder="Enter your email"
-                    className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full mb-4"
+                    placeholder={t("forgot_password.enter_email")}
+                    className="text-gray-7000 p-2 rounded-lg border-2 border-zinc-400 w-full mb-4"
                     {...register('email', { required: true })}
                   />
-                  {errors.email && <p className="text-red-400 text-sm italic">This field is required!</p>}
+                  {errors.email && <p className="text-red-400 text-sm italic">{t("forgot_password.required")}</p>}
 
                   <button type="submit" className="bg-orange-500 text-white rounded-lg px-4 py-2 mt-4 w-full">
-                    Send Reset Link
+                    {t("forgot_password.btn")}
                   </button>
                 </form>
               </Dialog.Panel>

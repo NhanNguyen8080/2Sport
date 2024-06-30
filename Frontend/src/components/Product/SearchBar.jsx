@@ -3,10 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { searchProducts } from '../../api/apiProduct';
 import { Link } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const { t } = useTranslation();
 
   const handleSearch = async (e) => {
     setQuery(e.target.value);
@@ -27,7 +29,7 @@ const SearchBar = () => {
       <div className="flex w-full bg-white border-2 border-orange-500 rounded-full p-2 mx-auto">
         <input
           className="flex-grow bg-transparent outline-none placeholder-gray-400"
-          placeholder="Enter your search keywords here"
+          placeholder={t("search_bar.search_placeholder")}
           type="text"
           value={query}
           onChange={handleSearch}

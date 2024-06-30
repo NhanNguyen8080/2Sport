@@ -12,6 +12,7 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import CountUp from "react-countup";
+import { useTranslation } from "react-i18next";
 
 const startCounting = true;
 
@@ -70,6 +71,9 @@ const AboutUs = () => {
       prevIndex < members.length - 3 ? prevIndex + 1 : 0
     );
   };
+
+  const { t } = useTranslation();
+
   return (
     <div className="relative mb-[4%]">
       <div className="flex justify-center items-center relative">
@@ -78,9 +82,8 @@ const AboutUs = () => {
           alt="contactUs"
           className="mx-auto h-[550px] w-[90%]"
         />
-        <h1 className="text-[40px] py-10 text-white font-rubikmonoone font-bold absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
-          Score Big Savings, Play Even Harder: Unleash Your Sporting Spirit with
-          Affordable Second-Hand Finds!
+        <h1 className="text-[40px] py-10 text-white font-alfa absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-wrap text-center transition duration-300 ease-in-out hover:scale-110">
+          {t("aboutus.textimg")}
         </h1>
         {/* <div className="flex w-3/4 justify-around bg-white border-zinc-600 border-2 absolute mt-[30%] drop-shadow-lg py-10">
       <div className="text-center">
@@ -113,30 +116,23 @@ const AboutUs = () => {
     </div> */}
       </div>
 
-      <div className="mt-44 mx-[20%] flex">
+      <div className="mt-28 mx-[20%] flex">
         <div className="w-1/2 justify-center flex flex-col ml-10 mr-10">
           <div className="mb-10">
-            <h2 className="text-[15px]  text-[#524FF5]">WELCOME</h2>
+            <h2 className="text-[15px]  text-[#524FF5]">
+              {t("aboutus.welcome")}
+            </h2>
             <h1 className="text-[35px] font-bold text-black">2Sport</h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 text-wrap">
-              2Sport luôn là địa chỉ cung cấp các sản phẩm đồ cũ hot,
-              trong đó có những thương hiệu hàng đầu thế giới như Yonex, Nike, Adidas,
-              Jordan, Jogarbola... với giá rẻ, phù hợp với túi tiền của bạn. TRONG
-              Ngoài ra, 2Sport còn sẵn sàng mua bán, ký gửi có hạn
-              sản phẩm phiên bản dành cho người sưu tập.
+              {t("aboutus.text2Sport")}
             </p>
           </div>
           <div className="bg-[#EEEEEE] p-[10%]">
-            <h1 className="text-[35px] font-bold text-black">GIÁ TRỊ CỐT LÕI:</h1>
+            <h1 className="text-[35px] font-bold text-black">
+              {t("aboutus.value")}
+            </h1>
             <p className="text-[15px] text-[#6A6A6A] mt-3 mb-5">
-              2Sport cam kết mang đến sự tiện lợi và tiết kiệm chi phí
-              cho những người yêu thích thể thao, bằng cách cung cấp một nền tảng đáng tin cậy để mua sắm
-              đồ thể thao cũ chất lượng và có giá trị. Với cái tên 2-môn thể thao,
-              một thương hiệu mới nhưng có tham vọng lớn là mang đến cho khách hàng những sản phẩm
-              dịch vụ và trải nghiệm tốt nhất có thể, với phương châm tạo ra
-              tiện lợi và tiết kiệm chi phí một cách hiệu quả. hiệu quả cho khách hàng
-              và tạo sự tin cậy tối đa để tăng tỷ lệ khách hàng
-              quay lại cửa hàng lần sau.
+              {t("aboutus.textvalue")}
             </p>
             <img
               src="/assets/images/aboutus/about-us-1.jpg"
@@ -154,45 +150,43 @@ const AboutUs = () => {
               className="filter duotone-c86409-ffffff"
             />
             <div className="absolute bottom-12 left-8 transform translate-y-1/4 text-white">
-              <h2 className="text-2xl font-bold">Sứ mệnh</h2>
+              <h2 className="text-2xl font-bold">{t("aboutus.purpose")}</h2>
               <p className="text-lg mt-3 text-left">
-                "2SPORT cam kết mang lại những sản phẩm chất lượng tốt nhất và
-                dịch vụ cho người chơi thể thao để cải thiện sức khỏe của chính họ."
+                {t("aboutus.textpurpose")}
               </p>
             </div>
           </div>
           <div className="bg-[#B8DDEB] p-[10%]">
-            <h1 className="font-bold text-[25px] text-black">TẦM NHÌN</h1>
+            <h1 className="font-bold text-[25px] text-black">
+              {t("aboutus.vision")}
+            </h1>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              “Trở thành nhà bán lẻ đồ thể thao cũ lớn nhất Việt Nam”.
+              {t("aboutus.textvision1")}
             </p>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Trở thành đơn vị hàng đầu cả nước trong lĩnh vực đồ cũ
-              bán lẻ quần áo thể thao, giúp cải thiện sức khoẻ cộng đồng và bảo vệ
-              môi trường.
+              {t("aboutus.textvision2")}
             </p>
             <p className="text-[15px] text-black mt-2">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Mang đến những sản phẩm chất lượng cao, phù hợp với nhu cầu của
-              Con người Việt Nam.
+              {t("aboutus.textvision3")}
             </p>
             <p className="text-[15px] text-black mt-2 mb-3">
               <FontAwesomeIcon
                 icon={faCircle}
                 className="text-black text-[10px] mr-1"
               />
-              Xây dựng hệ thống cửa hàng rộng khắp 64 tỉnh thành.
+              {t("aboutus.textvision4")}
             </p>
           </div>
         </div>
@@ -201,7 +195,7 @@ const AboutUs = () => {
       <div className="flex flex-col justify-center items-center text-2xl font-bold mt-20">
         <h2 className="text-[#524FF5] justify-center font-bold"></h2>
         <h1 className="text-[35px] font-bold text-black mt-5 mb-5">
-          THÀNH VIÊN:
+          {t("aboutus.member")}
         </h1>
       </div>
       <div className="relative px-20">
@@ -238,21 +232,16 @@ const AboutUs = () => {
                       icon={faInstagram}
                       className="text-white"
                     />
-                    <FontAwesomeIcon
-                      icon={faFacebook}
-                      className="text-white"
-                    />
+                    <FontAwesomeIcon icon={faFacebook} className="text-white" />
                   </div>
                 </div>
               </div>
             ))}
-
-
           </div>
         </div>
         <button
           onClick={handlePrev}
-          className="absolute h-full w-1/12 left-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-white/80"
+          className="absolute h-full w-1/12 left-20 top-1/2 transform -translate-y-1/2 "
         >
           <FontAwesomeIcon
             className="text-orange-500 p-2 -translate-y-1/2 -left-3 absolute rounded-full bg-white border-orange-500 border"
@@ -261,7 +250,7 @@ const AboutUs = () => {
         </button>
         <button
           onClick={handleNext}
-          className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-1/2 bg-gradient-to-l from-white/80"
+          className="absolute h-full w-1/12 right-20 top-1/2 transform -translate-y-1/2 "
         >
           <FontAwesomeIcon
             className="text-orange-500 p-2 -translate-y-1/2 -right-3 absolute rounded-full bg-white border-orange-500 border"

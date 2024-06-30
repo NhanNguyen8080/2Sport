@@ -2,11 +2,13 @@
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, selectUser } from '../../redux/slices/authSlice';
+import { useTranslation } from "react-i18next";
 
 import { jwtDecode } from "jwt-decode";
 
 export default function LoginGoogle({ setIsSignInOpen }) {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const handleSubmitButton = () => {
     const newTab = window.open('https://twosportapiv2.azurewebsites.net/api/Auth/oauth-login', '_blank');
 
@@ -31,7 +33,7 @@ export default function LoginGoogle({ setIsSignInOpen }) {
                   <button
                     onClick={handleSubmitButton}
                     className="border-zinc-400 border-2 rounded-lg"
-                  > Login with Google</button>
+                  > {t("login_google.btn")}</button>
                  
     </>
   );

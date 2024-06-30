@@ -16,8 +16,11 @@ import {
   faBagShopping
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchOrders } from "../../services/DashboardService";
+import { useTranslation } from "react-i18next";
+
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -35,7 +38,7 @@ export default function Dashboard() {
       try {
         const ordersData = await fetchOrders();
         setOrders(ordersData);
-        console.log("ordersData", ordersData);
+        console.log(`${t("dashboard.orders")}`, ordersData);
 
         // Calculate totals
         const totalOrdersCount = ordersData.length;
@@ -61,20 +64,20 @@ export default function Dashboard() {
 
   return (
     <>
-      <h2 className="text-2xl font-bold mx-10 mt-4">Dashboard</h2>
+      <h2 className="text-2xl font-bold mx-10 mt-4">{t("dashboard.dashboard")}</h2>
       <div className="flex justify-between items-center mx-10 my-4">
         <Breadcrumbs className="flex-grow">
           <a href="#" className="opacity-60">
-            Home
+            {t("dashboard.home")}
           </a>
-          <a href="#">Dashboard</a>
+          <a href="#">{t("dashboard.dashboard")}</a>
         </Breadcrumbs>
       </div>
 
       <div className="flex justify-around items-center space-x-4 mx-10">
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Total Orders <p className="text-lg">({totalOrders})</p></h3>
+            <h3 className="text-lg font-semibold text-black">{t("dashboard.total_orders")} <p className="text-lg">({totalOrders})</p></h3>
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
@@ -84,7 +87,7 @@ export default function Dashboard() {
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Active Orders:</h3>
+            <h3 className="text-lg font-semibold text-black">{t("dashboard.active_orders")}</h3>
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
@@ -100,7 +103,7 @@ export default function Dashboard() {
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-semibold text-black">
-              Completed Orders:
+              {t("dashboard.completed_orders")}
             </h3>
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
@@ -116,7 +119,7 @@ export default function Dashboard() {
         </Card>
         <Card className="shadow-md p-4 w-full">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">Return Orders:</h3>
+            <h3 className="text-lg font-semibold text-black">{t("dashboard.return_orders")}</h3>
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
@@ -133,7 +136,7 @@ export default function Dashboard() {
 
       <Card className="h-full w-[95.7%] mx-10 my-10">
         <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
-          Recent Orders
+          {t("dashboard.recent_orders")}
         </Typography>
 
         <CardBody className="overflow-scroll px-0">
@@ -163,7 +166,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Order ID
+                    {t("dashboard.order_id")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -172,7 +175,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Date
+                    {t("dashboard.date")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -181,7 +184,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Customer
+                    {t("dashboard.customer")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -190,7 +193,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    Status
+                    {t("dashboard.status")}
                   </Typography>
                 </th>
                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
@@ -199,7 +202,7 @@ export default function Dashboard() {
                     color="blue-gray"
                     className="font-normal leading-none opacity-70"
                   >
-                    TotalPrice
+                    {t("dashboard.total_price")}
                   </Typography>
                 </th>
               </tr>

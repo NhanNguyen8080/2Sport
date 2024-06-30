@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import mbxGeocoding from '@mapbox/mapbox-sdk/services/geocoding';
+import { useTranslation } from "react-i18next";
 
 const DistanceCalculator = ({ userAddress, onDistanceCalculated }) => {
+  const { t } = useTranslation();
   const [distance, setDistance] = useState(null);
 
   const haversineDistance = (coords1, coords2) => {
@@ -34,11 +36,11 @@ const DistanceCalculator = ({ userAddress, onDistanceCalculated }) => {
         const location = response.body.features[0].geometry.coordinates;
         return { lat: location[1], lng: location[0] };
       } else {
-        throw new Error("No results found for the provided address.");
+        throw new Error(`${t("payment.no_results_found_for_the_provided_address")}`);
       }
     } catch (error) {
-      console.error("Error geocoding address:", error.message);
-      throw new Error("Unable to geocode address");
+      console.error(`${t("payment.error_geocoding_address")}:`, error.message);
+      throw new Error(`${t("payment.unable_to_geocode_address")}`);
     }
   };
 
@@ -54,7 +56,7 @@ const DistanceCalculator = ({ userAddress, onDistanceCalculated }) => {
           // console.log("Calculated Distance:", calculatedDistance);
           onDistanceCalculated(calculatedDistance);
         } catch (error) {
-          console.error('Error calculating distance:', error);
+          console.error(`${t("payment.error_calculating_distance")}:`, error);
         }
       }
     };

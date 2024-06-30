@@ -1,10 +1,11 @@
 import axios from 'axios';
+import axiosInstance from './axiosInstance';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net';
 
 export const getShipmentDetails = ( token) => {
 
-  return axios.get(`${API_BASE_URL}/list-shipment-details`,{
+  return axiosInstance.get(`${API_BASE_URL}/list-shipment-details`,{
     headers: {
       'Accept': '*/*',
       "Authorization": `Bearer ${token}`,
@@ -15,7 +16,7 @@ export const getShipmentDetails = ( token) => {
 
 export const addShipmentDetail = ( token, data) => {
 
-  return axios.post(`${API_BASE_URL}/add-shipment-detail`,data,{
+  return axiosInstance.post(`${API_BASE_URL}/add-shipment-detail`,data,{
     headers: {
       'Accept': '*/*',
       "Authorization": `Bearer ${token}`,
@@ -26,7 +27,7 @@ export const addShipmentDetail = ( token, data) => {
 
 export const updateShipmentDetail = ( id, token, data) => {
 
-  return axios.put(`${API_BASE_URL}/update-shipment-detail/${id}`,data,{
+  return axiosInstance.put(`${API_BASE_URL}/update-shipment-detail/${id}`,data,{
     headers: {
       'Accept': '*/*',
       "Authorization": `Bearer ${token}`,
@@ -36,7 +37,7 @@ export const updateShipmentDetail = ( id, token, data) => {
 };
 
 export const deleteShipmentDetail = (id, token) => {
-  return axios.delete(`${API_BASE_URL}/delete-shipment-detail`, {
+  return axiosInstance.delete(`${API_BASE_URL}/delete-shipment-detail`, {
     headers: {
       'Accept': '*/*',
       'Authorization': `Bearer ${token}`,
