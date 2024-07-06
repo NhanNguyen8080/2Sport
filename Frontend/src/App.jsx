@@ -24,6 +24,8 @@ import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import OrderSuccess from './components/Payment/OrderSuccess';
 import OrderCancel from './components/Payment/OrderCancel';
+import SidebarStaff from './components/Staff/SidebarStaff';
+import Warehouse from './components/Staff/Warehouse'
 
 
 
@@ -51,7 +53,9 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/order_success" element={<OrderSuccess />} />
           <Route path="/order_cancel" element={<OrderCancel />} />
-          
+          {/* <Route path="/sidebar_Staff" element={<SidebarStaff/>}/> */}
+          <Route path="/warehouse" element={<Warehouse/>}/>
+
      </Routes>
      </div>
      <Footer/>
