@@ -15,9 +15,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { authenticateUser } from "../../services/authService";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInModal() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const { t } = useTranslation("translation");
   const {
@@ -37,8 +39,11 @@ export default function SignInModal() {
   const onSubmit = async (data) => {
     try {
       const decoded = await authenticateUser(dispatch, data);
-      console.log(decoded);
+      // console.log(decoded);
       setIsSignInOpen(false);
+      if (decoded.role === "Admin") {
+        navigate('/dashboard');
+      }
     } catch (error) {
       // Handle error inside authenticateUser
     }
