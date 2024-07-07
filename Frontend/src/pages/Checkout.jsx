@@ -27,10 +27,20 @@ const Checkout = () => {
     address: "",
   });
 
-  const totalPrice = selectedProducts.reduce(
-    (acc, item) => acc + item.totalPrice,
-    0
-  );
+  const totalPrice = selectedProducts.reduce((acc, item) => {
+    let itemPrice = item.totalPrice;
+  
+    if ((item.totalPrice / item.quantity) < 200000) {
+      itemPrice *= 0.7; // 30% discount
+    } else if ((item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000) {
+      itemPrice *= 0.8; // 20% discount
+    } else {
+      itemPrice *= 0.9; // 10% discount
+    }
+  
+    return acc + itemPrice;
+  }, 0);
+  
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -74,7 +84,7 @@ const Checkout = () => {
     } else if (distance <= 10) {
       return 15000;
     } else {
-      return 15000 + Math.ceil((distance - 10) / 5) * 5000;
+      return 35000;
     }
   };
 
@@ -122,8 +132,23 @@ const Checkout = () => {
                     <img
                       src={item.mainImagePath}
                       alt={item.mainImageName}
-                      className="w-auto h-32 object-scale-down rounded"
+                      className="w-auto h-32 pr-2 object-scale-down rounded"
                     />
+                    {(item.totalPrice / item.quantity) < 200000 && (
+                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
+                        - 30%
+                      </div>
+                    )}
+                    {(item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000 && (
+                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
+                        - 20%
+                      </div>
+                    )}
+                    {(item.totalPrice / item.quantity) >= 500000 && (
+                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
+                        - 10%
+                      </div>
+                    )}
                     <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {item.quantity}
                     </span>
@@ -134,7 +159,17 @@ const Checkout = () => {
                         {item.productName}
                       </h3>
                     </div>
-                    <p className="text-lg text-black">{item.totalPrice} VND</p>
+                    <p className="text-lg text-black">
+                     
+                        {(item.totalPrice / item.quantity) < 200000
+                    ? ((item.totalPrice) * 0.7).toLocaleString() 
+                    : (item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000
+                      ? ((item.totalPrice) * 0.8).toLocaleString() 
+                      : ((item.totalPrice ) * 0.9).toLocaleString() 
+                  }
+                        {" "}
+                      VND
+                    </p>
                   </div>
                 </div>
               ))}

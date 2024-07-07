@@ -109,37 +109,66 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
   return (
     <div className="">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {products?.map(product => (
-          <div key={product.id} className="bg-white border hover:drop-shadow-lg  hover:bg-blue-100 p-2">
-            <div className="relative">
+        {products?.map(product => {
+          const discount30 = product.price < 200000;
+          const discount20 = product.price >= 200000 && product.price < 500000;
+          const discount10 = product.price >= 500000;
+          return (
+            <div key={product.id} className="bg-white border hover:drop-shadow-lg  hover:bg-blue-100 p-2">
+              <div className="relative">
+                <Link to={`/product/${product.id}`}>
+                  <div className="bg-white">
+                    <img src={product.mainImagePath} alt={product.mainImageName} className="object-scale-down h-48 w-96 mb-4" />
+                  </div>
+                </Link>
+                {discount30 && (
+                  <div className="absolute top-0 left-0 items-center justify-center bg-orange-500 text-white font-poppins p-2">
+                    - 30%
+                  </div>
+                )}
+                {discount20 && !discount30 && (
+                  <div className="absolute top-0 left-0 items-center justify-center bg-orange-500 text-white font-poppins p-2">
+                    - 20%
+                  </div>
+                )}
+                {discount10 && !discount20 && !discount30 && (
+                  <div className="absolute top-0 left-0 items-center justify-center bg-orange-500 text-white font-poppins p-2">
+                    - 10%
+                  </div>
+                )}
+                {product.quantity === 0 ? (
+                  <button
+                    className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-gray-400 bg-opacity-75 text-white opacity-100 transition-opacity duration-300 py-4"
+                    disabled
+                  >
+                   SOLD OUT
+                  </button>
+                ) : (
+                  <button
+                    className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-orange-600 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-4"
+                    onClick={() => handleAddToCart(product)}
+                  >
+                    {t("product_list.add_to_cart")}
+                  </button>
+                )}
+              </div>
               <Link to={`/product/${product.id}`}>
-                <div className="bg-white">
-                  <img src={product.mainImagePath} alt={product.mainImageName} className="object-scale-down h-48 w-96 mb-4" />
+                <p className="text-orange-500 mb-2 ">{product.categoryName} - {product.brandName}</p>
+                <h2 className="text-xl font-semibold ">{product.productName}</h2>
+                <div className="flex">
+                  <p className={`text-gray-700 mb-2 ${discount30 || discount20 || discount10 ? 'line-through' : ''}`}>
+                    {product.price.toLocaleString()} {t("product_list.vnd")}
+                  </p>
+                  {(discount30 || discount20 || discount10) && (
+                    <p className="text-gray-700 mb-2 pl-2">
+                      {(product.price * (discount30 ? 0.7 : discount20 ? 0.8 : 0.9)).toLocaleString()} {t("product_list.vnd")}
+                    </p>
+                  )}
                 </div>
               </Link>
-              {product.quantity === 0 ? (
-                <button
-                  className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-gray-400 bg-opacity-75 text-white opacity-100 transition-opacity duration-300 py-4"
-                  disabled
-                >
-                 SOLD OUT
-                </button>
-              ) : (
-                <button
-                  className="absolute bottom-0 left-0 right-0 flex items-center justify-center bg-orange-600 bg-opacity-75 text-white opacity-0 hover:opacity-100 transition-opacity duration-300 py-4"
-                  onClick={() => handleAddToCart(product)}
-                >
-                  {t("product_list.add_to_cart")}
-                </button>
-              )}
             </div>
-            <Link to={`/product/${product.id}`}>
-              <p className="text-orange-500 mb-2 ">{product.categoryName} - {product.brandName}</p>
-              <h2 className="text-xl font-semibold ">{product.productName}</h2>
-              <p className="text-gray-700 mb-2">{product.price.toLocaleString()} {t("product_list.vnd")}</p>
-            </Link>
-          </div>
-        ))}
+          );
+        })}
       </div>
       <button
       disabled={currentPage === 1}
