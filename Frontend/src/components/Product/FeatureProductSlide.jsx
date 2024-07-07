@@ -20,7 +20,6 @@ export default function FeatureProductSlide() {
           }
         });
         console.log('Fetched Products:', productFeatured);
-
         if (productFeatured && Array.isArray(productFeatured.products)) {
           setImages(productFeatured.products);
           // console.log('Products array:', productFeatured.products);
