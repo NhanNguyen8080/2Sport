@@ -20,16 +20,16 @@ const UserShipment = () => {
   const [currentShipment, setCurrentShipment] = useState(null);
   const { t } = useTranslation();
   const [shipments, setShipments] = useState([])
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const getShipment = async () => {
       try {
-        const token = localStorage.getItem("token");
         if (token) {
           const shipmentData = await getUserShipmentDetails(token);
           dispatch(setShipment(shipmentData.$values));
           setShipments(shipmentData.$values)
-          console.log(shipments);
+          // console.log(shipments);
         }
       } catch (error) {
         console.error("Error fetching shipment:", error);
@@ -44,7 +44,7 @@ const UserShipment = () => {
 
   const refreshShipments = async () => {
     try {
-      const token = localStorage.getItem("token");
+      
       if (token) {
         const shipmentData = await getUserShipmentDetails(token);
         dispatch(setShipment(shipmentData.$values));
@@ -94,7 +94,7 @@ const UserShipment = () => {
                 >
                   {t("user_shipment.update")}
                 </button>
-                <DeleteShipment id={shipment.id} />
+                <DeleteShipment id={shipment.id} token={token} />
               </div>
             </div>
           ))}

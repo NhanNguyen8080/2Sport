@@ -1,4 +1,3 @@
-import axios from 'axios';
 import axiosInstance from './axiosInstance';
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net';
@@ -37,10 +36,12 @@ export const updateShipmentDetail = ( id, token, data) => {
 };
 
 export const deleteShipmentDetail = (id, token) => {
+  // console.log(id, token);
   return axiosInstance.delete(`${API_BASE_URL}/delete-shipment-detail`, {
     headers: {
       'Accept': '*/*',
       'Authorization': `Bearer ${token}`,
+      "Content-Type": "application/json"
     },
     params: {
       id: id

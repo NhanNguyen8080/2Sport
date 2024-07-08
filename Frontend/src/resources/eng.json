@@ -240,5 +240,13 @@
     "header_staff.staff":"Staff",
     "header_staff.log_out":"Log out",
     "sidebar_staff.menu":"Menu",
-    "sidebar_staff.dashboard":"Dashboard"
+    "sidebar_staff.dashboard":"Dashboard",
+    "sidebar_staff.import": "Import",
+    "Import.Details": "Details",
+    "Import.Search": "Search",
+    "Import.Id": "Id",
+    "Import.ProductName": "ProductName",
+    "Import.Quantity": "Quantity"
+    
+
 }

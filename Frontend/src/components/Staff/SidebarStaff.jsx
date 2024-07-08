@@ -1,8 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGauge } from "@fortawesome/free-solid-svg-icons";
+import { faGauge, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-
 
 export default function SidebarStaff() {
   const { t } = useTranslation();
@@ -21,6 +20,9 @@ export default function SidebarStaff() {
       <ul>
         <li className="flex items-center text-xl">
           <FontAwesomeIcon icon={faGauge} className="pr-3" /> {t("sidebar_staff.dashboard")}
+        </li>
+        <li className="flex items-center text-xl pt-5">
+          <FontAwesomeIcon icon={faFileArrowDown} className="pr-3" /> {t("sidebar_staff.import")}
         </li>
       </ul>
     </div>

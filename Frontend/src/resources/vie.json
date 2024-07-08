@@ -240,6 +240,12 @@
     "header_staff.staff":"Nhân viên",
     "header_staff.log_out":"Đăng xuất",
     "sidebar_staff.menu":"Menu",
-    "sidebar_staff.dashboard":"Bảng điều khiển"
+    "sidebar_staff.dashboard":"Bảng điều khiển",
+    "sidebar_staff.import":"Nhập hàng",
+    "Import.Details": "Chi tiết",
+    "Import.Search": "Tìm kiếm",
+    "Import.Id": "Id",
+    "Import.ProductName": "Tên sản phẩm",
+    "Import.Quantity": "Số lượng"
 
 }

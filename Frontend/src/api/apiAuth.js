@@ -1,7 +1,4 @@
 import axios from 'axios';
-import {jwtDecode } from 'jwt-decode';
-import { checkAndRefreshToken } from '../services/authService';
-
 
 const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Auth';
 

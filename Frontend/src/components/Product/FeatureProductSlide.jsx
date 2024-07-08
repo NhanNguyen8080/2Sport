@@ -4,26 +4,28 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { fetchProducts } from "../../services/productService";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 
 export default function FeatureProductSlide() {
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const sortBy = "likes";
+  const isAscending = true;
   const [images, setImages] = useState([]);
 
   useEffect(() => {
     const getFeature = async () => {
       try {
-        const productFeatured = await fetch('https://twosportapiv2.azurewebsites.net/api/Product/list-products',{sortBy}, {
+        const productFeatured = await axios.get('https://twosportapiv2.azurewebsites.net/api/Product/list-products',{sortBy, isAscending}, {
           headers: {
             'accept': '*/*'
           }
         });
-        console.log('Fetched Products:', productFeatured);
+        // console.log('Fetched Products:', productFeatured.data.data.$values);
+        const products = productFeatured.data.data.$values
+        if (products && Array.isArray(products)) {
+          setImages(products);
 
-        if (productFeatured && Array.isArray(productFeatured.products)) {
-          setImages(productFeatured.products);
-          // console.log('Products array:', productFeatured.products);
         } else {
           console.error("Fetched data is not an array");
         }

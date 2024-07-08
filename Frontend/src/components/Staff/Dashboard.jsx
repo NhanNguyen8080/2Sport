@@ -38,7 +38,7 @@ export default function Dashboard() {
       try {
         const ordersData = await fetchOrders();
         setOrders(ordersData);
-        console.log(`${t("dashboard.orders")}`, ordersData);
+        // console.log(`${t("dashboard.orders")}`, ordersData);
 
         // Calculate totals
         const totalOrdersCount = ordersData.length;
