@@ -101,7 +101,12 @@ namespace _2Sport_BE.Controllers
                     IntoMoney = order.IntoMoney,
                     Status = order.Status,
                     PaymentLink = paymentLink,
-                    OrderDetails = orderCM.OrderDetails
+                    OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
+                    {
+                        ProductId = item.ProductId,
+                        Price = (decimal)item.Price,
+                        Quantity = item.Quantity
+                    }).ToList()
                 };
 
                 var responseModel = new ResponseModel<OrderVM>
@@ -347,12 +352,12 @@ namespace _2Sport_BE.Controllers
                     {
                         ProductId = product.Id,
                         Product = product,
-                        Price = item.Price,
                         Quantity = item.Quantity,
+                        Price = item.Price,
                     };
 
                     order.OrderDetails.Add(orderDetail);
-                    totalPrice += (decimal) (product.Price * item.Quantity);
+                    totalPrice += (decimal) (item.Price * item.Quantity);
                 }
                 else
                 {
