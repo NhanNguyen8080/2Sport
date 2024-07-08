@@ -246,6 +246,22 @@
     "Import.Search": "Tìm kiếm",
     "Import.Id": "Id",
     "Import.ProductName": "Tên sản phẩm",
-    "Import.Quantity": "Số lượng"
+    "Import.Quantity": "Số lượng",
+        "SignUpModal.Come join us!": "Hãy tham gia cùng chúng tôi!",
+        "SignUpModal.welcome_message": "Chúng tôi rất vui mừng chào đón bạn ở đây. Nếu bạn chưa có tài khoản, hãy tạo một tài khoản để nhận được các ưu đãi, phần thưởng và giảm giá độc quyền.",
+        "SignUpModal.have_account": "Đã có tài khoản",
+        "SignUpModal.Signup": "Đăng ký",
+        "SignUpModal.Signin!": "Đăng nhập!",
+        "SignUpModal.placeholder_password": "Nhập mật khẩu của bạn",
+        "SignUpModal.placeholder_fullname": "Nhập tên đầy đủ của bạn",
+        "SignUpModal.placeholder_username": "Nhập tên người dùng của bạn",
+        "SignUpModal.placeholder_email": "Nhập email của bạn",
+        "SignUpModal.placeholder_confirmPassword": "Xác nhận mật khẩu của bạn",
+        "SignUpModal.notmatch_confirmPassword": "Mật khẩu không khớp",
+        "SignUpModal.required": "Trường này là bắt buộc!",
+        "SignUpModal.validate_username": "Tên người dùng chỉ có thể chứa chữ cái, số và dấu gạch dưới",
+        "SignUpModal.fullname": "Tên đầy đủ là bắt buộc",
+        "SignUpModal.validate_password": "Mật khẩu là bắt buộc"
+    
 
 }
