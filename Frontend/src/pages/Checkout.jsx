@@ -31,11 +31,11 @@ const Checkout = () => {
     let itemPrice = item.totalPrice;
   
     if ((item.totalPrice / item.quantity) < 200000) {
-      itemPrice *= 0.7; // 30% discount
+      itemPrice *= 0.7; 
     } else if ((item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000) {
-      itemPrice *= 0.8; // 20% discount
+      itemPrice *= 0.8;
     } else {
-      itemPrice *= 0.9; // 10% discount
+      itemPrice *= 0.9;
     }
   
     return acc + itemPrice;
@@ -50,20 +50,34 @@ const Checkout = () => {
     try {
       const token = localStorage.getItem("token");
       const orderMethodId = selectedOption;
-
+  
+      const orderDetails = selectedProducts.map((item) => {
+        let discountedPrice = item.totalPrice;
+        
+        if ((item.totalPrice / item.quantity) < 200000) {
+          discountedPrice *= 0.7; 
+        } else if ((item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000) {
+          discountedPrice *= 0.8;
+        } else {
+          discountedPrice *= 0.9;
+        }
+  
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: discountedPrice,
+        };
+      });
+  
       const data = {
         transportFee: transportFee,
         receivedDate: new Date().toISOString(),
-        orderDetails: selectedProducts.map((item) => ({
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+        orderDetails: orderDetails,
         shipmentDetailId: shipment.id,
       };
-
+  
       const response = await checkout(token, orderMethodId, data);
-
+  
       if (orderMethodId === "1") {
         setOrderSuccess(true);
       } else if (orderMethodId === "2" && response.data.paymentLink) {
@@ -75,6 +89,7 @@ const Checkout = () => {
       console.error("Error during checkout:", error);
     }
   };
+  
 
   const calculateTransportFee = (distance) => {
     if (distance < 5) {

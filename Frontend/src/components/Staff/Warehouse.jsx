@@ -8,9 +8,10 @@ import {
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { fetchWarehouse } from "../../services/warehouseService"; // Ensure this import is correct
 import { useTranslation } from "react-i18next";
-import { fetchImport } from "../../services/ImportService"; 
+import { fetchWarehouse } from "../../services/warehouseService";
+import { fetchImport } from "../../services/ImportService";
+import { toast } from "react-toastify";
 
 export default function Warehouse() {
   const { t } = useTranslation();
@@ -23,7 +24,6 @@ export default function Warehouse() {
       try {
         const importData = await fetchWarehouse();
         setImports(importData);
-        console.log(`${t("dashboard.imports")}`, importData);
       } catch (error) {
         console.error("Error fetching data:", error);
         setImports([]);
@@ -49,43 +49,28 @@ export default function Warehouse() {
     importItem.productName && importItem.productName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleIncreaseQuantity = async (id) => {
-    try {
-      const importItem = imports.find(item => item.id === id);
-      if (!importItem) {
-        console.error(`Import item with id ${id} not found.`);
-        return;
-      }
+  const handleQuantityChange = async (item, newQuantity) => {
+    const oldQuantity = item.quantity;
 
-      // Call fetchImport to increase quantity
-      const response = await fetchImport(importItem.quantity + 1, importItem.productId, importItem.supplierId);
-
-      // Update state after successful API call
-      const updatedImports = imports.map(item =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-      setImports(updatedImports);
-
-      console.log('Quantity increased successfully:', response);
-    } catch (error) {
-      console.error('Error increasing quantity:', error);
+    if (!newQuantity || newQuantity <= oldQuantity) {
+      alert(`The entered quantity must be greater than the current quantity of ${oldQuantity}.`);
+      return;
     }
-  };
 
-  const handleQuantityChange = async (item, quantity) => {
+    const quantityDifference = newQuantity - oldQuantity;
     try {
       // Call fetchImport to update quantity
-      const response = await fetchImport(quantity, item.productId, item.supplierId);
+      const response = await fetchImport(quantityDifference, item.productId, item.supplierId);
 
       // Update state after successful API call
-      const updatedImports = imports.map(importItem =>
-        importItem.id === item.id ? { ...importItem, quantity: quantity } : importItem
+      const updatedImports = imports.map((importItem) =>
+        importItem.id === item.id ? { ...importItem, quantity: newQuantity } : importItem
       );
       setImports(updatedImports);
-
-      console.log('Quantity updated successfully:', response);
+      toast.success("import successful");
+      console.log("Quantity updated successfully:", response);
     } catch (error) {
-      console.error('Error updating quantity:', error);
+      console.error("Error updating quantity:", error);
     }
   };
 
@@ -197,14 +182,8 @@ export default function Warehouse() {
                         onChange={(e) =>
                           handleQuantityChange(importItem, parseInt(e.target.value))
                         }
-                        min="0"
+                        min={importItem.quantity + 1}
                       />
-                      <button
-                        className="px-2 py-1"
-                        onClick={() => handleIncreaseQuantity(importItem.id)}
-                      >
-                        +
-                      </button>
                     </div>
                   </td>
                 </tr>

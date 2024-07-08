@@ -2,12 +2,12 @@ import React from "react";
 import { deleteUserShipmentDetail } from "../../services/shipmentService";
 import { useTranslation } from "react-i18next";
 
-export default function DeleteShipment({ id, token }) {
+export default function DeleteShipment({ id }) {
   const { t } = useTranslation();
   const handleDeleteShipment = async () => {
     try {
       const response = await deleteUserShipmentDetail(id, token);
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       console.error("Error deleting shipment:", error);
     }
