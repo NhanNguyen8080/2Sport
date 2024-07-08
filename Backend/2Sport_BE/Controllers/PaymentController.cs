@@ -250,9 +250,15 @@ namespace _2Sport_BE.Controllers
                     Data = null
                 });
             }
-            
+            foreach(var item in order.OrderDetails)
+            {
+                if(item!= null)
+                {
+                  var productInWare = (await _warehouseService.GetWarehouseByProductId(item.ProductId)).FirstOrDefault();
+                    productInWare.Quantity = productInWare.Quantity - item.Quantity;  
+                }
+            }
             _unitOfWork.Save();
-            // Tạo và trả về Response
             OrderVM orderVM = new OrderVM
             {
                 id = order.Id,
