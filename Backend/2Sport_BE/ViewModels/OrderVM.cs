@@ -15,6 +15,7 @@
     }
     public class OrderVM : OrderDTO
     {
+        public int? id { get; set; }
         public int? Status { get; set; }
         public decimal? IntoMoney { get; set; }
         public string? PaymentMethod { get; set; }
@@ -41,6 +42,7 @@
     }
     public class OrderInfo
     {
+        public int Id { get; set; }
         public string? OrderCode { get; set; }
         public string? CreateDate { get; set; }
         public string? CustomerName { get; set; }

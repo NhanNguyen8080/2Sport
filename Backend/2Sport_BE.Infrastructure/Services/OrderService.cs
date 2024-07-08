@@ -19,6 +19,7 @@ namespace _2Sport_BE.Service.Services
         Task<List<Order>> ListAllOrderByUseIdAsync(int userId);
         Task<Order> GetOrderByIdAsync(int id);
         Task<Order> GetOrderByIdFromUserAsync(int orderId, int userId);
+        Task<Order> GetOrderByOrderCode(string orderCode);
         Task<List<Order>> GetOrderByStatus(int status);
         Task<Order> AddOrderAsync(Order order);
         Task<bool> UpdateOrderAsync(int orderId, int status);
@@ -117,6 +118,11 @@ namespace _2Sport_BE.Service.Services
         public async Task<Order> GetOrderByIdFromUserAsync(int orderId, int userId)
         {
             return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.Id == orderId && _.UserId == userId);
+        }
+
+        public async Task<Order> GetOrderByOrderCode(string orderCode)
+        {
+            return await _unitOfWork.OrderRepository.GetObjectAsync(_ => _.OrderCode.Equals(orderCode.Trim()));
         }
     }
 
