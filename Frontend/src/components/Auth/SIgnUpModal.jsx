@@ -4,14 +4,14 @@ import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import LoginGoogle from "./LoginGoogle";
 import { signUpUser } from "../../services/authService";
+import { useTranslation } from "react-i18next";
 
 export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -78,19 +78,17 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
               <Dialog.Panel className="flex justify-between w-3/5 transform overflow-hidden rounded-md shadow-xl transition-all">
                 <div className="flex-col flex px-14 space-y-5 bg-zinc-700 text-white items-center justify-center w-1/2">
                   <h1 className="font-alfa text-lg text-orange-500">
-                    Come join us!
+                   {t("SignUpModal.Come join us!")}
                   </h1>
                   <p className="font-poppins text-center">
-                    We are so excited to have you here. If you haven't already,
-                    create an account to get access to exclusive offers,
-                    rewards, and discounts.
+                {t("SignUpModal.welcome_message")}
                   </p>
                   <button
                     className="flex font-poppins bg-gradient-to-r from-zinc-500 to-zinc-600 w-fit p-3 shadow-zinc-800 shadow-md rounded-md"
                     onClick={handleSignInClick}
                   >
-                    Already have an account?{" "}
-                    <p className="pl-1 text-orange-500 font-bold">Sign in!</p>
+                   {t("SignUpModal.have_account")}{" "}
+                    <p className="pl-1 text-orange-500 font-bold">{t("SignUpModal.Signin!")}</p>
                   </button>
                 </div>
                 <div className="bg-white w-1/2 px-20 text-black flex-col flex font-poppins justify-center py-10">
@@ -99,22 +97,22 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                     className=" space-y-3 text-black flex-col flex font-poppins justify-center"
                   >
                     <label className="font-alfa text-xl items-center text-center mb-2">
-                      Sign up
+                    {t("SignUpModal.Signup")}
                     </label>
                     <input
                       type="text"
-                      placeholder="Enter your full name"
+                      placeholder=  {t("SignUpModal.placeholder_fullname")}
                       className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                       {...register("fullName", { required: true })}
                     />
                     {errors.fullName && (
                       <p className="text-red-400 text-sm italic">
-                        Full name is required
+                      {t("SignUpModal.fullname")}
                       </p>
                     )}
                     <input
                       type="text"
-                      placeholder="Enter your username"
+                      placeholder={t("SignUpModal.placeholder_username")}
                       className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                       {...register("username", {
                         required: true,
@@ -124,7 +122,7 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                     />
                     {errors.username && errors.username.type === "required" && (
                       <p className="text-red-400 text-sm italic">
-                        This field is required!
+                       {t("SignUpModal.required")}
                       </p>
                     )}
                     {errors.username &&
@@ -133,13 +131,12 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                       )}
                     {errors.username && errors.username.type === "pattern" && (
                       <p className="text-red-400 text-sm italic">
-                        Username can only contain letters, numbers, and
-                        underscores
+                     {t("SignUpModal.validate_username")}
                       </p>
                     )}
                     <input
                       type="email"
-                      placeholder="Enter your email"
+                      placeholder={t("SignUpModal.placeholder_email")}
                       className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                       {...register("email", {
                         required: "Email is required",
@@ -157,7 +154,7 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter your password"
+                        placeholder=    {t("SignUpModal.placeholder_password")}
                         className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                         {...register("password", { required: true })}
                       />
@@ -171,13 +168,13 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                     </div>
                     {errors.password && (
                       <p className="text-red-400 text-sm italic">
-                        Password is required
+                      {t("SignUpModal.validate_password")}
                       </p>
                     )}
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
+                        placeholder= {t("SignUpModal.placeholder_confirmPassword")}
                         className="text-gray-700 p-2 rounded-lg border-2 border-zinc-400 w-full"
                         {...register("confirmPassword", {
                           required: true,
@@ -195,20 +192,20 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
                     {errors.confirmPassword &&
                       errors.confirmPassword.type === "required" && (
                         <p className="text-red-400 text-sm italic">
-                          Confirm password is required
+                   {t("SignUpModal.validate_confirmPassword")}
                         </p>
                       )}
                     {errors.confirmPassword &&
                       errors.confirmPassword.type === "validate" && (
                         <p className="text-red-400 text-sm italic">
-                          Passwords do not match
+                   {t("SignUpModal.notmatch_confirmPassword")}
                         </p>
                       )}
                     <button
                       type="submit"
                       className="bg-orange-500 font-alfa text-white rounded-lg px-10 py-2 w-full"
                     >
-                      Sign up
+                          {t("SignUpModal.Signup")}
                     </button>
                   </form>
                   <LoginGoogle />

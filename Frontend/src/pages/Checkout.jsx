@@ -97,9 +97,9 @@ const Checkout = () => {
     } else if (totalPrice >= 500000) {
       return 0;
     } else if (distance <= 10) {
-      return 15000;
+      return 0;
     } else {
-      return 35000;
+      return 0;
     }
   };
 

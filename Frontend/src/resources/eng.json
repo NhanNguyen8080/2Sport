@@ -246,7 +246,25 @@
     "Import.Search": "Search",
     "Import.Id": "Id",
     "Import.ProductName": "ProductName",
-    "Import.Quantity": "Quantity"
+    "Import.Quantity": "Quantity",
+    "SignUpModal.Come join us!": "Come join us!",
+    "SignUpModal.welcome_message":"We are so excited to have you here. If you haven't already, create an account to get access to exclusive offers, rewards, and discounts.",
+    "SignUpModal.have_account": "Already have an account",
+    "SignUpModal.Signup": "Sign up",
+    "SignUpModal.Signin!": "Sign in!",
+    "SignUpModal.placeholder_password": "Enter your password",
+    "SignUpModal.placeholder_fullname": "Enter your full name",
+    "SignUpModal.placeholder_username": "Enter your username",
+    "SignUpModal.placeholder_email": "Enter your email",
+    "SignUpModal.placeholder_confirmPassword": "Confirm your password",
+    "SignUpModal.notmatch_confirmPassword": "Passwords do not match",
+    "SignUpModal.required": "This field is required!",
+    "SignUpModal.validate_username": "Username can only contain letters, numbers, and underscores",
+    "SignUpModal.fullname": "Full name is required",
+    "SignUpModal.validate_password": "Password is required"
+
+
+
     
 
 }
