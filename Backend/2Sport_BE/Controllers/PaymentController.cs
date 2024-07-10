@@ -228,8 +228,7 @@ namespace _2Sport_BE.Controllers
                     Data = null
                 });
             }
-            var orders = await _unitOfWork.OrderRepository.GetAsync(_ => _.OrderCode.Equals(paymentResponse.OrderCode.Trim()), "OrderDetails");
-            Order order = orders.FirstOrDefault();
+            Order order = await _orderService.GetOrderByOrderCode(paymentResponse.OrderCode);
             if (order == null)
             {
                 return NotFound(new ResponseModel<object>
