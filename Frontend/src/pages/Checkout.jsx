@@ -27,20 +27,10 @@ const Checkout = () => {
     address: "",
   });
 
-  const totalPrice = selectedProducts.reduce((acc, item) => {
-    let itemPrice = item.totalPrice;
-  
-    if ((item.totalPrice / item.quantity) < 200000) {
-      itemPrice *= 0.7; 
-    } else if ((item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000) {
-      itemPrice *= 0.8;
-    } else {
-      itemPrice *= 0.9;
-    }
-  
-    return acc + itemPrice;
-  }, 0);
-  
+  const totalPrice = selectedProducts.reduce(
+    (acc, item) => acc + item.totalPrice,
+    0
+  );
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
@@ -50,34 +40,20 @@ const Checkout = () => {
     try {
       const token = localStorage.getItem("token");
       const orderMethodId = selectedOption;
-  
-      const orderDetails = selectedProducts.map((item) => {
-        let discountedPrice = item.totalPrice;
-        
-        if ((item.totalPrice / item.quantity) < 200000) {
-          discountedPrice *= 0.7; 
-        } else if ((item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000) {
-          discountedPrice *= 0.8;
-        } else {
-          discountedPrice *= 0.9;
-        }
-  
-        return {
-          productId: item.productId,
-          quantity: item.quantity,
-          price: discountedPrice,
-        };
-      });
-  
+
       const data = {
         transportFee: transportFee,
         receivedDate: new Date().toISOString(),
-        orderDetails: orderDetails,
+        orderDetails: selectedProducts.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
         shipmentDetailId: shipment.id,
       };
-  
+
       const response = await checkout(token, orderMethodId, data);
-  
+
       if (orderMethodId === "1") {
         setOrderSuccess(true);
       } else if (orderMethodId === "2" && response.data.paymentLink) {
@@ -89,7 +65,6 @@ const Checkout = () => {
       console.error("Error during checkout:", error);
     }
   };
-  
 
   const calculateTransportFee = (distance) => {
     if (distance < 5) {
@@ -97,9 +72,9 @@ const Checkout = () => {
     } else if (totalPrice >= 500000) {
       return 0;
     } else if (distance <= 10) {
-      return 0;
+      return 15000;
     } else {
-      return 0;
+      return 35000;
     }
   };
 
@@ -147,23 +122,8 @@ const Checkout = () => {
                     <img
                       src={item.mainImagePath}
                       alt={item.mainImageName}
-                      className="w-auto h-32 pr-2 object-scale-down rounded"
+                      className="w-auto h-32 object-scale-down rounded"
                     />
-                    {(item.totalPrice / item.quantity) < 200000 && (
-                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 30%
-                      </div>
-                    )}
-                    {(item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000 && (
-                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 20%
-                      </div>
-                    )}
-                    {(item.totalPrice / item.quantity) >= 500000 && (
-                      <div className="absolute top-3 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 10%
-                      </div>
-                    )}
                     <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {item.quantity}
                     </span>
@@ -174,17 +134,7 @@ const Checkout = () => {
                         {item.productName}
                       </h3>
                     </div>
-                    <p className="text-lg text-black">
-                     
-                        {(item.totalPrice / item.quantity) < 200000
-                    ? ((item.totalPrice) * 0.7).toLocaleString() 
-                    : (item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000
-                      ? ((item.totalPrice) * 0.8).toLocaleString() 
-                      : ((item.totalPrice ) * 0.9).toLocaleString() 
-                  }
-                        {" "}
-                      VND
-                    </p>
+                    <p className="text-lg text-black">{item.totalPrice} VND</p>
                   </div>
                 </div>
               ))}
