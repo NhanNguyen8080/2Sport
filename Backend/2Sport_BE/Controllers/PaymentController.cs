@@ -192,29 +192,31 @@ namespace _2Sport_BE.Controllers
             }
             _unitOfWork.Save();
             // Tạo và trả về Response
-            OrderVM orderVM = new OrderVM
-            {
-                id = order.Id,
-                IntoMoney = order.IntoMoney,
-                Status = order.Status,
-                ReceivedDate = order.ReceivedDate,
-                ShipmentDetailId = order.ShipmentDetailId,
-                TransportFee = order.TransportFee,
-                PaymentMethod = "PayOs",
-                OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
-                {
-                    ProductId = item.ProductId,
-                    Price = (decimal) item.Price,
-                    Quantity = item.Quantity
-                }).ToList()
-            };
+            /* OrderVM orderVM = new OrderVM
+             {
+                 id = order.Id,
+                 IntoMoney = order.IntoMoney,
+                 Status = order.Status,
+                 ReceivedDate = order.ReceivedDate,
+                 ShipmentDetailId = order.ShipmentDetailId,
+                 TransportFee = order.TransportFee,
+                 PaymentMethod = "PayOs",
+                 OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
+                 {
+                     ProductId = item.ProductId,
+                     Price = (decimal) item.Price,
+                     Quantity = item.Quantity
+                 }).ToList()
+             };
 
-            return Ok(new ResponseModel<OrderVM>
-            {
-                IsSuccess = true,
-                Message = "Payment has been cancelled.",
-                Data = orderVM
-            });
+             return Ok(new ResponseModel<OrderVM>
+             {
+                 IsSuccess = true,
+                 Message = "Payment has been cancelled.",
+                 Data = orderVM
+             });*/
+            var redirectUrl = "https://twosport.vercel.app/order_cancel";
+            return Redirect(redirectUrl);
         }
         [HttpGet("return")]
         public async Task<IActionResult> HandleReturn([FromQuery] PaymentResponse paymentResponse)
@@ -258,7 +260,7 @@ namespace _2Sport_BE.Controllers
                 }
             }
             _unitOfWork.Save();
-            OrderVM orderVM = new OrderVM
+            /*OrderVM orderVM = new OrderVM
             {
                 id = order.Id,
                 IntoMoney = order.IntoMoney,
@@ -280,7 +282,9 @@ namespace _2Sport_BE.Controllers
                 IsSuccess = true,
                 Message = "Payment has been completed.",
                 Data = orderVM
-            });
+            });*/
+            var redirectUrl = "https://twosport.vercel.app/order_success";
+            return Redirect(redirectUrl);
         }
 
         [NonAction]
