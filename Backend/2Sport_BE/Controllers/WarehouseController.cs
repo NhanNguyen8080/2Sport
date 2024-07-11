@@ -38,7 +38,10 @@ namespace _2Sport_BE.Controllers
                 var query = (await _warehouseService.ListAllAsync()).Include(_ => _.Product).ToList();
                 foreach (var item in query)
                 {
-                    item.Product = await _productService.GetProductById((int)item.ProductId);
+                    if (item.ProductId != null)
+                    {
+                        item.Product = await _productService.GetProductById((int)item.ProductId);
+                    }
                 }
                 var result = _mapper.Map<List<WarehouseVM>>(query);
                 return Ok(new { total = result.Count(), data = result });
