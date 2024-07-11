@@ -49,18 +49,23 @@ const UserCart = ({ sortBy }) => {
     try {
       const response = await reduceCartItem(id, token);
       setCartData((prevCartData) => {
-        const updatedCartData = prevCartData.map((item) => {
-          if (item.id === id) {
-            const updatedQuantity = item.quantity - 1;
-            const updatedTotalPrice = (item.totalPrice / item.quantity) * updatedQuantity;
-            return {
-              ...item,
-              quantity: updatedQuantity,
-              totalPrice: updatedTotalPrice,
-            };
-          }
-          return item;
-        });
+        const updatedCartData = prevCartData
+          .map((item) => {
+            if (item.id === id) {
+              const updatedQuantity = item.quantity - 1;
+              if (updatedQuantity <= 0) {
+                return null;
+              } else {
+                return {
+                  ...item,
+                  quantity: updatedQuantity,
+                  totalPrice: item.totalPrice - item.totalPrice / item.quantity,
+                };
+              }
+            }
+            return item;
+          })
+          .filter((item) => item !== null);
         return updatedCartData;
       });
     } catch (error) {
@@ -79,11 +84,11 @@ const UserCart = ({ sortBy }) => {
         prevCartData.map((cartItem) =>
           cartItem.id === item.id
             ? {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-              totalPrice:
-                (cartItem.totalPrice / cartItem.quantity) * (cartItem.quantity + 1),
-            }
+                ...cartItem,
+                quantity: cartItem.quantity + 1,
+                totalPrice:
+                  cartItem.totalPrice + cartItem.totalPrice / cartItem.quantity,
+              }
             : cartItem
         )
       );
@@ -103,11 +108,11 @@ const UserCart = ({ sortBy }) => {
         prevCartData.map((cartItem) =>
           cartItem.id === item.id
             ? {
-              ...cartItem,
-              quantity,
-              totalPrice:
-                (cartItem.totalPrice / cartItem.quantity) * quantity,
-            }
+                ...cartItem,
+                quantity,
+                totalPrice:
+                  (cartItem.totalPrice / cartItem.quantity) * quantity,
+              }
             : cartItem
         )
       );
@@ -135,13 +140,7 @@ const UserCart = ({ sortBy }) => {
   const totalItems = cartData.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = selectedItems.reduce((acc, id) => {
     const item = cartData.find((item) => item.id === id);
-    const itemPrice =
-      (item.totalPrice / item.quantity) < 200000
-        ? (item.totalPrice * 0.7)
-        : (item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000
-          ? (item.totalPrice * 0.8)
-          : (item.totalPrice * 0.9);
-    return acc + itemPrice;
+    return acc + item.totalPrice;
   }, 0);
 
   const handleCheckout = () => {
@@ -209,29 +208,11 @@ const UserCart = ({ sortBy }) => {
                   />
                 </div>
                 <div className="w-5/12 flex items-center">
-                  <div className="relative">
-                    <img
-                      src={item.mainImagePath}
-                      alt={item.mainImageName}
-                      className="w-16 h-16 object-cover mr-4"
-                    />
-                    {(item.totalPrice / item.quantity) < 200000 && (
-                      <div className="absolute top-0 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 30%
-                      </div>
-                    )}
-                    {(item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000 && (
-                      <div className="absolute top-0 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 20%
-                      </div>
-                    )}
-                    {(item.totalPrice / item.quantity) >= 500000 && (
-                      <div className="absolute top-0 left-0  bg-orange-500 text-white font-poppins p-2 text-xs">
-                        - 10%
-                      </div>
-                    )}
-                  </div>
-
+                  <img
+                    src={item.mainImagePath}
+                    alt={item.mainImageName}
+                    className="w-16 h-16 object-cover mr-4"
+                  />
                   <Link
                     to={`/product/${item.productId}`}
                     className="text-sm font-poppins font-bold text-wrap w-1/2"
@@ -263,26 +244,12 @@ const UserCart = ({ sortBy }) => {
                   </button>
                 </div>
                 <div className="w-1/12 text-center">
-                  {(item.totalPrice / item.quantity) < 200000
-                    ? ((item.totalPrice / item.quantity) * 0.7).toLocaleString() 
-                    : (item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000
-                      ? ((item.totalPrice / item.quantity) * 0.8).toLocaleString() 
-                      : ((item.totalPrice / item.quantity) * 0.9).toLocaleString() 
-                  }
-                  {" "}
+                  {(item.totalPrice / item.quantity).toLocaleString()}{" "}
                   {t("user_cart.vnd")}
                 </div>
                 <div className="w-2/12 text-center">
-                  {(item.totalPrice / item.quantity) < 200000
-                    ? (item.totalPrice * 0.7).toLocaleString()
-                    : (item.totalPrice / item.quantity) >= 200000 && (item.totalPrice / item.quantity) < 500000
-                      ? (item.totalPrice * 0.8).toLocaleString() 
-                      : (item.totalPrice * 0.9).toLocaleString() 
-                  }
-                  {" "}
-                  {t("user_cart.vnd")}
+                  {item.totalPrice.toLocaleString()} {t("user_cart.vnd")}
                 </div>
-
                 <div className="w-1/12 text-center">
                   <button
                     className="text-red-500"
