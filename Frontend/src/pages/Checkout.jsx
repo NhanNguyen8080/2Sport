@@ -31,7 +31,7 @@ const Checkout = () => {
     (acc, item) => acc + item.totalPrice,
     0
   );
-
+console.log(selectedProducts);
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -47,12 +47,13 @@ const Checkout = () => {
         orderDetails: selectedProducts.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
-          price: item.price,
+          price: item.totalPrice,
         })),
         shipmentDetailId: shipment.id,
       };
 
       const response = await checkout(token, orderMethodId, data);
+      console.log(data);
 
       if (orderMethodId === "1") {
         setOrderSuccess(true);
