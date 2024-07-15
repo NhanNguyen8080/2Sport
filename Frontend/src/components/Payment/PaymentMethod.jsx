@@ -21,7 +21,7 @@ const PaymentMethod = ({ selectedOption, handleOptionChange }) => {
               <span className="ml-2">{t("payment.cash_on_delivery")}</span>
             </label>
             {selectedOption === "1" && (
-              <p className="mt-4 text-black bg-gray-300 p-2 rounded text-wrap">
+              <p className="mt-4 text-sm text-black bg-gray-300 p-2 rounded text-wrap">
                 {t("payment.cash_on_delivery_description")}
               </p>
             )}
@@ -38,7 +38,7 @@ const PaymentMethod = ({ selectedOption, handleOptionChange }) => {
               <span className="ml-2">{t("payment.bank_transfer")}</span>
             </label>
             {selectedOption === "2" && (
-              <p className="mt-4 text-black bg-gray-300 p-2 rounded text-wrap">
+              <p className="mt-4 text-sm text-black bg-gray-300 p-2 rounded text-wrap">
                 {t("payment.bank_transfer_description")}
               </p>
             )}

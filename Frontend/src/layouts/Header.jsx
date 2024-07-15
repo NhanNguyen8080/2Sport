@@ -30,7 +30,7 @@ function Header() {
   };
   return (
     <>
-      <div className="w-full relative z-50">
+      <div className="w-full relative z-50 pb-28">
         <div className="fixed top-0 left-0 right-0">
           <div className="bg-white/95 backdrop-blur-lg font-medium text-black flex justify-between items-center relative text-xs py-2 z-50">
             <div className="flex pl-20 items-center space-x-2">

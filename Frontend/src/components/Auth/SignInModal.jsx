@@ -42,7 +42,9 @@ export default function SignInModal() {
       // console.log(decoded);
       setIsSignInOpen(false);
       if (decoded.role === "Admin") {
-        navigate('/dashboard');
+        navigate('/admin/dashboard');
+      } else if (decoded.role ==="Employee") {
+        navigate('/employee/warehouse');
       }
     } catch (error) {
       // Handle error inside authenticateUser
@@ -193,7 +195,7 @@ export default function SignInModal() {
                           {t("signin.password_required")}
                         </p>
                       )}
-                      <button
+                      <label
                         className="text-left pb-3 text-blue-500 underline"
                         onClick={() => {
                           closeSignInModal();
@@ -201,7 +203,7 @@ export default function SignInModal() {
                         }}
                       >
                         {t("signin.forgot_password")}
-                      </button>
+                      </label>
 
                       <button
                         type="submit"
