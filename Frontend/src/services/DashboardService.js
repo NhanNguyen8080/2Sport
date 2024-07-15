@@ -4,7 +4,7 @@ import { fetchOrdersAPI, fetchOrdersbyStatusAPI } from "../api/apiDashboard";
 export const fetchOrders = async () => {
   try {
     const  response = await fetchOrdersAPI();
-    toast.success("Orders fetched successfully");
+    toast.success("Đã tìm nạp đơn hàng thành công");
     return  response.data.$values;
   } catch (error) {
     console.error('Error fetching orders:', error);
@@ -16,7 +16,7 @@ export const fetchOrders = async () => {
 export const fetchOrdersbyStatus = async () => {
   try {
     const  response = await fetchOrdersbyStatusAPI();
-    toast.success("Orders fetched successfully");
+    toast.success("Đã tìm nạp đơn hàng thành công");
     return  response.data;
   } catch (error) {
     console.error('Error fetching orders:', error);

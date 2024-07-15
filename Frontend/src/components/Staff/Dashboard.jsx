@@ -5,19 +5,16 @@ import {
   Breadcrumbs,
   CardBody,
   Typography,
-  Avatar,
   Checkbox,
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEllipsisVertical,
-  faArrowUp,
-  faCalendar,
   faBagShopping
 } from "@fortawesome/free-solid-svg-icons";
 import { fetchOrders } from "../../services/DashboardService";
 import { useTranslation } from "react-i18next";
-
+import OrderDetail from "./OrderDetail"; // Import OrderDetail
 
 export default function Dashboard() {
   const { t } = useTranslation();
@@ -25,10 +22,8 @@ export default function Dashboard() {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalOrders, setTotalOrders] = useState(0);
-  const [activeAmount, setActiveAmount] = useState(0);
-  const [completedAmount, setCompletedAmount] = useState(0);
-  const [activeLength, setActiveLength] = useState(0);
-  const [completedLength, setCompletedLength] = useState(0);
+  const [activeOrderId, setActiveOrderId] = useState(null); // State to hold active order ID
+
   const formatPrice = (value) => {
     return new Intl.NumberFormat('en-US', { minimumFractionDigits: 0 }).format(value) + ' VND';
   };
@@ -38,7 +33,6 @@ export default function Dashboard() {
       try {
         const ordersData = await fetchOrders();
         setOrders(ordersData);
-        // console.log(`${t("dashboard.orders")}`, ordersData);
 
         // Calculate totals
         const totalOrdersCount = ordersData.length;
@@ -62,6 +56,10 @@ export default function Dashboard() {
     );
   };
 
+  const handleOrderClick = (orderId) => {
+    setActiveOrderId(orderId); // Set the active order ID
+  };
+
   return (
     <>
       <h2 className="text-2xl font-bold mx-10 mt-4">{t("dashboard.dashboard")}</h2>
@@ -81,57 +79,11 @@ export default function Dashboard() {
             <FontAwesomeIcon icon={faEllipsisVertical} />
           </div>
           <div className="flex items-center justify-start mb-2">
-          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
+            <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
             <p className="text-xl font-bold">{formatPrice(totalAmount.toFixed(2))}</p>
           </div>
         </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">{t("dashboard.active_orders")}</h3>
-            <FontAwesomeIcon icon={faEllipsisVertical} />
-          </div>
-          <div className="flex items-center justify-start mb-2">
-          <div className="flex items-center justify-start mb-2">
-          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
-            <p className="text-xl font-bold"></p>
-          </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">
-              {t("dashboard.completed_orders")}
-            </h3>
-            <FontAwesomeIcon icon={faEllipsisVertical} />
-          </div>
-          <div className="flex items-center justify-start mb-2">
-          <div className="flex items-center justify-start mb-2">
-          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
-            <p className="text-xl font-bold"></p>
-          </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
-        <Card className="shadow-md p-4 w-full">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-lg font-semibold text-black">{t("dashboard.return_orders")}</h3>
-            <FontAwesomeIcon icon={faEllipsisVertical} />
-          </div>
-          <div className="flex items-center justify-start mb-2">
-          <div className="flex items-center justify-start mb-2">
-          <FontAwesomeIcon icon={faBagShopping} className="text-orange-500 pr-2"/>
-            <p className="text-xl font-bold"></p>
-          </div>
-            <div className="flex justify-between items-center w-full">
-              <p className="text-xl font-bold"></p>
-            </div>
-          </div>
-        </Card>
+        {/* Additional Cards for active orders, completed orders, etc. */}
       </div>
 
       <Card className="h-full w-[95.7%] mx-10 my-10">
@@ -216,76 +168,86 @@ export default function Dashboard() {
                 const isSelected = selectedRowKeys.includes(order.id);
 
                 return (
-                  <tr
-                    key={order.id}
-                    className={isSelected ? "bg-blue-100" : ""}
-                  >
-                    <td className={classes}>
-                      <Checkbox
-                        color="blue"
-                        checked={isSelected}
-                        onChange={() => onSelectChange(order.id)}
-                      />
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {order.orderCode}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {new Date(order.createDate).toLocaleDateString()}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center">
+                  <>
+                    <tr
+                      key={order.id}
+                      className={isSelected ? "bg-blue-100 cursor-pointer" : "cursor-pointer"}
+                      onClick={() => handleOrderClick(order.id)} // Handle row click
+                    >
+                      <td className={classes}>
+                        <Checkbox
+                          color="blue"
+                          checked={isSelected}
+                          onChange={() => onSelectChange(order.id)}
+                        />
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.customerName}
+                          {order.orderCode}
                         </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center">
-                        <span
-                          className={`inline-block w-2 h-2 mr-2 rounded-full ${
-                            order.status === "Order Confirmation"
-                              ? "bg-green-500"
-                              : order.status === "Canceled"
-                              ? "bg-red-500"
-                              : "bg-gray-500"
-                          }`}
-                        ></span>
+                      </td>
+                      <td className={classes}>
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {order.status}
+                          {new Date(order.createDate).toLocaleDateString()}
                         </Typography>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {order.amount}
-                      </Typography>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {order.customerName}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center">
+                          <span
+                            className={`inline-block w-2 h-2 mr-2 rounded-full ${
+                              order.status === "Order Confirmation"
+                                ? "bg-green-500"
+                                : order.status === "Canceled"
+                                ? "bg-red-500"
+                                : "bg-gray-500"
+                            }`}
+                          ></span>
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {order.status}
+                          </Typography>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {order.amount}
+                        </Typography>
+                      </td>
+                    </tr>
+                    {activeOrderId === order.id && (
+                      <tr key={`${order.id}-details`}>
+                        <td colSpan="6">
+                          <OrderDetail orderId={activeOrderId} />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 );
               })}
             </tbody>
