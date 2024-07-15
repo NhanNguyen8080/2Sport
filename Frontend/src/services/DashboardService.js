@@ -16,7 +16,6 @@ export const fetchOrders = async () => {
 export const fetchOrdersbyStatus = async () => {
   try {
     const  response = await fetchOrdersbyStatusAPI();
-    toast.success("Orders fetched successfully");
     return  response.data;
   } catch (error) {
     console.error('Error fetching orders:', error);
