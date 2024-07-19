@@ -53,7 +53,7 @@ console.log(selectedProducts);
       };
 
       const response = await checkout(token, orderMethodId, data);
-      console.log(data);
+      // console.log(data);
 
       if (orderMethodId === "1") {
         setOrderSuccess(true);

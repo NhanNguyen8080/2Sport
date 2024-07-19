@@ -49,13 +49,12 @@ const Logout = () => {
         // console.log('Request Payload:', JSON.stringify(data));
 
         try {
-            const response = await signOutUser(data);
+            // const response = await signOutUser(data);
             // console.log('Response:', response.data);
             toast.success("You have signed out successfully");
             navigate('/');
             dispatch(logout());
-            localStorage.removeItem('token');
-            localStorage.removeItem('refreshToken');
+            localStorage.clear();
         } catch (error) {
             console.error('There was an error making the request!', error);
             console.error('Response data:', error.response?.data);
