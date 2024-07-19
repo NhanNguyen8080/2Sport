@@ -51,7 +51,7 @@ const Logout = () => {
         try {
             // const response = await signOutUser(data);
             // console.log('Response:', response.data);
-            toast.success("You have signed out successfully");
+            toast.success("Bạn đã đăng xuất thành công");
             navigate('/');
             dispatch(logout());
             localStorage.clear();

@@ -14,7 +14,7 @@ export const authenticateUser = async (dispatch, data) => {
     return decoded;
   } catch (error) {
     console.error('Login failed', error);
-    toast.error("Login failed");
+    toast.error("Đăng nhập thất bại");
     throw error;
   }
 };
