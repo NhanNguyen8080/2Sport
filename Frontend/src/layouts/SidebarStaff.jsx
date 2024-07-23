@@ -15,10 +15,10 @@ export default function SidebarStaff() {
         <FontAwesomeIcon icon={faGauge} className="pr-3" /> {t("sidebar_staff.dashboard")}
         </ListItem>
         </Link>
-        <ListItem>
+        {/* <ListItem>
           
         <FontAwesomeIcon icon={faFileArrowDown} className="pr-3" /> {t("sidebar_staff.import")}
-        </ListItem>
+        </ListItem> */}
       
       </List>
       

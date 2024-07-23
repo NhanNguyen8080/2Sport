@@ -24,6 +24,7 @@ import BarChart from "../Chart/BarChart";
 import PieChart from "../Chart/PieChart";
 import HeaderStaff from "../../layouts/HeaderStaff";
 import { toast } from "react-toastify";
+import RecentOrder from "./RecentOrder";
 
 
 export default function Dashboard() {
@@ -157,8 +158,8 @@ export default function Dashboard() {
               <PieChart />
             </div>
           </div>
-
-          <Card className="h-screen w-[95.7%] mx-10 my-10">
+<RecentOrder/>
+          {/* <Card className="h-screen w-[95.7%] mx-10 my-10">
             <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
               {t("dashboard.recent_orders")}
             </Typography>
@@ -323,7 +324,7 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </CardBody>
-          </Card>
+          </Card> */}
         </div>
       </div>
     </>

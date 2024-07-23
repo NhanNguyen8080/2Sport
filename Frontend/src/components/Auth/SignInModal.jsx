@@ -40,10 +40,12 @@ export default function SignInModal() {
     try {
       const decoded = await authenticateUser(dispatch, data);
       // console.log(decoded);
+      // const currentTime = Date.now() / 1000;
+      // console.log(currentTime);
       setIsSignInOpen(false);
       if (decoded.role === "Admin") {
         navigate('/admin/dashboard');
-      } else if (decoded.role ==="Employee") {
+      } else if (decoded.role === "Employee") {
         navigate('/employee/warehouse');
       }
     } catch (error) {
