@@ -58,7 +58,7 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
         }
       });
       const data = await response.json();
-      return  { total:data.total, products: data.data.$values };
+      return  { total: data.total, products: data.data.$values };
     };
 
     const checkWarehouseQuantities = async (products) => {
@@ -144,12 +144,12 @@ const ProductList = ({ sortBy, isAscending, selectedBrands, selectedCategories, 
       disabled={currentPage === 1}
       onClick={handlePrevPage}
       >
-      <FontAwesomeIcon icon={faChevronLeft} />
+        <FontAwesomeIcon icon={faChevronLeft} />
       </button>
       <span className="px-4 py-2">{currentPage}</span>
       <button
-      disabled={currentPage === totalPages}
-      onClick={handleNextPage}
+        disabled={currentPage === totalPages}
+        onClick={handleNextPage}
       >
       <FontAwesomeIcon icon={faChevronRight} />
       </button>

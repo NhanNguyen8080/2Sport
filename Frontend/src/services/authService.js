@@ -10,11 +10,11 @@ export const authenticateUser = async (dispatch, data) => {
     localStorage.setItem('refreshToken', response.data.data.refreshToken);
     const decoded = jwtDecode(response.data.data.token);
     dispatch(login(decoded));
-    toast.success("Login successful");
+    toast.success("Đăng nhập thành công");
     return decoded;
   } catch (error) {
     console.error('Login failed', error);
-    toast.error("Login failed");
+    toast.error("Đăng nhập thất bại");
     throw error;
   }
 };
@@ -54,11 +54,12 @@ export const checkAndRefreshToken = async () => {
   if (decoded.exp < currentTime) {
     try {
       const response = await refreshTokenAPI(token, refreshToken);
+      // console.log(response);
       const newToken = response.data.data.token;
       const newRefreshToken = response.data.data.refreshToken;
       localStorage.setItem('token', newToken);
       localStorage.setItem('refreshToken', newRefreshToken);
-      token = newToken; // update token to return the new token
+      token = newToken; 
     } catch (error) {
       console.error('Token refresh failed', error);
       throw error;
