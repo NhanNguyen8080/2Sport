@@ -34,7 +34,6 @@ namespace _2Sport_BE.Controllers
         [Route("get-all-orders")]
         public async Task<IActionResult> GetOrders()
         {
-            // Truy vấn dữ liệu từ dịch vụ đơn hàng
             var orders = await _orderService.GetOrdersAsync();
             var ordersInfo = new List<OrderResponse>();
 
@@ -46,7 +45,7 @@ namespace _2Sport_BE.Controllers
                     var user = await _userService.FindAsync((int)order.UserId);
                     if (user != null)
                     {
-                        var orderDetails = order.OrderDetails ?? new List<OrderDetail>(); // Thêm kiểm tra null
+                        var orderDetails = order.OrderDetails ?? new List<OrderDetail>();
                         OrderResponse orderInfo = new OrderResponse()
                         {
                             Id = order.Id,
@@ -66,7 +65,6 @@ namespace _2Sport_BE.Controllers
                     }
                 }
             }
-
             return Ok(ordersInfo);
         }
 

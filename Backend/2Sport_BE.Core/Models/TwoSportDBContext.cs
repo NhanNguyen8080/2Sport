@@ -39,7 +39,7 @@ namespace _2Sport_BE.Repository.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Warehouse> Warehouses { get; set; }
 
-       /* protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
@@ -244,12 +244,6 @@ namespace _2Sport_BE.Repository.Models
             {
                 entity.HasIndex(e => e.Id, "UQ__OrderDet__3214EC06FADB848B")
                     .IsUnique();
-
-                entity.Property(e => e.Quantity)
-                    .IsRequired(); // Hoặc các cấu hình khác nếu cần
-
-                entity.Property(e => e.Price)
-                    .IsRequired();
 
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.OrderDetails)

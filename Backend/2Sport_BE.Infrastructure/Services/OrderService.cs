@@ -76,7 +76,7 @@ namespace _2Sport_BE.Service.Services
         //For admin
         public async Task<IEnumerable<Order>> GetOrdersAsync()
         {
-            return await _unitOfWork.OrderRepository.GetAllAsync(_ => _.OrderDetails);
+            return await _unitOfWork.OrderRepository.GetAllAsync("OrderDetails"); ;
         }
         //For user
         public async Task<List<Order>> ListAllOrderByUseIdAsync(int userId)

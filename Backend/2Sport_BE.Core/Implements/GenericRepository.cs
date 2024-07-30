@@ -55,7 +55,7 @@ namespace _2Sport_BE.Repository.Implements
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(params string[] includes)
         {
             IQueryable<T> query = _dbSet;
 
