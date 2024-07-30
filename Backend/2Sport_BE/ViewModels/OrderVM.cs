@@ -40,7 +40,7 @@
         public double orderGrowthRatio { get; set; }
         public bool IsIncrease { get; set; }
     }
-    public class OrderInfo
+    public class OrderResponse
     {
         public int Id { get; set; }
         public string? OrderCode { get; set; }
@@ -48,5 +48,13 @@
         public string? CustomerName { get; set; }
         public string? Status { get; set; }
         public string? Amount {  get; set; }
+        public List<OrderDetailResponse> OrderDetails { get; set; }
+
+    }
+    public class OrderDetailResponse
+    {
+        public string? ProductName { get; set; }
+        public int? Quantity { get; set; }
+        public string TotalPrice { get; set; }
     }
 }

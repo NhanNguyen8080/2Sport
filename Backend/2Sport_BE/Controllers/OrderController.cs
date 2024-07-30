@@ -6,6 +6,7 @@ using _2Sport_BE.Service.Services;
 using _2Sport_BE.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Security.Claims;
 
@@ -19,11 +20,13 @@ namespace _2Sport_BE.Controllers
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public OrderController(IOrderService orderService, IMapper mapper, IUserService userService)
+        private readonly IProductService _productService;
+        public OrderController(IOrderService orderService, IMapper mapper, IUserService userService, IProductService productService)
         {
             _orderService = orderService;
             _mapper = mapper;
             _userService = userService;
+            _productService = productService;
         }
 
         // GET: api/Orders
@@ -31,33 +34,42 @@ namespace _2Sport_BE.Controllers
         [Route("get-all-orders")]
         public async Task<IActionResult> GetOrders()
         {
-           
+            // Truy vấn dữ liệu từ dịch vụ đơn hàng
             var orders = await _orderService.GetOrdersAsync();
-            var list = orders.ToList();
-            List<OrderInfo> ordersInfo = new List<OrderInfo>();
+            var ordersInfo = new List<OrderResponse>();
 
-            foreach (var order in list)
+            foreach (var order in orders)
             {
                 if (order != null)
                 {
+                    
                     var user = await _userService.FindAsync((int)order.UserId);
                     if (user != null)
                     {
-                        OrderInfo orderInfo = new OrderInfo()
+                        var orderDetails = order.OrderDetails ?? new List<OrderDetail>(); // Thêm kiểm tra null
+                        OrderResponse orderInfo = new OrderResponse()
                         {
                             Id = order.Id,
                             CreateDate = order.ReceivedDate.HasValue ? order.ReceivedDate.Value.ToString("MM/dd/yyyy") : null,
                             Amount = order.IntoMoney.ToString(),
-                            CustomerName = user.FullName,
+                            CustomerName = "abc",
                             OrderCode = order.OrderCode,
-                            Status = Enum.GetName(typeof(OrderStatus), order.Status)?.Replace('_', ' ')
+                            Status = Enum.GetName(typeof(OrderStatus), order.Status)?.Replace('_', ' '),
+                            OrderDetails = (await Task.WhenAll(orderDetails.Select(async od => new OrderDetailResponse
+                            {
+                                ProductName = (await _productService.GetProductById((int)od.ProductId)).ProductName,
+                                Quantity = od.Quantity,
+                                TotalPrice = ((decimal)od.Quantity * (decimal)od.Price).ToString()
+                            }))).ToList()
                         };
                         ordersInfo.Add(orderInfo);
                     }
                 }
             }
+
             return Ok(ordersInfo);
         }
+
         [HttpGet]
         [Route("get-orders-sales-by-status")]
         public async Task<IActionResult> GetSalesOrdersByStatus(int month,int status)

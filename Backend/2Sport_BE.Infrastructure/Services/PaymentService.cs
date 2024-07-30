@@ -62,7 +62,7 @@ namespace _2Sport_BE.Service.Services
                 for(int i = 0; i < listOrderDetail.Count; i++)
                 {   var product = await _productService.GetProductById((int)listOrderDetail[i].ProductId);
                     var name = product.ProductName;
-                    var soluong = listOrderDetail[i].Quantity ?? 0;
+                    var soluong = listOrderDetail[i].Quantity;
                     var thanhtien = Convert.ToInt32(listOrderDetail[i].Price.ToString());
                     ItemData item = new ItemData(name, soluong, thanhtien);
                     orders.Add(item);
@@ -74,7 +74,9 @@ namespace _2Sport_BE.Service.Services
                 }
                 string content = $"Thanh toan hoa don {order.OrderCode}";
                 int expiredAt = (int)(DateTimeOffset.UtcNow.ToUnixTimeSeconds() + (60 * 5));
-                PaymentData data = new PaymentData(Int32.Parse(order.OrderCode), Int32.Parse(order.IntoMoney.ToString()), content, orders, "https://twosportapiv2.azurewebsites.net/api/Payment/cancel", "https://twosportapiv2.azurewebsites.net/api/Payment/return", null, user.FullName, user.Email, user.Phone, user.Address, expiredAt);
+                PaymentData data = new PaymentData(Int32.Parse(order.OrderCode), Int32.Parse(order.IntoMoney.ToString()), content, orders,
+                    "https://twosportapiv2.azurewebsites.net/api/Payment/cancel", "https://twosportapiv2.azurewebsites.net/api/Payment/return",
+                    null, user.FullName, user.Email, user.Phone, user.Address, expiredAt);
                 var createPayment = await _payOs.createPaymentLink(data);
                 return createPayment.checkoutUrl;
             }
