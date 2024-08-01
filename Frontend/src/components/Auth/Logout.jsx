@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
@@ -14,7 +14,7 @@ const Logout = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { t } = useTranslation();
-
+    const location = useLocation();
     const handleLogout = async () => {
         // // Get all cookies
         // const cookiesArray = document.cookie.split(';');
@@ -51,7 +51,7 @@ const Logout = () => {
         try {
             // const response = await signOutUser(data);
             // console.log('Response:', response.data);
-            toast.success("You have signed out successfully");
+            toast.success("Bạn đã đăng xuất thành công");
             navigate('/');
             dispatch(logout());
             localStorage.clear();

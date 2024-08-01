@@ -19,7 +19,7 @@ namespace _2Sport_BE.Repository.Interfaces
         Task<T> GetObjectAsync(Expression<Func<T, bool>> filter = null);
         Task<int> CountAsync(Expression<Func<T, bool>> filter = null);
 
-        Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes);
+        Task<IEnumerable<T>> GetAllAsync(params string[] includes);
 
 
         Task InsertAsync(T entity);

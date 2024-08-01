@@ -36,7 +36,7 @@ export default function SignUpModal({ isOpen, closeModal, openSignInModal }) {
         email,
       });
       console.log("Sign-up successful:", response);
-      toast.success("Sign up successful");
+      toast.success("Đăng ký thành công");
       // dispatch(login(response.user)); // Uncomment and adjust if needed
       closeModal();
     } catch (error) {

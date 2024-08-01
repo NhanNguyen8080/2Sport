@@ -54,6 +54,7 @@ namespace _2Sport_BE.Infrastructure.Services
 
         public async Task<User> FindAsync(int id)
         {
+            var context = _context;
             var user = await _context.Users.FirstOrDefaultAsync(_ => _.Id == id);
             return user;
         }

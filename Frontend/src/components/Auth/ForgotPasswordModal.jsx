@@ -13,10 +13,10 @@ export default function ForgotPasswordModal({ isOpen, closeModal }) {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post('https://localhost:7276/api/Auth/forgot-password', data);
-      toast.success("Password reset link sent to your email!");
+      toast.success("Liên kết đặt lại mật khẩu được gửi đến email của bạn!");
       closeModal();
     } catch (error) {
-      toast.error("Failed to send password reset link. Please try again.");
+      toast.error("Không nhận được liên kết đặt lại mật khẩu. Vui lòng thử lại.");
     }
   };
 

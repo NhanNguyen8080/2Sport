@@ -191,30 +191,6 @@ namespace _2Sport_BE.Controllers
                 });
             }
             _unitOfWork.Save();
-            // Tạo và trả về Response
-            /* OrderVM orderVM = new OrderVM
-             {
-                 id = order.Id,
-                 IntoMoney = order.IntoMoney,
-                 Status = order.Status,
-                 ReceivedDate = order.ReceivedDate,
-                 ShipmentDetailId = order.ShipmentDetailId,
-                 TransportFee = order.TransportFee,
-                 PaymentMethod = "PayOs",
-                 OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
-                 {
-                     ProductId = item.ProductId,
-                     Price = (decimal) item.Price,
-                     Quantity = item.Quantity
-                 }).ToList()
-             };
-
-             return Ok(new ResponseModel<OrderVM>
-             {
-                 IsSuccess = true,
-                 Message = "Payment has been cancelled.",
-                 Data = orderVM
-             });*/
             var redirectUrl = "https://twosport.vercel.app/order_cancel";
             return Redirect(redirectUrl);
         }
@@ -260,29 +236,6 @@ namespace _2Sport_BE.Controllers
                 }
             }
             _unitOfWork.Save();
-            /*OrderVM orderVM = new OrderVM
-            {
-                id = order.Id,
-                IntoMoney = order.IntoMoney,
-                Status = order.Status,
-                ReceivedDate = order.ReceivedDate,
-                ShipmentDetailId = order.ShipmentDetailId,
-                TransportFee = order.TransportFee,
-                PaymentMethod = "PayOs",
-                OrderDetails = order.OrderDetails.Select(item => new OrderDetailRequest
-                {
-                    ProductId = item.ProductId,
-                    Price = (decimal)item.Price,
-                    Quantity = item.Quantity
-                }).ToList()
-            };
-
-            return Ok(new ResponseModel<OrderVM>
-            {
-                IsSuccess = true,
-                Message = "Payment has been completed.",
-                Data = orderVM
-            });*/
             var redirectUrl = "https://twosport.vercel.app/order_success";
             return Redirect(redirectUrl);
         }
@@ -361,8 +314,8 @@ namespace _2Sport_BE.Controllers
                     {
                         ProductId = product.Id,
                         Product = product,
-                        Quantity = item.Quantity,
-                        Price = item.Price,
+                        Quantity = (int) item.Quantity,
+                        Price = (int) item.Price,
                     };
 
                     order.OrderDetails.Add(orderDetail);
