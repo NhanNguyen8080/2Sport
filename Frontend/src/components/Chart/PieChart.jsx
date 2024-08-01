@@ -13,7 +13,6 @@ const PieChart = () => {
     const fetchData = async () => {
       try {
         const ordersData = await fetchOrders();
-       console.log(ordersData);
         setOrders(ordersData.data.$values)
         // Calculate the count of orders by status
         const statusCounts = orders.reduce((acc, order) => {
@@ -32,7 +31,7 @@ const PieChart = () => {
     };
 
     fetchData();
-  }, []);
+  }, [orders]);
 
   const chartOptions = {
     chart: {

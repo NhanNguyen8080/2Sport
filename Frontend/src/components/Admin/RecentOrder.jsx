@@ -264,92 +264,45 @@ export default function RecentOrder() {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan={7} className="p-0">
-                                                <Collapse in={openOrderDetail === order.id}>
-                                                    <table className="w-full table-auto text-left">
-                                                        <thead>
-                                                            <tr>
-                                                                <th className="p-4">
+                                            <td colSpan={6} className="p-0">
+                                                <Collapse open={openOrderDetail === order.id}>
+                                                    <div className="p-4 bg-gray-100">
+                                                        {orderDetails[order.id] ? (
+                                                            orderDetails[order.id].map((detail) => (
+                                                                <div key={detail.$id} className="mb-2 items-center justify-between pl-32">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        {t("dashboard.product_name")}
+                                                                        <strong>Tên sản phẩm:</strong> {detail.productName}
                                                                     </Typography>
-                                                                </th>
-                                                                <th className="p-4">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        {t("dashboard.unit_price")}
+                                                                        <strong>Số lượng:</strong> {detail.quantity}
                                                                     </Typography>
-                                                                </th>
-                                                                <th className="p-4">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        {t("dashboard.quantity")}
+                                                                        <strong>Đơn giá:</strong> {formatPrice(detail.totalPrice)}
                                                                     </Typography>
-                                                                </th>
-                                                                <th className="p-4">
-                                                                    <Typography
-                                                                        variant="small"
-                                                                        color="blue-gray"
-                                                                        className="font-normal"
-                                                                    >
-                                                                        {t("dashboard.amount")}
-                                                                    </Typography>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {orderDetails[order.id]?.map((item, detailIndex) => (
-                                                                <tr key={detailIndex}>
-                                                                    <td className="p-4">
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal"
-                                                                        >
-                                                                            {item.productName}
-                                                                        </Typography>
-                                                                    </td>
-                                                                    <td className="p-4">
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal"
-                                                                        >
-                                                                            {formatPrice(item.unitPrice)}
-                                                                        </Typography>
-                                                                    </td>
-                                                                    <td className="p-4">
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal"
-                                                                        >
-                                                                            {item.quantity}
-                                                                        </Typography>
-                                                                    </td>
-                                                                    <td className="p-4">
-                                                                        <Typography
-                                                                            variant="small"
-                                                                            color="blue-gray"
-                                                                            className="font-normal"
-                                                                        >
-                                                                            {formatPrice(item.amount)}
-                                                                        </Typography>
-                                                                    </td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
+                                                                </div>
+                                                            ))
+                                                        ) : (
+                                                            <Typography
+                                                                variant="small"
+                                                                color="blue-gray"
+                                                                className="font-normal"
+                                                            >
+                                                                No order details available.
+                                                            </Typography>
+                                                        )}
+                                                    </div>
                                                 </Collapse>
                                             </td>
                                         </tr>
@@ -367,7 +320,7 @@ export default function RecentOrder() {
                        prev
                     </IconButton>
                     <Typography variant="small">
-                        page {currentPage} of {" "}
+                        page {currentPage} of{" "}
                         {Math.ceil(orders.length / ordersPerPage)}
                     </Typography>
                     <IconButton
