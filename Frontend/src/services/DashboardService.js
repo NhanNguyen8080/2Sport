@@ -4,8 +4,8 @@ import { fetchOrdersAPI, fetchOrdersbyStatusAPI } from "../api/apiDashboard";
 export const fetchOrders = async () => {
   try {
     const  response = await fetchOrdersAPI();
-    
-    return  response.data.$values;
+    // console.log(response);
+    return  response;
   } catch (error) {
     console.error('Error fetching orders:', error);
     toast.error("Error fetching orders: " + error.message);

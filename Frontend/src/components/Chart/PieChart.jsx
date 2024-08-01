@@ -3,6 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import { fetchOrders } from "../../services/DashboardService";
 
 const PieChart = () => {
+  const [orders, setOrders] = useState([]); 
   const [chartData, setChartData] = useState({
     series: [],
     labels: [],
@@ -11,8 +12,9 @@ const PieChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const orders = await fetchOrders();
-        
+        const ordersData = await fetchOrders();
+       console.log(ordersData);
+        setOrders(ordersData.data.$values)
         // Calculate the count of orders by status
         const statusCounts = orders.reduce((acc, order) => {
           acc[order.status] = (acc[order.status] || 0) + 1;

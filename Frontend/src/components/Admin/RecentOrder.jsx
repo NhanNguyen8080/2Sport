@@ -8,6 +8,7 @@ import {
     Checkbox,
     Collapse,
     Button,
+    IconButton,
 } from "@material-tailwind/react";
 import { fetchOrders } from "../../services/DashboardService";
 import { useTranslation } from "react-i18next";
@@ -15,36 +16,21 @@ import { selectUser } from "../../redux/slices/authSlice";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-
 export default function RecentOrder() {
     const { t } = useTranslation();
     const [orders, setOrders] = useState([]);
+    const [orderDetails, setOrderDetails] = useState({});
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
-    const user = useSelector(selectUser)
-
-    const orderDetails = [
-        { OrderId: 124, ProductName: "Vợt Cầu Lông Kumpoo Power Control K520 Pro Trắng", Quantity: 1, Price: 415000 },
-        { OrderId: 125, ProductName: "Giày Nike Kyrie Flytrap 5 'White University Red' CZ41", Quantity: 1, Price: 415000 },
-        { OrderId: 126, ProductName: "Giày Jordan Reveal Gym Red 2016", Quantity: 1, Price: 365000 },
-        { OrderId: 128, ProductName: "Giày Adidas D Lillard 2.0 Away", Quantity: 1, Price: 300000 },
-        { OrderId: 129, ProductName: "NBA CREW SOCKS", Quantity: 1, Price: 75000 },
-        { OrderId: 130, ProductName: "NBA CREW SOCKS", Quantity: 1, Price: 75000 },
-        { OrderId: 131, ProductName: "Giày Jordan Reveal Gym Red 2016", Quantity: 1, Price: 385000 },
-        { OrderId: 132, ProductName: "NBA CREW SOCKS", Quantity: 1, Price: 95000 },
-        { OrderId: 133, ProductName: "NBA CREW SOCKS", Quantity: 1, Price: 75000 },
-        { OrderId: 137, ProductName: "Ống cầu 88", Quantity: 3, Price: 890000 },
-        { OrderId: 138, ProductName: "Bóng Rổ Cao Su Số 7 Street Ball", Quantity: 1, Price: 1000000 },
-        { OrderId: 139, ProductName: "BANH GERUSTAR FEDERATION", Quantity: 1, Price: 135000 },
-        { OrderId: 141, ProductName: "Ống cầu 88", Quantity: 3, Price: 335000 }
-    ];
-    
+    const [currentPage, setCurrentPage] = useState(1);
+    const ordersPerPage = 10;
+    const user = useSelector(selectUser);
 
     const [openOrderDetail, setOrderDetail] = useState(null);
+    const [isDescending, setIsDescending] = useState(true);
 
     const toggleOpen = (orderId) => {
-        console.log(orderId);
         setOrderDetail((cur) => (cur === orderId ? null : orderId));
     };
 
@@ -56,23 +42,28 @@ export default function RecentOrder() {
         const fetchData = async () => {
             try {
                 const ordersData = await fetchOrders();
-                setOrders(ordersData);
-                // console.log(`${t("dashboard.orders")}`, ordersData);
+                const sortedOrders = ordersData.data.$values.sort((a, b) => isDescending ? b.id - a.id : a.id - b.id);
+                setOrders(sortedOrders);
 
-                // Calculate totals
-                const totalOrdersCount = ordersData.length;
-                const totalAmountSum = ordersData.reduce((acc, order) => acc + parseFloat(order.amount), 0);
+                const detailsMap = {};
+                sortedOrders.forEach(order => {
+                    detailsMap[order.id] = order.orderDetails.$values;
+                });
+                setOrderDetails(detailsMap);
+
+                const totalOrdersCount = sortedOrders.length;
+                const totalAmountSum = sortedOrders.reduce((acc, order) => acc + parseFloat(order.amount), 0);
                 setTotalOrders(totalOrdersCount);
                 setTotalAmount(totalAmountSum);
                 toast.success("Orders fetched successfully");
             } catch (error) {
-                console.log(error);
+                console.error('Error fetching orders:', error);
                 setOrders([]);
             }
         };
 
         fetchData();
-    }, []);
+    }, [isDescending]); // Dependency on isDescending
 
     const onSelectChange = (selectedKey) => {
         setSelectedRowKeys((prevSelectedRowKeys) =>
@@ -82,12 +73,32 @@ export default function RecentOrder() {
         );
     };
 
+    const currentOrders = orders.slice(
+        (currentPage - 1) * ordersPerPage,
+        currentPage * ordersPerPage
+    );
+
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage((prevPage) => prevPage - 1);
+    };
+
+    const toggleSortOrder = () => {
+        setIsDescending(!isDescending);
+    };
+
     return (
         <>
             <Card className="h-screen w-[95.7%] mx-10 my-10">
                 <Typography variant="h6" color="black" className="mx-10 mt-4 text-2xl">
                     {t("dashboard.recent_orders")}
                 </Typography>
+                <Button onClick={toggleSortOrder} className="mx-10 mt-4 w-fit">
+                    {isDescending ? "Sort Ascending" : "Sort Descending"}
+                </Button>
 
                 <CardBody className="overflow-scroll px-0">
                     <table className="w-full min-w-max table-auto text-left">
@@ -109,6 +120,15 @@ export default function RecentOrder() {
                                             selectedRowKeys.length < orders.length
                                         }
                                     />
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
+                                    <Typography
+                                        variant="large"
+                                        color="blue-gray"
+                                        className="font-normal leading-none opacity-70"
+                                    >
+                                        #
+                                    </Typography>
                                 </th>
                                 <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
                                     <Typography
@@ -158,14 +178,12 @@ export default function RecentOrder() {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((order, index) => {
-                                const isLast = index === orders.length - 1;
+                            {currentOrders.map((order, index) => {
+                                const isLast = index === currentOrders.length - 1;
                                 const classes = isLast
                                     ? "p-4"
                                     : "p-4 border-b border-blue-gray-50";
                                 const isSelected = selectedRowKeys.includes(order.id);
-
-                                const filteredOrderDetails = orderDetails.filter(detail => detail.OrderId === order.id);
 
                                 return (
                                     <Fragment key={order.id}>
@@ -179,6 +197,15 @@ export default function RecentOrder() {
                                                     checked={isSelected}
                                                     onChange={() => onSelectChange(order.id)}
                                                 />
+                                            </td>
+                                            <td className={classes}>
+                                                <Typography
+                                                    variant="small"
+                                                    color="blue-gray"
+                                                    className="font-normal"
+                                                >
+                                                    {(currentPage - 1) * ordersPerPage + index + 1}
+                                                </Typography>
                                             </td>
                                             <td className={classes}>
                                                 <Typography
@@ -210,7 +237,7 @@ export default function RecentOrder() {
                                                 </div>
                                             </td>
                                             <td className={classes}>
-                                                <div className={`flex items-center justify-center  ${order.status === "PAID"
+                                                <div className={`flex items-center justify-center ${order.status === "PAID"
                                                     ? "text-green-500 border rounded-full w-fit px-2 border-green-500"
                                                     : order.status === "CANCELLED"
                                                         ? "text-red-500 border rounded-full w-fit px-2 border-red-500"
@@ -237,45 +264,92 @@ export default function RecentOrder() {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan={6} className="p-0">
-                                                <Collapse open={openOrderDetail === order.id}>
-                                                    <div className="p-4 bg-gray-100 ">
-                                                        {filteredOrderDetails.length > 0 ? (
-                                                            filteredOrderDetails.map((detail) => (
-                                                                <div key={detail.ProductName} className="mb-2 items-center justify-between pl-32">
+                                            <td colSpan={7} className="p-0">
+                                                <Collapse in={openOrderDetail === order.id}>
+                                                    <table className="w-full table-auto text-left">
+                                                        <thead>
+                                                            <tr>
+                                                                <th className="p-4">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        <strong>Tên sản phẩm:</strong> {detail.ProductName}
+                                                                        {t("dashboard.product_name")}
                                                                     </Typography>
+                                                                </th>
+                                                                <th className="p-4">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        <strong>Số lượng:</strong> {detail.Quantity}
+                                                                        {t("dashboard.unit_price")}
                                                                     </Typography>
+                                                                </th>
+                                                                <th className="p-4">
                                                                     <Typography
                                                                         variant="small"
                                                                         color="blue-gray"
                                                                         className="font-normal"
                                                                     >
-                                                                        <strong>Tổng thanh toán:</strong> {formatPrice(detail.Price)}
+                                                                        {t("dashboard.quantity")}
                                                                     </Typography>
-                                                                </div>
-                                                            ))
-                                                        ) : (
-                                                            <Typography
-                                                                variant="small"
-                                                                color="blue-gray"
-                                                                className="font-normal"
-                                                            >
-                                                                Không có thông tin
-                                                            </Typography>
-                                                        )}
-                                                    </div>
+                                                                </th>
+                                                                <th className="p-4">
+                                                                    <Typography
+                                                                        variant="small"
+                                                                        color="blue-gray"
+                                                                        className="font-normal"
+                                                                    >
+                                                                        {t("dashboard.amount")}
+                                                                    </Typography>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {orderDetails[order.id]?.map((item, detailIndex) => (
+                                                                <tr key={detailIndex}>
+                                                                    <td className="p-4">
+                                                                        <Typography
+                                                                            variant="small"
+                                                                            color="blue-gray"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {item.productName}
+                                                                        </Typography>
+                                                                    </td>
+                                                                    <td className="p-4">
+                                                                        <Typography
+                                                                            variant="small"
+                                                                            color="blue-gray"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {formatPrice(item.unitPrice)}
+                                                                        </Typography>
+                                                                    </td>
+                                                                    <td className="p-4">
+                                                                        <Typography
+                                                                            variant="small"
+                                                                            color="blue-gray"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {item.quantity}
+                                                                        </Typography>
+                                                                    </td>
+                                                                    <td className="p-4">
+                                                                        <Typography
+                                                                            variant="small"
+                                                                            color="blue-gray"
+                                                                            className="font-normal"
+                                                                        >
+                                                                            {formatPrice(item.amount)}
+                                                                        </Typography>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
                                                 </Collapse>
                                             </td>
                                         </tr>
@@ -285,6 +359,24 @@ export default function RecentOrder() {
                         </tbody>
                     </table>
                 </CardBody>
+                <div className="flex justify-between items-center px-4 py-2">
+                    <IconButton
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                    >
+                       prev
+                    </IconButton>
+                    <Typography variant="small">
+                        page {currentPage} of {" "}
+                        {Math.ceil(orders.length / ordersPerPage)}
+                    </Typography>
+                    <IconButton
+                        onClick={handleNextPage}
+                        disabled={currentPage * ordersPerPage >= orders.length}
+                    >
+                       next
+                    </IconButton>
+                </div>
             </Card>
         </>
     );
