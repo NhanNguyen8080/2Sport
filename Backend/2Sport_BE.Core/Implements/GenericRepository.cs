@@ -55,7 +55,7 @@ namespace _2Sport_BE.Repository.Implements
             return result;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<T>> GetAllAsync(params string[] includes)
         {
             IQueryable<T> query = _dbSet;
 
@@ -69,7 +69,7 @@ namespace _2Sport_BE.Repository.Implements
 
         public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null)
         {
-            
+
             IQueryable<T> query = _dbSet;
 
             if (filter != null)
@@ -79,7 +79,7 @@ namespace _2Sport_BE.Repository.Implements
 
             // Using AsNoTracking for read-only queries
             return await query.AsNoTracking().ToListAsync();
-           
+
         }
 
         public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null,
@@ -111,10 +111,10 @@ namespace _2Sport_BE.Repository.Implements
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null, 
-                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
-                                string includeProperties = "", 
-                                int? pageIndex = null, 
+        public async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> filter = null,
+                                Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+                                string includeProperties = "",
+                                int? pageIndex = null,
                                 int? pageSize = null)
         {
             IQueryable<T> query = _dbSet;
