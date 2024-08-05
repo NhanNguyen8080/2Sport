@@ -40,7 +40,7 @@ namespace _2Shipment_BE.Controllers
                 {
                 return Ok(shipments);
                 }
-                return NotFound("Your shipment detail are empty!");
+                return Ok(shipments);
             }
             catch (Exception ex)
             {

@@ -51,7 +51,7 @@ namespace _2Sport_BE.Controllers
                             Id = order.Id,
                             CreateDate = order.ReceivedDate.HasValue ? order.ReceivedDate.Value.ToString("MM/dd/yyyy") : null,
                             Amount = order.IntoMoney.ToString(),
-                            CustomerName = "abc",
+                            CustomerName = order.User.FullName,
                             OrderCode = order.OrderCode,
                             Status = Enum.GetName(typeof(OrderStatus), order.Status)?.Replace('_', ' '),
                             OrderDetails = (await Task.WhenAll(orderDetails.Select(async od => new OrderDetailResponse
