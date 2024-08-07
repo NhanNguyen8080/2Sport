@@ -91,7 +91,7 @@ export default function Dashboard() {
             </Breadcrumbs>
           </div>
 
-          <div className="flex justify-around items-center space-x-4 mx-10">
+          {/* <div className="flex justify-around items-center space-x-4 mx-10">
             <Card className="shadow-md p-4 w-full">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold text-black">{t("dashboard.total_orders")} <p className="text-lg">({totalOrders})</p></h3>
@@ -149,8 +149,8 @@ export default function Dashboard() {
                 </div>
               </div>
             </Card>
-          </div>
-          <div className="flex mx-10 mt-10 space-x-2">
+          </div> */}
+          <div className="flex mx-10  space-x-2">
             <div className="w-2/3">
               <BarChart />
             </div>

@@ -97,7 +97,7 @@ export default function RecentOrder() {
                     {t("dashboard.recent_orders")}
                 </Typography>
                 <Button onClick={toggleSortOrder} className="mx-10 mt-4 w-fit">
-                    {isDescending ? "Sort Ascending" : "Sort Descending"}
+                    {isDescending ? "Sắp xếp theo mới nhất" : "Sắp xếp theo cũ nhất"}
                 </Button>
 
                 <CardBody className="overflow-scroll px-0">
