@@ -23,11 +23,14 @@ namespace _2Sport_BE.ViewModels
         public string BrandName { get; set; }
 		public int? SportId { get; set; }
 		public string SportName { get; set; }
-		public int? CategoryID { get; set; }
+        public int? ClassificationId { get; set; }
+        public string ClassificationName { get; set; }
+        public int? CategoryID { get; set; }
 		public string CategoryName { get; set; }
 		public ICollection<ImagesVideo> ImagesVideos { get; set; }
         public int Likes { get; set; }
         public ICollection<Review> Reviews { get; set; }
+        public string ProductCode { get; set; }
     }
 
     public class ProductCM : ProductDTO
@@ -35,6 +38,8 @@ namespace _2Sport_BE.ViewModels
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? SportId { get; set; }
+        public int? ClassificationId { get; set; }
+        public string ProductCode { get; set; }
 
     }
 
@@ -43,6 +48,6 @@ namespace _2Sport_BE.ViewModels
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? SportId { get; set; }
-
+        public int? ClassificationId { get; set; }
     }
 }

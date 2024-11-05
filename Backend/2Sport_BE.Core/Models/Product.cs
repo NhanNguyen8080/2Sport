@@ -30,10 +30,12 @@ namespace _2Sport_BE.Repository.Models
         public int? CategoryId { get; set; }
         public int? BrandId { get; set; }
         public int? SportId { get; set; }
+        public int? ClassificationId { get; set; }
         public string ProductCode { get; set; }
 
         public virtual Brand Brand { get; set; }
         public virtual Category Category { get; set; }
+        public virtual Classification Classification { get; set; }
         public virtual Sport Sport { get; set; }
         public virtual ICollection<CartItem> CartItems { get; set; }
         public virtual ICollection<ImagesVideo> ImagesVideos { get; set; }

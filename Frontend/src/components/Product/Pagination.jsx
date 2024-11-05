@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 
 function Pagination({ total, current, onChange }) {
-  const totalPages = Math.ceil(total / 10); // Assuming 10 items per page
-
+  const totalPages = Math.ceil(total / 10); 
   const getPageNumbers = () => {
     const pageNumbers = [];
     if (totalPages <= 5) {

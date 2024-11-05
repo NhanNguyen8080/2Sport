@@ -18,6 +18,7 @@ using System.Text;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using _2Sport_BE.Services;
+using _2Sport_BE.Service.Enums;
 
 namespace _2Sport_BE.Controllers
 {
@@ -31,13 +32,16 @@ namespace _2Sport_BE.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ISendMailService _mailService;
+        private readonly ICartService _cartService;
+
         public AuthController(
             IUserService userService,
             IIdentityService identityService,
             IRefreshTokenService refreshTokenService,
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            ISendMailService mailService)
+            ISendMailService mailService,
+            ICartService cartService)
         {
             _userService = userService;
             _identityService = identityService;
@@ -45,6 +49,7 @@ namespace _2Sport_BE.Controllers
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _mailService = mailService;
+            _cartService = cartService;
         }
         [HttpPost("send")]
         public async Task<IActionResult> SendEmail([FromForm] MailRequest mailRequest)
@@ -69,6 +74,7 @@ namespace _2Sport_BE.Controllers
                 return BadRequest();
             }
         }
+        
         [Route("sign-in")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] UserLogin loginModel)
@@ -76,6 +82,21 @@ namespace _2Sport_BE.Controllers
             var password = HashPassword(loginModel.Password);
             loginModel.Password = password;
             var result = await _identityService.LoginAsync(loginModel);
+            if (result.IsSuccess)
+            {
+                var cart = await _cartService.GetCartByUserId((int)result.Data.UserId);
+                if (cart == null)
+                {
+                    cart = new Cart
+                    {
+                        UserId = result.Data.UserId,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == result.Data.UserId),
+                    };
+
+                    await _cartService.AddNewCart(cart);
+                }
+            }
             return Ok(result);
         }
 
@@ -97,10 +118,7 @@ namespace _2Sport_BE.Controllers
             }
             else
             {
-                token.Token = null;
-                token.ExpiryDate = DateTime.Now;
-                token.Used = true;
-                await _refreshTokenService.UpdateToken(token);
+                await _refreshTokenService.RemoveToken(token);
                 _unitOfWork.Save();
                 return Ok("Query Successfully");
             }
@@ -113,59 +131,72 @@ namespace _2Sport_BE.Controllers
             return Challenge(props, GoogleDefaults.AuthenticationScheme);
         }
         [HttpGet("signin-google")]
-public async Task<IActionResult> GoogleLogin()
-{
-    var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-    if (response.Principal == null) return BadRequest();
-
-    var name = response.Principal.FindFirstValue(ClaimTypes.Name);
-    var email = response.Principal.FindFirstValue(ClaimTypes.Email);
-    var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
-    var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
-
-    if (email == null)
-    {
-        return BadRequest("Error retrieving Google user information");
-    }
-
-    ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
-    var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
-    if (user != null)
-    {
-        result = await _identityService.LoginGoogleAsync(user);
-    }
-    else
-    {
-        user = new User()
+        public async Task<IActionResult> GoogleLogin()
         {
-            FullName = name,
-            Email = email,
-            Phone = phone,
-            CreatedDate = DateTime.Now,
-            RoleId = 4,
-            Gender = gender,
-            IsActive = true,
-        };
-        await _userService.AddAsync(user);
-        _unitOfWork.Save();
+            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (response.Principal == null) return BadRequest();
 
-        result = await _identityService.LoginGoogleAsync(user);
-    }
+            var name = response.Principal.FindFirstValue(ClaimTypes.Name);
+            var email = response.Principal.FindFirstValue(ClaimTypes.Email);
+            var phone = response.Principal.FindFirstValue(ClaimTypes.MobilePhone);
+            var gender = response.Principal.FindFirstValue(ClaimTypes.Gender);
 
-    var token = result.Data.Token;
-    var refreshToken = result.Data.RefreshToken;
+            if (email == null)
+            {
+                return BadRequest("Error retrieving Google user information");
+            }
 
-    var script = $@"
-        <script>
-            window.opener.postMessage({{
-                token: '{token}',
-                refreshToken: '{refreshToken}'
-            }}, 'http://localhost:5173');
-            window.close();
-        </script>";
+            ResponseModel<TokenModel> result = new ResponseModel<TokenModel>();
+            var user = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email == email);
+            if (user != null)
+            {
+                result = await _identityService.LoginGoogleAsync(user);
+                var cart = await _cartService.GetCartByUserId(user.Id);
+                if (cart == null)
+                {
+                    cart = new Cart
+                    {
+                        UserId = user.Id,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == user.Id),
+                    };
 
-    return Content(script, "text/html");
-}
+                    await _cartService.AddNewCart(cart);
+                }
+            }
+            else
+            {
+                user = new User()
+                {
+                    FullName = name,
+                    Email = email,
+                    Phone = phone,
+                    CreatedDate = DateTime.Now,
+                    RoleId = 4,
+                    Gender = gender,
+                    IsActive = true,
+                };
+                await _userService.AddAsync(user);
+                _unitOfWork.Save();
+
+                result = await _identityService.LoginGoogleAsync(user);
+            }
+
+            var token = result.Data.Token;
+            var refreshToken = result.Data.RefreshToken;
+
+            
+            var script = $@"
+                <script>
+                    window.opener.postMessage({{
+                        token: '{token}',
+                        refreshToken: '{refreshToken}'
+                    }}, 'http://localhost:5173');
+                    window.close();
+                </script>";
+
+            return Content(script, "text/html");
+        }
 
         [HttpPost("sign-up")]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
@@ -178,22 +209,28 @@ public async Task<IActionResult> GoogleLogin()
                 }
                 if (await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Email.ToLower() == userCM.Email.ToLower()) != null)
                 {
-                    return BadRequest(new { processStatus = "Email is duplicated" });
+                    return StatusCode(500, new { processStatus = "Already have an account!" });
                 }
 
                 var user = _mapper.Map<UserCM, User>(userCM); 
                 user.Password = HashPassword(userCM.Password);
                 user.CreatedDate = DateTime.Now;
-                user.RoleId = 4;
+                user.RoleId = (int) UserRole.Customer;
                 user.IsActive = true;
                 await _userService.AddAsync(user);
-                var cart = new Cart
+                var cart = await _cartService.GetCartByUserId(user.Id);
+                if (cart == null)
                 {
-                    UserId = user.Id,
-                    User = user,
-                };
-                await _unitOfWork.CartRepository.InsertAsync(cart);
-				_userService.Save();
+                    cart = new Cart
+                    {
+                        UserId = user.Id,
+                        CartItems = new List<CartItem>(),
+                        User = await _unitOfWork.UserRepository.GetObjectAsync(_ => _.Id == user.Id),
+                    };
+
+                    await _cartService.AddNewCart(cart);
+                }
+                _userService.Save();
                 return StatusCode(201, new { processStatus = "Success", userId = user.Id }); ;
             }
             catch (Exception ex)
@@ -206,11 +243,64 @@ public async Task<IActionResult> GoogleLogin()
             }
 
         }
+        [HttpPost("create-staff")]
+        public async Task<IActionResult> CreateStaff([FromBody] UserCM userCM, int roleId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var role = await _unitOfWork.RoleRepository.GetObjectAsync(_ => _.Id == roleId);
+                var user = await _userService.GetAsync(_ => _.Email == userCM.Email);
+                if(user == null)
+                {
+                    User staff = new User()
+                    {
+                        UserName = userCM.Username,
+                        Email = userCM.Email,
+                        CreatedDate = DateTime.Now,
+                        Password = HashPassword(userCM.Password),
+                        FullName = userCM.FullName,
+                        RoleId = roleId,
+                        Role = role,
+                        IsActive = true
+                    };
+                    await _userService.AddAsync(staff);
+                    return StatusCode(201, new { processStatus = "Success", userId = staff.Id });
+                }
+                return StatusCode(500, new { processStatus = $"Already have an account!" });
+            }
+            catch (Exception ex)
+            {
+                //Duplicate
+                if (ex is DbUpdateException dbUpdateEx)
+                {
+                    return BadRequest(new { processStatus = "Duplicate" });
+                }
+                return BadRequest(ex);
+            }
+
+        }
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordVM model)
         {
-            return Ok();
-
+            var user = await GetUserFromToken();
+            if(user is null)
+            {
+                return Unauthorized("Invalid user");
+            }
+            else
+            {
+                if (!user.Password.Equals(HashPassword(model.OldPassword)))
+                {
+                    return BadRequest("Old passwords do not match");
+                }
+                user.Password = HashPassword(model.NewPassword);
+                _unitOfWork.Save();
+                return Ok("Password changed successfully");
+            } 
         }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] ForgotVM forgotVM)
@@ -224,7 +314,6 @@ public async Task<IActionResult> GoogleLogin()
                 if(check != null)
                 {
                     var newPassword = GenerateRandomString(6);
-                    //Đổi mk user
                     check.Password = HashPassword(newPassword);
                     _unitOfWork.Save();
                     //Send mail to get a new password
@@ -285,6 +374,32 @@ public async Task<IActionResult> GoogleLogin()
             }
 
             return result.ToString();
+        }
+
+        [NonAction]
+        private async Task<User> GetUserFromToken()
+        {
+            int UserId = 0;
+            try
+            {
+                if (HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var identity = HttpContext.User.Identity as ClaimsIdentity;
+                    if (identity != null)
+                    {
+                        IEnumerable<Claim> claims = identity.Claims;
+                        string strUserId = identity.FindFirst("UserId").Value;
+                        int.TryParse(strUserId, out UserId);
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            var user = await _userService.GetAsync(_ => _.Id == UserId);
+            return user.FirstOrDefault();
         }
     }
 }

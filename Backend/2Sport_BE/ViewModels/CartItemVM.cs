@@ -12,15 +12,16 @@ namespace _2Sport_BE.ViewModels
         public int Id { get; set; }
         public string ProductName { get; set; }
         public decimal TotalPrice { get; set; }
-    }
+        public string MainImageName { get; set; }
+        public string MainImagePath{ get; set; }
+	}
 
-    public class CartItemCM : CartItemDTO
+	public class CartItemCM : CartItemDTO
     {
     }
 
     public class CartItemUM : CartItemDTO
     {
     }
-
 
 }

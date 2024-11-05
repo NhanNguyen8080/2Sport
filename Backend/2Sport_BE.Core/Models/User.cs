@@ -28,6 +28,7 @@ namespace _2Sport_BE.Repository.Models
         public DateTime? LastUpdate { get; set; }
         public bool? IsActive { get; set; }
         public int? RoleId { get; set; }
+        public string? Address { get; set; }
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }

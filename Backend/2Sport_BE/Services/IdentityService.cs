@@ -65,7 +65,7 @@ namespace _2Sport_BE.API.Services
                 {
                     response.Message = "Query successfully";
                     response.IsSuccess = true;
-                    response.Data = new TokenModel() { Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
+                    response.Data = new TokenModel() {UserId = loginUser.Id, Token = authenticationResult.Token, RefreshToken = authenticationResult.RefreshToken };
                 }
                 else
                 {
@@ -81,19 +81,6 @@ namespace _2Sport_BE.API.Services
             }
         }
 
-        private List<Role> GetUserRole(int UserId)
-        {
-            try
-            {
-                List<Role> roles = _context.Roles.Where(_ => _.Id == UserId).ToList();
-                return roles;
-            }
-            catch (Exception)
-            {
-                return new List<Role>();
-            }
-        }
-
         public async Task<AuthenticationResult> AuthenticateAsync(User user)
         {
             string serect = _configuration.GetSection("ServiceConfiguration:JwtSettings:Secret").Value;
@@ -105,19 +92,19 @@ namespace _2Sport_BE.API.Services
             {
                 var symmetricKey = Encoding.UTF8.GetBytes(serect);
 
-                var role = _context.Roles.FirstOrDefault(_ => _.Id == user.RoleId);
+                var roleName = _context.Roles.FirstOrDefault(_ => _.Id == user.RoleId).RoleName;
                 ClaimsIdentity Subject = new ClaimsIdentity(new Claim[]
                     {
                     new Claim("UserId", user.Id.ToString()),
                     new Claim("FullName", user.FullName),
                     new Claim("Email",user.Email==null?"":user.Email),
                     new Claim("UserName",user.UserName==null?"":user.UserName),
+                    new Claim("Phone",user.Phone==null?"":user.Phone),
+                    new Claim("Gender",user.Gender==null?"":user.Gender),
+                    new Claim("Address",user.Address==null?"":user.Address),
+                    new Claim(ClaimTypes.Role, roleName),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     });
-                foreach (var item in GetUserRole(user.Id))
-                {
-                    Subject.AddClaim(new Claim(ClaimTypes.Role, item.RoleName));
-                }
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {

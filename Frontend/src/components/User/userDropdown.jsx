@@ -8,6 +8,7 @@ import { logout } from "../../redux/slices/authSlice";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRightFromBracket, faCaretDown, faUser } from '@fortawesome/free-solid-svg-icons'
 import Logout from "../Auth/Logout";
+import { useTranslation } from "react-i18next";
 
 const itemVariants = {
     open: {
@@ -18,13 +19,14 @@ const itemVariants = {
     closed: { opacity: 0, y: 20, transition: { duration: 0.2 } }
 };
 export default function UserDropdown() {
+    const { t } = useTranslation();
     const user = useSelector(selectUser);
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const handleManageAccount = () => {
-        navigate("/manage-account");
+        navigate("/manage-account/profile");
     }
 
     const handleLogout = () => {
@@ -33,6 +35,10 @@ export default function UserDropdown() {
         dispatch(logout());
         navigate("/");
     };
+
+    function closeDropModal() {
+        setIsOpen(false)
+    }
 
     return (
         <motion.nav
@@ -46,7 +52,7 @@ export default function UserDropdown() {
                 className="justify-between flex text-left items-center"
             >
                 <FontAwesomeIcon icon={faUser} className="pr-1" />
-                Hi {user.FullName}
+                {t("user_dropdown.hi")} {user.FullName}
                 <motion.div
                     variants={{
                         open: { rotate: 180 },
@@ -89,7 +95,7 @@ export default function UserDropdown() {
                 >
                     <button>
                     <FontAwesomeIcon icon={faUser} className="pr-1" />
-                    Manage My Account
+                    {t("user_dropdown.manage_my_account")}  
                     </button>
                 </motion.li>
                 <motion.li

@@ -2,46 +2,48 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Button } from '@material-tailwind/react';
 import { selectUser } from "../../redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 
 const UserProfile = ({ onEditClick }) => {
     const user = useSelector(selectUser);
+    const { t } = useTranslation();
 
   return (
     <div>
-      <h2 className="text-orange-500 font-semibold text-xl mb-4">User Profile</h2>
+      <h2 className="text-orange-500 font-semibold text-xl mb-4">{t("user_profile.user_profile")}</h2>
       <div className="space-y-4">
         <div>
-          <label className="block text-gray-700">Username:</label>
-          <p>{user.Username}</p>
+          <label className="block text-gray-700">{t("user_profile.username")}:</label>
+          <p>{user.UserName}</p>
         </div>
         <div>
-          <label className="block text-gray-700">Fullname:</label>
+          <label className="block text-gray-700">{t("user_profile.fullname")}:</label>
           <p>{user.FullName}</p>
         </div>
-        <div>
+        {/* <div>
           <label className="block text-gray-700">Gender:</label>
           <p>{user.Gender}</p>
-        </div>
+        </div> */}
         <div>
-          <label className="block text-gray-700">Email:</label>
+          <label className="block text-gray-700">{t("user_profile.email")}:</label>
           <p>{user.Email}</p>
         </div>
-        <div>
+        {/* <div>
           <label className="block text-gray-700">Phone:</label>
           <p>{user.Phone}</p>
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <label className="block text-gray-700">Address:</label>
           <p>{user.Address}</p>
-        </div>
+        </div> */}
         <div className="flex justify-end space-x-4">
           <Button
             color="orange"
             variant="filled"
             onClick={onEditClick}
           >
-            Edit Profile
+            {t("user_profile.edit_profile")}
           </Button>
         </div>
       </div>

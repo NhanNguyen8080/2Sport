@@ -33,7 +33,8 @@ namespace _2Sport_BE.Controllers
             _refreshTokenService = refreshTokenService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllUserList(DefaultSearch defaultSearch, string fullName, string username)
+        [Route("get-all-users")]
+        public async Task<IActionResult> GetAllUser(string? fullName, string? username)
         {
             try
             {
@@ -49,15 +50,30 @@ namespace _2Sport_BE.Controllers
                     query = query.Where(x => x.UserName.ToLower().Contains(fullName));
                 }
 
-                
+                var result = _mapper.Map<List<User>, List<UserVM>>(query.ToList());
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            } 
+        }
+        [HttpGet]
+        [Route("get-users-by-role")]
+        public async Task<IActionResult> GetUsesByRole(int roleId)
+        {
+            try
+            {
+                var query = await _userService.GetAsync(_ => _.RoleId == roleId);
+                var result = _mapper.Map<List<User>, List<UserVM>>(query.ToList());
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            return Ok();
         }
-        
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserDetail(int userId)
         {
@@ -72,30 +88,7 @@ namespace _2Sport_BE.Controllers
                 return BadRequest(e);
             }
         }
-        [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUser([FromBody] User staff)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                await _userService.AddAsync(staff);
-                _userService.Save();
-                return StatusCode(201, new { processStatus = "Success", userId = staff.Id }); ;
-            }
-            catch (Exception ex)
-            {
-                //Duplicate
-                if (ex is DbUpdateException dbUpdateEx)
-                {
-                    return BadRequest(new { processStatus = "Duplicate" });
-                }
-                return BadRequest(ex);
-            }
-
-        }
+        
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserCM userCM)
         {
@@ -197,11 +190,12 @@ namespace _2Sport_BE.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var UserId = GetUserIdFromToken();
+            var UserId = GetCurrentUserIdFromToken();
             var result = await _userService.GetAsync(_ => _.Id == UserId);
             return Ok(result);
         }
-        protected int GetUserIdFromToken()
+        [NonAction]
+        protected int GetCurrentUserIdFromToken()
         {
             int UserId = 0;
             try

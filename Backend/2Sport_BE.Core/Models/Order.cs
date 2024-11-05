@@ -13,7 +13,7 @@ namespace _2Sport_BE.Repository.Models
         public int Id { get; set; }
         public string OrderCode { get; set; }
         public int? OrderDetailId { get; set; }
-        public bool? Status { get; set; }
+        public int? Status { get; set; }
         public decimal? TotalPrice { get; set; }
         public decimal? TransportFee { get; set; }
         public decimal? IntoMoney { get; set; }

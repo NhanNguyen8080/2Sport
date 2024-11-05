@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using System.Linq;
+using System.Net.WebSockets;
 
 namespace _2Sport_BE.Controllers
 {
@@ -79,7 +81,9 @@ namespace _2Sport_BE.Controllers
                     product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
                 var result = products.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList();
                 foreach (var product in result)
                 {
@@ -98,8 +102,9 @@ namespace _2Sport_BE.Controllers
 
         [HttpGet]
         [Route("filter-sort-products")]
-        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, string? size, decimal minPrice, decimal maxPrice,
-                                                        int sportId, int brandId, int categoryId)
+        public async Task<IActionResult> FilterSortProducts([FromQuery]DefaultSearch defaultSearch, [FromQuery] string? size, 
+                                                            [FromQuery] decimal minPrice, [FromQuery] decimal maxPrice,
+                                                        [FromQuery] int sportId, [FromQuery] int[] brandIds, [FromQuery] int[] categoryIds)
         {
             try
             {
@@ -108,21 +113,13 @@ namespace _2Sport_BE.Controllers
                 {
                     query = query.Where(_ => _.SportId == sportId);
                 }
-                if (brandId != 0)
-                {
-                    query = query.Where(_ => _.BrandId == brandId);
-                }
-                if (categoryId != 0)
-                {
-                    query = query.Where(_ => _.CategoryId == categoryId);
-                }
                 if (!String.IsNullOrEmpty(size))
                 {
-                    query = query.Where(_ => _.Size.Equals(size));
+                    query = query.Where(_ => _.Size.ToLower().Equals(size.ToLower()));
                 }
-                if (minPrice > 0 || maxPrice > 0)
+                if (minPrice >= 0 && maxPrice > 0)
                 {
-                    if (minPrice > 0 && maxPrice > 0 && minPrice < maxPrice)
+                    if (minPrice < maxPrice)
                     {
                         query = query.Where(_ => _.Price > minPrice && _.Price < maxPrice);
                     }
@@ -131,9 +128,21 @@ namespace _2Sport_BE.Controllers
                         return BadRequest("Invalid query!");
                     }
                 }
+                // Apply brandIds filter if provided
+                if (brandIds.Length > 0)
+                {
+                    query = query.Where(_ => brandIds.ToList().Contains((int)_.BrandId));
+                }
 
-				var products = query.ToList();
-				foreach (var product in products)
+                // Apply categoryIds filter if provided
+                if (categoryIds.Length > 0)
+                {
+                    query = query.Where(_ => categoryIds.ToList().Contains((int)_.CategoryId));
+                }
+
+                var products = query.ToList();
+
+                foreach (var product in products)
 				{
 					var brand = await _brandService.GetBrandById(product.BrandId);
 					product.Brand = brand.FirstOrDefault();
@@ -141,7 +150,9 @@ namespace _2Sport_BE.Controllers
 					product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
 
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
                                   .Select(_ => _mapper.Map<Product, ProductVM>(_))
@@ -162,7 +173,49 @@ namespace _2Sport_BE.Controllers
             }
         }
 
-		[HttpGet]
+        [HttpGet]
+        [Route("sort-products-by-like")]
+        public async Task<IActionResult> SortProductsByLike([FromQuery] int pageIndex, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var query = await _productService.GetProducts(_ => _.Status == true, "", pageIndex, pageSize);
+                var products = query.ToList();
+                foreach (var product in products)
+                {
+                    var brand = await _brandService.GetBrandById(product.BrandId);
+                    product.Brand = brand.FirstOrDefault();
+                    var category = await _categoryService.GetCategoryById(product.CategoryId);
+                    product.Category = category;
+                    var sport = await _sportService.GetSportById(product.SportId);
+                    product.Sport = sport;
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+
+                }
+
+                var result = query.Select(_ => _mapper.Map<Product, ProductVM>(_)).ToList().AsQueryable();
+
+                foreach (var product in result)
+                {
+                    var reviews = await _reviewService.GetReviewsOfProduct(product.Id);
+                    product.Reviews = reviews.ToList();
+                    var numOfLikes = await _likeService.CountLikeOfProduct(product.Id);
+                    product.Likes = numOfLikes;
+                }
+
+                var finalResult = result.Sort("likes", false).ToList();
+
+                return Ok(new { total = finalResult.Count, data = finalResult });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
+        [HttpGet]
 		[Route("search-products")]
 		public async Task<IActionResult> SearchProducts([FromQuery] string keywords, [FromQuery] DefaultSearch defaultSearch)
 		{
@@ -182,7 +235,9 @@ namespace _2Sport_BE.Controllers
 					product.Category = category;
 					var sport = await _sportService.GetSportById(product.SportId);
 					product.Sport = sport;
-				}
+                    var classification = await _unitOfWork.ClassificationRepository.FindAsync(product.ClassificationId);
+                    product.Classification = classification;
+                }
 
 				var result = query.Sort(defaultSearch.sortBy, defaultSearch.isAscending)
 								  .Select(_ => _mapper.Map<Product, ProductVM>(_))
@@ -226,6 +281,7 @@ namespace _2Sport_BE.Controllers
                     updatedProduct.CategoryId = productUM.CategoryId;
                     updatedProduct.BrandId = productUM.BrandId;
                     updatedProduct.SportId = productUM.SportId;
+                    updatedProduct.ClassificationId = productUM.ClassificationId;
                     await _productService.UpdateProduct(updatedProduct);
                     return Ok(updatedProduct);
                 } else
@@ -246,17 +302,44 @@ namespace _2Sport_BE.Controllers
             {
                 var addedProducts = _mapper.Map<List<Product>>(productList);
 				await _productService.AddProducts(addedProducts);
-                if (await _unitOfWork.SaveChanges())
-                {
-                    return Ok("Add products successfully!");
-                }
-                return BadRequest("Add products failed");
+                return Ok("Add products successfully!");
                 
 			} catch (Exception e)
             {
                 return BadRequest(e);
             }
             
+        }
+
+        [HttpDelete]
+        [Route("delete-product/{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            try
+            {
+                await _productService.DeleteProductById(id);
+                _unitOfWork.Save();
+                return Ok("Delete product successfully!");
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("get-number-of-products")]
+        public async Task<IActionResult> GetNumberOfProducts()
+        {
+            try
+            {
+                var totalProducts = (await _productService.GetAllProducts()).Count();
+                return Ok(totalProducts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

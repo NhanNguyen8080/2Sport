@@ -1,20 +1,24 @@
-import { Button, Input } from "@material-tailwind/react";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import SignInModal from "../components/Auth/SignInModal";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@material-tailwind/react";
+import DeliveryAddress from "../components/Payment/DeliveryAddress";
+import PaymentMethod from "../components/Payment/PaymentMethod";
+import OrderSuccess from "../components/Payment/OrderSuccess";
+import { checkout } from "../services/paymentServices";
 import { useSelector } from "react-redux";
-import { selectUser } from "../redux/slices/authSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { selectedShipment } from "../redux/slices/shipmentSlice";
+import { useTranslation } from "react-i18next";
 
-function Checkout() {
+const Checkout = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const shipment = useSelector(selectedShipment);
+  const { selectedProducts } = location.state || { selectedProducts: [] };
+  const [distance, setDistance] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [subtotal, setSubtotal] = useState(0);
-  const [shippingFees, setShippingFees] = useState(0);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderCode] = useState("123456");
-  const navigate = useNavigate();
-  const user = useSelector(selectUser);
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({
     fullName: "",
@@ -23,270 +27,161 @@ function Checkout() {
     address: "",
   });
 
-  useEffect(() => {
-    if (user) {
-      setUserData({
-        fullName: user.FullName || "",
-        email: user.Email || "",
-        phoneNumber: user.Phone || "",
-        address: user.Address || "",
-      });
-    }
-  }, [user]);
-
+  const totalPrice = selectedProducts.reduce(
+    (acc, item) => acc + item.totalPrice,
+    0
+  );
+console.log(selectedProducts);
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
 
-  const handleCheckout = () => {
-    setOrderSuccess(true);
+  const handleCheckout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const orderMethodId = selectedOption;
+
+      const data = {
+        transportFee: transportFee,
+        receivedDate: new Date().toISOString(),
+        orderDetails: selectedProducts.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.totalPrice,
+        })),
+        shipmentDetailId: shipment.id,
+      };
+
+      const response = await checkout(token, orderMethodId, data);
+      // console.log(data);
+
+      if (orderMethodId === "1") {
+        setOrderSuccess(true);
+      } else if (orderMethodId === "2" && response.data.paymentLink) {
+        const paymentLink = response.data.paymentLink;
+        console.log(paymentLink);
+        window.location.href = paymentLink;
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    }
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setUserData({ ...userData, [name]: value });
+  const calculateTransportFee = (distance) => {
+    if (distance < 5) {
+      return 0;
+    } else if (totalPrice >= 500000) {
+      return 0;
+    } else if (distance <= 10) {
+      return 15000;
+    } else {
+      return 35000;
+    }
   };
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
+  const transportFee =
+    distance !== null ? calculateTransportFee(distance) : "Calculating...";
 
   if (orderSuccess) {
-    return (
-      <div className="px-5 py-5 flex flex-row bg-slate-200">
-        <div className="whitespace-nowrap w-1/2 bg-white mx-2 pr-14 flex items-center justify-center basis-1/2">
-          <div className="text-center">
-            <FontAwesomeIcon
-              icon={faCircleCheck}
-              className="text-orange-500 text-8xl"
-            />
-            <div className="font-bold text-2xl pt-5">Order Success</div>
-            <div>
-              Order Code <span className="font-bold text-xl">{orderCode}</span>
-            </div>
-            <div className="text-lg">Thank you for your purchase!</div>
-            <div
-              className="text-blue-500 font-bold pt-5 text-lg cursor-pointer"
-              onClick={() => navigate("/")}
-            >
-              <div className="inline-block text-2xl">
-                <FontAwesomeIcon icon={faArrowLeft} />
-              </div>
-              <div className="inline-block ml-1 pl-3">Continue Shopping</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="pl-14 pr-12 py-10 basis-1/2">
-          <h3 className="text-2xl font-bold text-center">Order Summary</h3>
-
-          <div className="flex items-center p-4 border rounded">
-            <div className="w-1/5">
-              <img
-                src="https://via.placeholder.com/150"
-                alt="Product"
-                className="w-28 h-auto object-cover rounded"
-              />
-            </div>
-            <div className="w-3/5 pr-10">
-              <h3 className="text-lg font-semibold">Name of Product</h3>
-              <h4>Size S, Black</h4>
-            </div>
-
-            <div className="w-1/5 text-right">
-              <p className="text-lg text-black">$99.99</p>
-            </div>
-          </div>
-
-          <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
-          <div className="flex justify-between items-center pt-1 border rounded mt-4">
-            <h3 className="text-lg font-semibold">Total</h3>
-            <p className="text-lg text-black">${subtotal + shippingFees}</p>
-          </div>
-        </div>
-      </div>
-    );
+    navigate("/order_success");
   }
 
   return (
     <div className="px-5 py-5 flex flex-row bg-slate-200">
       <div className="text-nowrap basis-2/3 bg-white mx-2 pr-14">
-        <div className="pl-20 py-10">
-          <div className="flex justify-between items-center">
-            <h3 className="text-2xl font-bold">Delivery Address</h3>
-            {user && (
-              <Button
-                className="bg-[#FA7D0B] text-white w-20"
-                onClick={handleEditClick}
-              >
-                Edit
-              </Button>
-            )}
-          </div>
-          {!user && (
-            <div className="flex items-center">
-              <p className="text-xl pr-5">Already have an account?</p>
-              <SignInModal className="text-blue-500" />
-            </div>
-          )}
-          <div className="flex flex-col pt-4 flex-1">
-            <Input
-              className="text-black w-full"
-              size="lg"
-              placeholder="Full name"
-              value={userData.fullName}
-              onChange={handleInputChange}
-              name="fullName"
-              disabled={!isEditing}
-            />
-          </div>
-          <div className="flex flex-row pt-4 space-x-2 w-full">
-            <Input
-              className="text-black w-[650px]"
-              size="lg"
-              placeholder="Email"
-              type="email"
-              value={userData.email}
-              onChange={handleInputChange}
-              name="email"
-              disabled={!isEditing}
-            />
-            <Input
-              className="text-black w-[450px]"
-              size="lg"
-              placeholder="Phone number"
-              type="tel"
-              value={userData.phoneNumber}
-              onChange={handleInputChange}
-              name="phoneNumber"
-              disabled={!isEditing}
-            />
-          </div>
-
-          <div className="flex flex-col pt-4 flex-1">
-            <Input
-              className="text-black w-full"
-              size="lg"
-              placeholder="Address"
-              value={userData.address}
-              onChange={handleInputChange}
-              name="address"
-              disabled={!isEditing}
-            />
-          </div>
-
-          <h3 className="text-2xl font-bold pt-1">Payment method</h3>
-
-          <div className="flex pt-3">
-            <form className="bg-white p-6 rounded shadow-md w-full border border-black">
-              <div className="mb-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="option"
-                    value="1"
-                    className="form-radio text-[#FA7D0B]"
-                    onChange={handleOptionChange}
-                  />
-                  <span className="ml-2">Cash on Delivery (COD)</span>
-                </label>
-                {selectedOption === "1" && (
-                  <p className="mt-4 text-black bg-gray-300 p-2 rounded">
-                    Bạn đã chọn phương thức thanh toán bằng Cash on
-                    Delivery(COD).
-                  </p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="option"
-                    value="2"
-                    className="form-radio text-[#FA7D0B]"
-                    onChange={handleOptionChange}
-                  />
-                  <span className="ml-2">Bank Transfer</span>
-                </label>
-                {selectedOption === "2" && (
-                  <p className="mt-4 text-black bg-gray-300 p-2 rounded">
-                    Bạn đã chọn phương thức thanh toán bằng Bank Transfer.
-                  </p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="radio"
-                    name="option"
-                    value="3"
-                    className="form-radio text-[#FA7D0B]"
-                    onChange={handleOptionChange}
-                  />
-                  <span className="ml-2">Momo</span>
-                </label>
-                {selectedOption === "3" && (
-                  <p className="mt-4 text-black bg-gray-300 p-2 rounded">
-                    Bạn đã chọn phương thức thanh toán bằng MoMo.
-                  </p>
-                )}
-              </div>
-            </form>
-          </div>
-        </div>
+        <DeliveryAddress
+          userData={userData}
+          setUserData={setUserData}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setDistance={setDistance}
+        />
+        <PaymentMethod
+          selectedOption={selectedOption}
+          handleOptionChange={handleOptionChange}
+        />
       </div>
-
-      <div className="pl-14 pr-12 py-10 basis-1/3">
-        <h3 className="text-2xl font-bold text-center">Order Summary</h3>
-
-        <div className="flex items-center p-4 border rounded">
-          <div className="w-1/4">
-            <img
-              src="https://via.placeholder.com/150"
-              alt="Product"
-              className="w-28 h-auto object-cover rounded"
-            />
+      <div className="basis-3/5 mx-2 h-1/4">
+        <div className="font-alfa text-center p-5 border rounded text-black">
+          {t("checkout.order_summary")}
+        </div>
+        {selectedProducts.length === 0 ? (
+          <div className="flex justify-center items-center py-4 text-center">
+            <p className="text-lg text-black">
+              {t("checkout.no_items_selected")}
+            </p>
           </div>
-          <div className="w-1/2 pr-10">
-            <h3 className="text-lg font-semibold">Name of Product</h3>
-            <h4>Size S, Black</h4>
+        ) : (
+          <div className="overflow-auto h-3/4">
+            <div className="grid grid-cols-1 gap-4">
+              {selectedProducts.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex border rounded p-4 space-x-2"
+                >
+                  <div className="relative">
+                    <img
+                      src={item.mainImagePath}
+                      alt={item.mainImageName}
+                      className="w-auto h-32 object-scale-down rounded"
+                    />
+                    <span className="absolute top-0 right-0 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      {item.quantity}
+                    </span>
+                  </div>
+                  <div className="flex justify-between w-full">
+                    <div className="flex flex-col space-y-4">
+                      <h3 className="text-lg font-semibold w-60">
+                        {item.productName}
+                      </h3>
+                    </div>
+                    <p className="text-lg text-black">{item.totalPrice} VND</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
+            <div className="flex justify-between items-center pt-1 border rounded mt-4">
+              <h3 className="text-lg font-semibold">
+                {t("checkout.subtotal")}
+              </h3>
+              <p className="text-lg text-black">
+                {totalPrice.toLocaleString()} VND
+              </p>
+            </div>
+            <div className="flex justify-between items-center pt-1 border rounded mt-4">
+              <h3 className="text-lg font-semibold">
+                {t("checkout.transport_fee")}
+              </h3>
+              <p className="text-lg text-black">
+                {transportFee === "Calculating..."
+                  ? transportFee
+                  : `${transportFee} VND`}
+              </p>
+            </div>
+            <div className="flex justify-between items-center pt-1 border rounded mt-4">
+              <h3 className="text-lg font-semibold">{t("checkout.total")}</h3>
+              <p className="text-lg text-black">
+                {(
+                  totalPrice +
+                  (transportFee === "Calculating..." ? 0 : transportFee)
+                ).toLocaleString()}{" "}
+                VND
+              </p>
+            </div>
           </div>
-
-          <div className="w-1/4 text-right">
-            <p className="text-lg text-black">$99.99</p>
-          </div>
-        </div>
-
-        <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
-        <div className="flex justify-between items-center pt-1 border rounded mt-4">
-          <h3 className="text-lg font-semibold">Subtotal</h3>
-          <p className="text-lg text-black">${subtotal}</p>
-        </div>
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Shipping Fees</h3>
-          <p className="text-lg text-black">${shippingFees}</p>
-        </div>
-
-        <div className="h-px bg-gray-300 my-5 mx-auto font-bold"></div>
-
-        <div className="flex justify-between items-center pt-1 border rounded mt-4">
-          <h3 className="text-lg font-semibold">Total</h3>
-          <p className="text-lg text-black">${subtotal + shippingFees}</p>
-        </div>
-
-        <div className="flex justify-center items-center mt-4">
+        )}
+        <div className="flex justify-center items-center">
           <Button
             className="text-white bg-orange-500 w-40 py-3 rounded"
             onClick={handleCheckout}
           >
-            Checkout
+            {t("checkout.complete_order")}
           </Button>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Checkout;

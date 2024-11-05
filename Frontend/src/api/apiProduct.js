@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:7276/api/Product';
+const API_BASE_URL = 'https://twosportapiv2.azurewebsites.net/api/Product';
+const perPage = 15;
 
-export const getProductList = (sortBy = '') => {
+export const getProductList = (currentPage) => {
   const url = `${API_BASE_URL}/list-products`;
-  const params = {};
-  if (sortBy) {
-    params.sortBy = sortBy;
-  } else {
-    params.sortBy = '""'; 
-  }
+  const params = {
+    perPage : perPage,
+    currentPage: currentPage
+  };
+  // console.log(params);
   return axios.get(url, {
     params,
     headers: {
@@ -17,7 +17,6 @@ export const getProductList = (sortBy = '') => {
     }
   });
 };
-
 export const getProductById = (id) => {
   const url = `${API_BASE_URL}/get-product/${id}`;
   return axios.get(url, {
@@ -27,11 +26,47 @@ export const getProductById = (id) => {
   });
 };
 
-export const getProductSortBy = (sortBy = '') => {
+export const getProductFilterBy = ( sortBy, isAscending, brandIds, categoryIds, minPrice, maxPrice) => {
   const url = `${API_BASE_URL}/filter-sort-products`;
-  const params = { sortBy, perPage: 10, currentPage: 0, isAscending: true };
+  const params = {perPage};
+  if (sortBy) {
+    params.sortBy = sortBy;
+  }
+  if (typeof isAscending === 'boolean') {
+    params.isAscending = isAscending;
+  }
+
+  if (brandIds && brandIds.length > 0) {
+    brandIds.forEach((id, index) => {
+      params[`brandIds[${index}]`] = id;
+    });
+  }
+
+  if (categoryIds && categoryIds.length > 0) {
+    categoryIds.forEach((id, index) => {
+      params[`categoryIds[${index}]`] = id;
+    });
+  }
+
+  if (minPrice !== 0) {
+    params.minPrice = minPrice;
+  }
+  if (maxPrice !== 0) {
+    params.maxPrice = maxPrice;
+  }
   return axios.get(url, {
     params,
+    headers: {
+      'accept': '*/*'
+    }
+  });
+};
+
+
+export const searchProducts = (keywords) => {
+  const url = `${API_BASE_URL}/search-products`;
+  return axios.get(url, {
+    params: { keywords },
     headers: {
       'accept': '*/*'
     }

@@ -1,32 +1,36 @@
+// src/redux/slices/productSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { getProductFilterBy } from "../../api/apiProduct";
 
-const productPersistConfig = {
-    key: "product",
-    storage,
-};
 const initialState = {
-    data: [],
+  products: [],
+  total: 0,
 };
+
 const productSlice = createSlice({
-    name: "product",
-    initialState,
-    reducers: {
-        setProducts: (state, action) => {
-            state.data = action.payload.data;
-        },
-        // updateProduct: (state, action) => {
-        //     const index = state.data.findIndex(product => product.id === action.payload.id);
-        //     if (index !== -1) {
-        //         state.data[index] = action.payload;
-        //     }
-        // },
+  name: "product",
+  initialState,
+  reducers: {
+    setProducts: (state, action) => {
+      const { products, total } = action.payload.data;
+      state.products = products;
+      state.total = total;
     },
+  },
 });
 
 export const { setProducts } = productSlice.actions;
 
-export const selectProducts = (state) => state.product.data;
+export const fetchFilteredProducts = (params) => async (dispatch) => {
+  try {
+    const response = await getProductFilterBy(params);
+    dispatch(setProducts({ data: response.data.data.$values }));
+  } catch (error) {
+    console.error('Error fetching filtered products:', error);
+    // Handle error, e.g., dispatch an error action
+  }
+};
 
-export default persistReducer(productPersistConfig, productSlice.reducer);
+export const selectProducts = (state) => state.product;
+
+export default productSlice.reducer;

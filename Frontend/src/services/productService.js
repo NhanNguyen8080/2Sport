@@ -1,9 +1,10 @@
 // src/services/productService.js
-import { getProductList, getProductById,getProductSortBy   } from '../api/apiProduct';
+import { toast } from 'react-toastify';
+import { getProductList, getProductById, getProductFilterBy } from '../api/apiProduct';
 
-export const fetchProducts = async (sortBy = '') => {
+export const fetchProducts = async (currentPage) => {
   try {
-    const response = await getProductList(sortBy);
+    const response = await getProductList(currentPage);
     const { total, data } = response.data;
     return { total, products: data.$values };
   } catch (error) {
@@ -12,10 +13,25 @@ export const fetchProducts = async (sortBy = '') => {
   }
 };
 
-export const fetchProductsSorted = async (sortBy = '') => {
+export const fetchProductsFiltered = async (
+      sortBy,
+      isAscending,
+      selectedBrands,
+      selectedCategories,
+      minPrice,
+      maxPrice
+    ) => {
   try {
-    const response = await getProductSortBy(sortBy);
-    return response.data.data.$values;
+    const response = await getProductFilterBy(
+      sortBy,
+      isAscending,
+      selectedBrands,
+      selectedCategories,
+      minPrice,
+      maxPrice
+    );
+    const { total, data } = response.data;
+    return { total, products: data.$values };
   } catch (error) {
     console.error('Error fetching sorted products:', error);
     throw error;

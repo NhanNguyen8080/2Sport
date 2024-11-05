@@ -14,7 +14,9 @@ namespace _2Sport_BE.Service.Services
         Task<CartItem> GetCartItemById(int cartItemId);
 
 		Task<CartItem> AddCartItem(int userId, CartItem cartItem);
-		//Task DeleteCartItem(int cartItemId);
+        Task DeleteCartItem(int cartItemId);
+        Task ReduceCartItem(int cartItemId);
+        Task UpdateQuantityOfCartItem(int cartItemId, int quantity);
 	}
 	public class CartItemService : ICartItemService
     {
@@ -68,8 +70,11 @@ namespace _2Sport_BE.Service.Services
 
         public async Task<CartItem> AddCartItem(Cart cart, CartItem cartItem)
         {
-            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId)).FirstOrDefault();
-            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId)).FirstOrDefault();
+            var currentItem = (await _cartItemRepository.GetAsync(_ => _.ProductId == cartItem.ProductId &&
+                                                                        _.CartId == cart.Id &&
+                                                                        _.Status == true)).FirstOrDefault();
+            var product = (await _productRepository.GetAsync(_ => _.Id == cartItem.ProductId && _.Status == true))
+                                                   .FirstOrDefault();
             if (currentItem != null)
             {
                 currentItem.Quantity += cartItem.Quantity;
@@ -92,6 +97,7 @@ namespace _2Sport_BE.Service.Services
                 cartItem.ProductId = product.Id;
                 var totalPrice = product.Price * cartItem.Quantity;
                 cartItem.TotalPrice = totalPrice;
+                cartItem.Status = true;
                 try
                 {
                     await _cartItemRepository.InsertAsync(cartItem);
@@ -110,7 +116,9 @@ namespace _2Sport_BE.Service.Services
             var cart = queryCart.FirstOrDefault();
             if (cart != null)
             {
-                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id, null, "", pageIndex, pageSize);
+                var testCartItems = await _cartItemRepository.GetAllAsync();
+                var cartItems = await _cartItemRepository.GetAsync(_ => _.CartId == cart.Id && _.Status == true,
+                                                                    null, "", pageIndex, pageSize);
                 return cartItems.AsQueryable();
             }
             else
@@ -121,13 +129,51 @@ namespace _2Sport_BE.Service.Services
 
 		public async Task<CartItem> GetCartItemById(int cartItemId)
 		{
-            var queryCart = await _cartItemRepository.FindAsync(cartItemId);
+            var queryCart = (await _cartItemRepository.GetAsync(_ => _.Status == true && _.Id == cartItemId)).FirstOrDefault();
 			return queryCart;
 		}
 
-		//public async Task DeleteCartItem(int cartItemId)
-		//{
-  //          await _cartItemRepository.DeleteAsync(cartItemId);
-		//}
+        public async Task DeleteCartItem(int cartItemId)
+        {
+            var deletedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+            if (deletedCartItem != null)
+            {
+                deletedCartItem.Status = false;
+                await _unitOfWork.CartItemRepository.UpdateAsync(deletedCartItem);
+			}
+		}
+
+        public async Task ReduceCartItem(int cartItemId)
+        {
+            var reducedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+            if (reducedCartItem != null)
+            {
+                var product = (await _unitOfWork.ProductRepository.GetAsync(_ => _.Id == reducedCartItem.ProductId)).FirstOrDefault();
+                reducedCartItem.Quantity -= 1;
+                reducedCartItem.TotalPrice -= product.Price;
+                await _unitOfWork.CartItemRepository.UpdateAsync(reducedCartItem);
+                if (reducedCartItem.Quantity == 0)
+				{
+					DeleteCartItem(reducedCartItem.Id);
+				}
+			}
+		}
+
+		public async Task UpdateQuantityOfCartItem(int cartItemId, int quantity)
+		{
+			var updatedCartItem = await _cartItemRepository.FindAsync(cartItemId);
+			if (updatedCartItem != null)
+			{
+				if (updatedCartItem.Quantity == 0)
+				{
+					DeleteCartItem(updatedCartItem.Id);
+				}
+				else
+				{
+					updatedCartItem.Quantity = quantity;
+                    await _unitOfWork.CartItemRepository.UpdateAsync(updatedCartItem);
+				}
+			}
+		}
 	}
 }
